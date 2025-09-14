@@ -23,22 +23,26 @@ const AppContent = () => {
     { 
       icon: Activity, 
       key: 'activities' as ViewType, 
-      title: t('activities')
+      title: t('activities'),
+      gradient: false
     },
     { 
       icon: CloudSun, 
       key: 'weather' as ViewType, 
-      title: t('weather')
+      title: t('weather'),
+      gradient: false
     },
     { 
       icon: Calendar, 
       key: 'calendar' as ViewType, 
-      title: t('calendar')
+      title: t('calendar'),
+      gradient: false
     },
     { 
       icon: Building, 
       key: 'schemes' as ViewType, 
-      title: t('schemes')
+      title: t('schemes'),
+      gradient: false
     },
   ];
 
@@ -86,15 +90,21 @@ const AppContent = () => {
 
             {/* Navigation Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {navigationItems.map((item) => (
-                <NavigationCard
-                  key={item.key}
-                  icon={item.icon}
-                  title={item.title}
-                  onClick={() => setCurrentView(item.key)}
-                  gradient={item.gradient}
-                />
-              ))}
+              {navigationItems.map((item) => {
+                console.log('Rendering navigation item:', item.title, item.key); // Debug log
+                return (
+                  <NavigationCard
+                    key={item.key}
+                    icon={item.icon}
+                    title={item.title}
+                    onClick={() => {
+                      console.log('Navigation clicked:', item.key); // Debug log
+                      setCurrentView(item.key);
+                    }}
+                    gradient={item.gradient}
+                  />
+                );
+              })}
             </div>
 
             {/* Quick Weather Summary */}
