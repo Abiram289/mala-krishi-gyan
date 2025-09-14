@@ -22,6 +22,8 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          light: "hsl(var(--primary-light))",
+          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -46,6 +48,12 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        kerala: {
+          coconut: "hsl(var(--kerala-coconut))",
+          paddy: "hsl(var(--kerala-paddy))",
+          spice: "hsl(var(--kerala-spice))",
+          backwater: "hsl(var(--kerala-backwater))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
