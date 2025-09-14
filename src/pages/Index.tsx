@@ -103,12 +103,12 @@ const AppContent = () => {
                 <div className="flex items-center space-x-3">
                   <CloudSun className="h-8 w-8 text-primary" />
                   <div>
-                    <p className="font-semibold">Today's Weather</p>
-                    <p className="text-sm text-muted-foreground">28°C, Partly Cloudy</p>
+                    <p className="font-semibold">{t('todayWeather')}</p>
+                    <p className="text-sm text-muted-foreground">28°C, {t('partlyCloudy')}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-muted-foreground">Humidity</p>
+                  <p className="text-sm text-muted-foreground">{t('humidity')}</p>
                   <p className="font-semibold">75%</p>
                 </div>
               </div>

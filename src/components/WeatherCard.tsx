@@ -59,7 +59,7 @@ export const WeatherCard = () => {
           <div className="flex items-center space-x-2">
             <Wind className="h-5 w-5 text-primary" />
             <div>
-              <p className="text-sm text-muted-foreground">Wind</p>
+              <p className="text-sm text-muted-foreground">{t('wind')}</p>
               <p className="font-semibold">{weather.windSpeed} km/h</p>
             </div>
           </div>
@@ -78,7 +78,7 @@ export const WeatherCard = () => {
         <Card className="p-4 border-accent/50 bg-accent/5">
           <div className="flex items-center space-x-2 mb-3">
             <AlertTriangle className="h-5 w-5 text-accent" />
-            <h4 className="font-semibold text-accent">Alerts</h4>
+            <h4 className="font-semibold text-accent">{t('alerts')}</h4>
           </div>
           <div className="space-y-2">
             {weather.alerts.map((alert, index) => (

@@ -40,6 +40,10 @@ const translations = {
     temperature: "Temperature",
     humidity: "Humidity",
     rainfall: "Rainfall",
+    wind: "Wind",
+    todayWeather: "Today's Weather",
+    partlyCloudy: "Partly Cloudy",
+    alerts: "Alerts",
     
     // Calendar
     calendarTitle: "Crop Calendar",
@@ -75,6 +79,10 @@ const translations = {
     temperature: "താപനില",
     humidity: "ആർദ്രത",
     rainfall: "മഴ",
+    wind: "കാറ്റ്",
+    todayWeather: "ഇന്നത്തെ കാലാവസ്ഥ",
+    partlyCloudy: "ഭാഗികമായി മേഘാവൃതം",
+    alerts: "മുന്നറിയിപ്പുകൾ",
     
     // Calendar
     calendarTitle: "വിള കലണ്ടർ",
