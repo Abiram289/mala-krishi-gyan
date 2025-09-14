@@ -59,7 +59,7 @@ const AppContent = () => {
           <div className="text-center py-12">
             <Calendar className="h-16 w-16 text-primary mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">{t('calendarTitle')}</h3>
-            <p className="text-muted-foreground">Crop calendar feature coming soon...</p>
+            <p className="text-muted-foreground">{t('comingSoon')}</p>
           </div>
         );
       case 'schemes':
@@ -67,7 +67,7 @@ const AppContent = () => {
           <div className="text-center py-12">
             <Building className="h-16 w-16 text-primary mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">{t('schemes')}</h3>
-            <p className="text-muted-foreground">Government schemes information coming soon...</p>
+            <p className="text-muted-foreground">{t('comingSoon')}</p>
           </div>
         );
       default:

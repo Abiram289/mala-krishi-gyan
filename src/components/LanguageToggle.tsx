@@ -15,7 +15,7 @@ const translations = {
     // Navigation
     home: "Home",
     chat: "AI Assistant",
-    activities: "Activities",
+    activities: "Activities", 
     weather: "Weather",
     calendar: "Crop Calendar",
     schemes: "Gov Schemes",
@@ -24,6 +24,10 @@ const translations = {
     welcome: "Welcome to Kerala Farming Assistant",
     subtitle: "Your AI-powered farming companion for better harvests",
     getStarted: "Get Started",
+    
+    // Common
+    loading: "Loading...",
+    comingSoon: "Coming soon...",
     
     // Chat
     chatTitle: "AI Farming Assistant",
@@ -53,7 +57,7 @@ const translations = {
   ml: {
     // Navigation - Malayalam
     home: "ഹോം",
-    chat: "AI സഹായി",
+    chat: "AI സഹായി", 
     activities: "പ്രവർത്തനങ്ങൾ",
     weather: "കാലാവസ്ഥ",
     calendar: "വിള കലണ്ടർ",
@@ -63,6 +67,10 @@ const translations = {
     welcome: "കേരള കൃഷി സഹായിയിലേക്ക് സ്വാഗതം",
     subtitle: "മികച്ച വിളവിനായി നിങ്ങളുടെ AI കൃഷി സഹയാത്രി",
     getStarted: "ആരംഭിക്കുക",
+    
+    // Common
+    loading: "ലോഡിംഗ്...",
+    comingSoon: "ഉടൻ വരുന്നു...",
     
     // Chat
     chatTitle: "AI കൃഷി സഹായി",
@@ -92,14 +100,22 @@ const translations = {
 };
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<'en' | 'ml'>('en');
+  const [language, setLanguage] = useState<'en' | 'ml'>(() => {
+    // Get language from localStorage or default to 'en'
+    return (localStorage.getItem('kerala-krishi-lang') as 'en' | 'ml') || 'en';
+  });
   
   const t = (key: string): string => {
     return translations[language][key as keyof typeof translations['en']] || key;
   };
 
+  const handleLanguageChange = (newLang: 'en' | 'ml') => {
+    setLanguage(newLang);
+    localStorage.setItem('kerala-krishi-lang', newLang);
+  };
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage: handleLanguageChange, t }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -121,10 +137,10 @@ export const LanguageToggle = () => {
       variant="outline"
       size="sm"
       onClick={() => setLanguage(language === 'en' ? 'ml' : 'en')}
-      className="flex items-center gap-2 bg-primary-light/10 border-primary-light text-primary hover:bg-primary-light hover:text-primary-foreground"
+      className="flex items-center gap-2 bg-primary-light/10 border-primary-light text-primary hover:bg-primary-light hover:text-primary-foreground min-w-[100px] justify-center"
     >
-      <Globe className="h-4 w-4" />
-      {language === 'en' ? 'മലയാളം' : 'English'}
+      <Globe className="h-4 w-4 flex-shrink-0" />
+      <span className="truncate">{language === 'en' ? 'മലയാളം' : 'English'}</span>
     </Button>
   );
 };
