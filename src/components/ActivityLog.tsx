@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Clock, Plus, Sprout, Droplets, Bug, Scissors } from "lucide-react";
 import { useLanguage } from "./LanguageToggle";
 
@@ -16,7 +19,7 @@ interface Activity {
 
 export const ActivityLog = () => {
   const { t } = useLanguage();
-  const [activities] = useState<Activity[]>([
+  const [activities, setActivities] = useState<Activity[]>([
     {
       id: '1',
       title: 'Plant rice seedlings',
@@ -75,21 +78,94 @@ export const ActivityLog = () => {
     }
   };
 
+  const [newActivity, setNewActivity] = useState({
+    title: '',
+    type: 'planting' as Activity['type'],
+    date: new Date().toISOString().split('T')[0]
+  });
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
   const todayActivities = activities.filter(activity => {
     const today = new Date();
     const activityDate = new Date(activity.date);
     return activityDate.toDateString() === today.toDateString();
   });
 
+  const handleAddActivity = () => {
+    if (newActivity.title.trim()) {
+      const activity: Activity = {
+        id: Date.now().toString(),
+        title: newActivity.title,
+        type: newActivity.type,
+        status: 'scheduled',
+        date: new Date(newActivity.date)
+      };
+      setActivities([...activities, activity]);
+      setNewActivity({
+        title: '',
+        type: 'planting',
+        date: new Date().toISOString().split('T')[0]
+      });
+      setIsAddDialogOpen(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <h3 className="text-xl font-semibold text-card-foreground">{t('activitiesTitle')}</h3>
-          <Button size="sm" className="bg-primary hover:bg-primary-light">
-            <Plus className="h-4 w-4 mr-2" />
-            {t('addActivity')}
-          </Button>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" className="bg-primary hover:bg-primary-light flex-shrink-0 w-full sm:w-auto">
+                <Plus className="h-4 w-4 mr-2" />
+                {t('addActivity')}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>{t('addActivity')}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Activity Title</label>
+                  <Input
+                    placeholder="Enter activity title..."
+                    value={newActivity.title}
+                    onChange={(e) => setNewActivity({...newActivity, title: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Type</label>
+                  <Select 
+                    value={newActivity.type} 
+                    onValueChange={(value: Activity['type']) => setNewActivity({...newActivity, type: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select activity type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="planting">Planting</SelectItem>
+                      <SelectItem value="watering">Watering</SelectItem>
+                      <SelectItem value="fertilizing">Fertilizing</SelectItem>
+                      <SelectItem value="harvesting">Harvesting</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Date</label>
+                  <Input
+                    type="date"
+                    value={newActivity.date}
+                    onChange={(e) => setNewActivity({...newActivity, date: e.target.value})}
+                  />
+                </div>
+                <Button onClick={handleAddActivity} className="w-full">
+                  Add Activity
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {todayActivities.length > 0 && (

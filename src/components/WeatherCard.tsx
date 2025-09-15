@@ -20,7 +20,7 @@ export const WeatherCard = () => {
     humidity: 75,
     condition: 'cloudy',
     windSpeed: 12,
-    alerts: ['Heavy rain expected tomorrow', 'Pest activity high due to humidity']
+    alerts: [t('heavyRainAlert'), t('pestActivityAlert')]
   };
 
   const getWeatherIcon = (condition: string) => {

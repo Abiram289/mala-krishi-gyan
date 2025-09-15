@@ -52,7 +52,11 @@ const translations = {
     // Calendar
     calendarTitle: "Crop Calendar",
     plantingSeason: "Planting Season",
-    harvestSeason: "Harvest Season"
+    harvestSeason: "Harvest Season",
+    
+    // Weather alerts
+    heavyRainAlert: "Heavy rain expected tomorrow",
+    pestActivityAlert: "Pest activity high due to humidity"
   },
   ml: {
     // Navigation - Malayalam
@@ -95,7 +99,11 @@ const translations = {
     // Calendar
     calendarTitle: "വിള കലണ്ടർ",
     plantingSeason: "വിതയൽ കാലം",
-    harvestSeason: "വിളവെടുപ്പ് കാലം"
+    harvestSeason: "വിളവെടുപ്പ് കാലം",
+    
+    // Weather alerts
+    heavyRainAlert: "നാളെ കനത്ത മഴ പ്രതീക്ഷിക്കുന്നു",
+    pestActivityAlert: "ആർദ്രത കാരണം കീട പ്രവർത്തനം കൂടുതൽ"
   }
 };
 
