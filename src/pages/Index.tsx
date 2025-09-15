@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle, Activity, CloudSun, Calendar, Building, Sprout } from "lucide-react";
+import { MessageCircle, Activity, CloudSun, Calendar, Building, Sprout, MessageSquare, Cloud, FileText, Users } from "lucide-react";
 import { LanguageProvider, LanguageToggle, useLanguage } from "@/components/LanguageToggle";
 import { NavigationCard } from "@/components/NavigationCard";
 import { ChatInterface } from "@/components/ChatInterface";
@@ -7,7 +7,7 @@ import { ActivityLog } from "@/components/ActivityLog";
 import { WeatherCard } from "@/components/WeatherCard";
 import heroImage from "@/assets/kerala-farm-hero.jpg";
 
-type ViewType = 'home' | 'chat' | 'activities' | 'weather' | 'calendar' | 'schemes';
+type ViewType = 'home' | 'chat' | 'activities' | 'weather' | 'calendar' | 'schemes' | 'community';
 
 const AppContent = () => {
   const { t } = useLanguage();
@@ -90,21 +90,47 @@ const AppContent = () => {
 
             {/* Navigation Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {navigationItems.map((item) => {
-                console.log('Rendering navigation item:', item.title, item.key); // Debug log
-                return (
-                  <NavigationCard
-                    key={item.key}
-                    icon={item.icon}
-                    title={item.title}
-                    onClick={() => {
-                      console.log('Navigation clicked:', item.key); // Debug log
-                      setCurrentView(item.key);
-                    }}
-                    gradient={item.gradient}
-                  />
-                );
-              })}
+              <NavigationCard
+                icon={MessageCircle}
+                title={t('chat')}
+                onClick={() => setCurrentView('chat')}
+                gradient={false}
+              />
+              
+              <NavigationCard
+                icon={Activity}
+                title={t('activities')}
+                onClick={() => setCurrentView('activities')}
+                gradient={false}
+              />
+              
+              <NavigationCard
+                icon={CloudSun}
+                title={t('weather')}
+                onClick={() => setCurrentView('weather')}
+                gradient={false}
+              />
+              
+              <NavigationCard
+                icon={Calendar}
+                title={t('calendar')}
+                href="/crop-calendar"
+                gradient={false}
+              />
+              
+              <NavigationCard
+                icon={Building}
+                title={t('schemes')}
+                href="/government-schemes"
+                gradient={false}
+              />
+              
+              <NavigationCard
+                icon={Users}
+                title="Community"
+                onClick={() => setCurrentView('community')}
+                gradient={false}
+              />
             </div>
 
             {/* Quick Weather Summary */}

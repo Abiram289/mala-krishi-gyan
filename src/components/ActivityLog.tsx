@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle, Clock, Plus, Sprout, Droplets, Bug, Scissors } from "lucide-react";
+import { CheckCircle, Clock, Plus, Sprout, Droplets, Bug, Scissors, Mic, MicOff, Volume2 } from "lucide-react";
 import { useLanguage } from "./LanguageToggle";
+import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { useToast } from "@/hooks/use-toast";
 
 interface Activity {
   id: string;
@@ -84,6 +87,21 @@ export const ActivityLog = () => {
     date: new Date().toISOString().split('T')[0]
   });
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const { toast } = useToast();
+  const { 
+    transcript, 
+    isListening, 
+    startListening, 
+    stopListening, 
+    resetTranscript, 
+    browserSupportsSpeechRecognition 
+  } = useSpeechRecognition();
+  const { speak } = useSpeechSynthesis();
+
+  // Update activity title when transcript changes
+  if (transcript && transcript !== newActivity.title) {
+    setNewActivity(prev => ({ ...prev, title: transcript }));
+  }
 
   const todayActivities = activities.filter(activity => {
     const today = new Date();
@@ -101,12 +119,39 @@ export const ActivityLog = () => {
         date: new Date(newActivity.date)
       };
       setActivities([...activities, activity]);
+      
+      // Announce success in the user's selected language
+      const { language } = useLanguage();
+      const successMessage = language === 'ml' 
+        ? `${newActivity.title} പ്രവർത്തനം വിജയകരമായി ചേർക്കപ്പെട്ടു`
+        : `Activity ${newActivity.title} added successfully`;
+      
+      speak(successMessage, language);
+      
+      toast({
+        title: language === 'ml' ? "പ്രവർത്തനം ചേർക്കപ്പെട്ടു" : "Activity Added",
+        description: language === 'ml' 
+          ? "നിങ്ങളുടെ പ്രവർത്തനം വിജയകരമായി ചേർക്കപ്പെട്ടു" 
+          : "Your activity has been added successfully",
+      });
+
       setNewActivity({
         title: '',
         type: 'planting',
         date: new Date().toISOString().split('T')[0]
       });
+      resetTranscript();
       setIsAddDialogOpen(false);
+    }
+  };
+
+  const handleVoiceInput = () => {
+    const { language } = useLanguage();
+    if (isListening) {
+      stopListening();
+    } else {
+      resetTranscript();
+      startListening(language);
     }
   };
 
@@ -129,11 +174,32 @@ export const ActivityLog = () => {
               <div className="space-y-4 pt-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Activity Title</label>
-                  <Input
-                    placeholder="Enter activity title..."
-                    value={newActivity.title}
-                    onChange={(e) => setNewActivity({...newActivity, title: e.target.value})}
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter activity title..."
+                      value={newActivity.title}
+                      onChange={(e) => setNewActivity({...newActivity, title: e.target.value})}
+                      className="flex-1"
+                    />
+                    {browserSupportsSpeechRecognition && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleVoiceInput}
+                        className={`px-3 ${isListening ? 'bg-destructive text-destructive-foreground' : ''}`}
+                        title={isListening ? 'Stop recording' : 'Start voice input'}
+                      >
+                        {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                      </Button>
+                    )}
+                  </div>
+                  {isListening && (
+                    <p className="text-sm text-primary animate-pulse">🎙️ Listening... Speak now</p>
+                  )}
+                  {transcript && (
+                    <p className="text-sm text-muted-foreground">Detected: "{transcript}"</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Type</label>

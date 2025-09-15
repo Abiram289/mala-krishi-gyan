@@ -54,9 +54,13 @@ const translations = {
     plantingSeason: "Planting Season",
     harvestSeason: "Harvest Season",
     
+    
     // Weather alerts
     heavyRainAlert: "Heavy rain expected tomorrow",
-    pestActivityAlert: "Pest activity high due to humidity"
+    pestActivityAlert: "Pest activity high due to humidity",
+    
+    // Common navigation
+    back: "Back"
   },
   ml: {
     // Navigation - Malayalam
@@ -103,7 +107,10 @@ const translations = {
     
     // Weather alerts
     heavyRainAlert: "നാളെ കനത്ത മഴ പ്രതീക്ഷിക്കുന്നു",
-    pestActivityAlert: "ആർദ്രത കാരണം കീട പ്രവർത്തനം കൂടുതൽ"
+    pestActivityAlert: "ആർദ്രത കാരണം കീട പ്രവർത്തനം കൂടുതൽ",
+    
+    // Common navigation
+    back: "തിരികെ"
   }
 };
 

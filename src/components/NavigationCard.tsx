@@ -1,11 +1,13 @@
 import { Card } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface NavigationCardProps {
   icon: LucideIcon;
   title: string;
   description?: string;
-  onClick: () => void;
+  onClick?: () => void;
+  href?: string;
   gradient?: boolean;
 }
 
@@ -14,9 +16,10 @@ export const NavigationCard = ({
   title, 
   description, 
   onClick, 
+  href,
   gradient = false 
 }: NavigationCardProps) => {
-  return (
+  const cardContent = (
     <Card 
       className={`p-3 sm:p-4 cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 border-2 min-h-[120px] flex-1 ${
         gradient 
@@ -29,7 +32,7 @@ export const NavigationCard = ({
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          onClick();
+          onClick?.();
         }
       }}
     >
@@ -66,4 +69,10 @@ export const NavigationCard = ({
       </div>
     </Card>
   );
+
+  if (href) {
+    return <Link to={href}>{cardContent}</Link>;
+  }
+
+  return cardContent;
 };
