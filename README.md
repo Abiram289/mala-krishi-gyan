@@ -1,18 +1,9 @@
-# Welcome to your Lovable project
-
-## Project info
-
-**URL**: https://lovable.dev/projects/2ef2821e-d28d-466b-9250-1c4d0798b5f1
+# Kerala Krishi - AI Farming Assistant
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/2ef2821e-d28d-466b-9250-1c4d0798b5f1) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
 
 **Use your preferred IDE**
 
@@ -62,12 +53,5 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/2ef2821e-d28d-466b-9250-1c4d0798b5f1) and click on Share -> Publish.
+To deploy this project, build the application using `npm run build` and then upload the contents of the generated `dist` folder to your hosting provider.
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
