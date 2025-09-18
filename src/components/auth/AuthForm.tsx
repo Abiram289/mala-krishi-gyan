@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,7 @@ const AuthForm: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSignUp = async (authMethod: 'email' | 'phone') => {
     setLoading(true);
@@ -55,7 +57,7 @@ const AuthForm: React.FC = () => {
         title: 'Success',
         description: 'Signed up successfully!',
       });
-      // Since email confirmation is off, you can redirect or update UI immediately
+      navigate('/'); // Redirect to home page
     }
     setLoading(false);
   };
@@ -75,7 +77,7 @@ const AuthForm: React.FC = () => {
         title: 'Success',
         description: 'Signed in successfully!',
       });
-      // Optionally redirect or update UI
+      navigate('/'); // Redirect to home page
     }
     setLoading(false);
   };
