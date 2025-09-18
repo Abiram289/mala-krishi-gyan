@@ -272,7 +272,7 @@ export default function GovernmentSchemes() {
         </div>
 
         <Dialog open={isEnrollDialogOpen} onOpenChange={setIsEnrollDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="w-[90vw] sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle>
                 {language === 'ml' ? 'പദ്ധതിയിൽ അപേക്ഷിക്കുക' : 'Apply for Scheme'}

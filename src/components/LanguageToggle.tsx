@@ -24,6 +24,12 @@ const translations = {
     welcome: "Welcome to Kerala Farming Assistant",
     subtitle: "Your AI-powered farming companion for better harvests",
     getStarted: "Get Started",
+    howToUseTitle: "How to Use This Platform",
+    instruction1: "Use the AI Assistant to get instant answers to your farming questions.",
+    instruction2: "Track your farm activities and set reminders in the Activities section.",
+    instruction3: "Check real-time weather updates and alerts relevant to your farm.",
+    instruction4: "Plan your crops with the Crop Calendar, optimized for Kerala's climate.",
+    instruction5: "Discover and apply for government schemes and subsidies for farmers.",
     
     // Common
     loading: "Loading...",
@@ -75,6 +81,12 @@ const translations = {
     welcome: "കേരള കൃഷി സഹായിയിലേക്ക് സ്വാഗതം",
     subtitle: "മികച്ച വിളവിനായി നിങ്ങളുടെ AI കൃഷി സഹയാത്രി",
     getStarted: "ആരംഭിക്കുക",
+    howToUseTitle: "ഈ പ്ലാറ്റ്ഫോം എങ്ങനെ ഉപയോഗിക്കാം",
+    instruction1: "നിങ്ങളുടെ കാർഷിക ചോദ്യങ്ങൾക്ക് തൽക്ഷണ ഉത്തരങ്ങൾ ലഭിക്കാൻ AI അസിസ്റ്റന്റ് ഉപയോഗിക്കുക.",
+    instruction2: "പ്രവർത്തനങ്ങൾ വിഭാഗത്തിൽ നിങ്ങളുടെ കാർഷിക പ്രവർത്തനങ്ങൾ ട്രാക്ക് ചെയ്യുകയും ഓർമ്മപ്പെടുത്തലുകൾ സജ്ജീകരിക്കുകയും ചെയ്യുക.",
+    instruction3: "നിങ്ങളുടെ കൃഷിയിടത്തിന് പ്രസക്തമായ തത്സമയ കാലാവസ്ഥാ അപ്‌ഡേറ്റുകളും മുന്നറിയിപ്പുകളും പരിശോധിക്കുക.",
+    instruction4: "കേരളത്തിലെ കാലാവസ്ഥയ്ക്ക് അനുയോജ്യമായ വിള കലണ്ടർ ഉപയോഗിച്ച് നിങ്ങളുടെ വിളകൾ ആസൂത്രണം ചെയ്യുക.",
+    instruction5: "കർഷകർക്കുള്ള സർക്കാർ പദ്ധതികളും സബ്സിഡികളും കണ്ടെത്തുകയും അപേക്ഷിക്കുകയും ചെയ്യുക.",
     
     // Common
     loading: "ലോഡിംഗ്...",

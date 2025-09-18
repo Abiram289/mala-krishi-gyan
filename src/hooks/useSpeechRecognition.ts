@@ -10,6 +10,11 @@ interface SpeechRecognitionError extends Event {
   message: string;
 }
 
+interface WindowWithSpeechRecognition extends Window {
+  SpeechRecognition: typeof SpeechRecognition;
+  webkitSpeechRecognition: typeof SpeechRecognition;
+}
+
 interface SpeechRecognitionHook {
   transcript: string;
   isListening: boolean;
@@ -22,7 +27,7 @@ interface SpeechRecognitionHook {
 export const useSpeechRecognition = (): SpeechRecognitionHook => {
   const [transcript, setTranscript] = useState('');
   const [isListening, setIsListening] = useState(false);
-  const [recognition, setRecognition] = useState<any>(null);
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
 
   const browserSupportsSpeechRecognition = typeof window !== 'undefined' && 
     ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
@@ -30,7 +35,7 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
   useEffect(() => {
     if (!browserSupportsSpeechRecognition) return;
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = (window as WindowWithSpeechRecognition).SpeechRecognition || (window as WindowWithSpeechRecognition).webkitSpeechRecognition;
     const recognitionInstance = new SpeechRecognition();
     
     recognitionInstance.continuous = false;

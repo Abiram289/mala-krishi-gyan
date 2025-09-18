@@ -21,7 +21,7 @@ interface Activity {
 }
 
 export const ActivityLog = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [activities, setActivities] = useState<Activity[]>([
     {
       id: '1',
@@ -121,7 +121,6 @@ export const ActivityLog = () => {
       setActivities([...activities, activity]);
       
       // Announce success in the user's selected language
-      const { language } = useLanguage();
       const successMessage = language === 'ml' 
         ? `${newActivity.title} പ്രവർത്തനം വിജയകരമായി ചേർക്കപ്പെട്ടു`
         : `Activity ${newActivity.title} added successfully`;
@@ -146,7 +145,6 @@ export const ActivityLog = () => {
   };
 
   const handleVoiceInput = () => {
-    const { language } = useLanguage();
     if (isListening) {
       stopListening();
     } else {
@@ -157,7 +155,7 @@ export const ActivityLog = () => {
 
   return (
     <div className="space-y-4">
-      <Card className="p-6">
+      <Card className="p-6 max-w-4xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <h3 className="text-xl font-semibold text-card-foreground">{t('activitiesTitle')}</h3>
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -167,7 +165,7 @@ export const ActivityLog = () => {
                 {t('addActivity')}
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="w-[90vw] sm:max-w-[425px]">
               <DialogHeader>
                 <DialogTitle>{t('addActivity')}</DialogTitle>
               </DialogHeader>
@@ -261,7 +259,7 @@ export const ActivityLog = () => {
         <div className="space-y-3">
           <h4 className="font-medium text-primary">All Activities</h4>
           {activities.map(activity => (
-            <Card key={activity.id} className="p-4 border-primary/10">
+            <Card key={activity.id} className="p-4 border-l-4 border-l-primary">
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3">
                   <div className="text-primary mt-1">
