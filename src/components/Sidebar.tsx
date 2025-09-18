@@ -1,7 +1,6 @@
 
 import { Link } from "react-router-dom";
 import { Home, User, MessageSquare, ListChecks, Cloud, Calendar, Award, Users, Bell } from "lucide-react";
-import Auth from "@/components/auth/Auth";
 
 export const Sidebar = () => {
   return (
@@ -10,7 +9,6 @@ export const Sidebar = () => {
         <Link to="/">
           <h1 className="text-2xl font-bold text-sidebar-primary">Kerala Krishi</h1>
         </Link>
-        <Auth />
       </div>
       <nav className="flex-1 space-y-2">
         <Link to="/" className="flex items-center p-2 rounded-md hover:bg-sidebar-accent">

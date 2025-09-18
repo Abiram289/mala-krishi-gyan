@@ -1,16 +1,15 @@
 
-import { UserProfile } from "@clerk/clerk-react";
-import FarmProfileForm from "@/components/FarmProfileForm";
+import { useAuth } from "@/App";
 
 function Profile() {
+  const { user } = useAuth();
+
   return (
-    <div className="flex flex-col lg:flex-row justify-center items-start gap-8 p-8">
-      <div className="w-full lg:w-1/2">
-        <UserProfile />
-      </div>
-      <div className="w-full lg:w-1/2">
-        <FarmProfileForm />
-      </div>
+    <div className="space-y-6 p-6">
+      <h1 className="text-3xl font-bold">Profile</h1>
+      <p>Welcome, {user?.email}!</p>
+      <p>This is your profile page. You can display and edit user information here.</p>
+      {/* You will build your custom profile display here using Supabase user data */}
     </div>
   );
 }
