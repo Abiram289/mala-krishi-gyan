@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+supabase
+pyjwt
+cryptography
+google-generativeai
+requests

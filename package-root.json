@@ -1,0 +1,31 @@
+{
+  "name": "kerala-krishi-full-stack",
+  "version": "1.0.0",
+  "description": "AI-Powered Personal Farming Assistant for Kerala Farmers - Full Stack Application",
+  "scripts": {
+    "install:all": "npm install && cd backend && pip install -r requirements.txt",
+    "dev:frontend": "npm run dev",
+    "dev:backend": "cd backend && python start_server.py",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:frontend": "npm run build",
+    "start:backend": "cd backend && python start_server.py",
+    "start:frontend": "npm run preview",
+    "api:docs": "start http://localhost:8081/docs"
+  },
+  "keywords": [
+    "agriculture",
+    "farming",
+    "kerala",
+    "ai",
+    "voice-interface",
+    "malayalam",
+    "fastapi",
+    "react",
+    "typescript"
+  ],
+  "author": "Team Kerala Krishi",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
