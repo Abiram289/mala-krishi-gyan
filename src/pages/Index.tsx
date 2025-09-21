@@ -1,11 +1,39 @@
+import { useState, useEffect } from "react";
 import { MessageCircle, Activity, CloudSun, Calendar, Building, Users } from "lucide-react";
 import { useLanguage } from "@/components/LanguageToggle";
 import { NavigationCard } from "@/components/NavigationCard";
 import heroImage from "@/assets/kerala-farm-hero.jpg";
 import { Card } from "@/components/ui/card";
+import { fetchWeatherData } from "@/lib/weatherService";
+import { useAuth } from "@/App";
 
 const Index = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const { profile } = useAuth();
+  const [weatherSummary, setWeatherSummary] = useState<{ temp: number; condition: string; humidity: number } | null>(null);
+
+  useEffect(() => {
+    const loadWeatherSummary = async () => {
+      try {
+        const weatherData = await fetchWeatherData(undefined, undefined, language);
+        setWeatherSummary({
+          temp: weatherData.temperature,
+          condition: weatherData.description,
+          humidity: weatherData.humidity
+        });
+      } catch (error) {
+        console.error('Failed to load weather summary:', error);
+        // Keep default values
+        setWeatherSummary({
+          temp: 28,
+          condition: language === 'ml' ? 'ഭാഗികമായി മേഘാവൃതം' : 'Partly cloudy',
+          humidity: 75
+        });
+      }
+    };
+
+    loadWeatherSummary();
+  }, [language]);
 
   return (
     <div className="space-y-8">
@@ -75,7 +103,7 @@ const Index = () => {
         
         <NavigationCard
           icon={Users}
-          title="Community"
+          title={t('community')}
           href="/community"
           gradient={false}
         />
@@ -88,12 +116,14 @@ const Index = () => {
             <CloudSun className="h-8 w-8 text-primary" />
             <div>
               <p className="font-semibold">{t('todayWeather')}</p>
-              <p className="text-sm text-muted-foreground">28°C, {t('partlyCloudy')}</p>
+              <p className="text-sm text-muted-foreground">
+                {weatherSummary ? `${weatherSummary.temp}°C, ${weatherSummary.condition}` : `28°C, ${t('partlyCloudy')}`}
+              </p>
             </div>
           </div>
           <div className="text-right">
             <p className="text-sm text-muted-foreground">{t('humidity')}</p>
-            <p className="font-semibold">75%</p>
+            <p className="font-semibold">{weatherSummary ? `${weatherSummary.humidity}%` : '75%'}</p>
           </div>
         </div>
       </div>

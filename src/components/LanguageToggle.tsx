@@ -65,8 +65,54 @@ const translations = {
     heavyRainAlert: "Heavy rain expected tomorrow",
     pestActivityAlert: "Pest activity high due to humidity",
     
-    // Common navigation
-    back: "Back"
+    // Navigation & Common
+    back: "Back",
+    signOut: "Sign Out",
+    profile: "Profile",
+    community: "Community",
+    notifications: "Notifications",
+    
+    // Profile page
+    profileTitle: "Profile",
+    welcomeProfile: "Welcome",
+    viewUpdateDetails: "View and update your farm details below.",
+    farmDetails: "Farm Details",
+    personalInfo: "Personal Information",
+    fullName: "Full Name",
+    username: "Username",
+    email: "Email",
+    farmSize: "Farm Size (acres)",
+    location: "Location",
+    soilType: "Soil Type",
+    saveProfile: "Save Profile",
+    
+    // Government Schemes
+    schemesTitle: "Government Schemes",
+    availableSchemes: "Available Schemes",
+    schemeDetails: "Scheme Details",
+    eligibility: "Eligibility",
+    apply: "Apply",
+    
+    // Community
+    communityTitle: "Community",
+    discussionForum: "Discussion Forum",
+    askQuestion: "Ask a Question",
+    recentDiscussions: "Recent Discussions",
+    
+    // Notifications
+    notificationsTitle: "Notifications",
+    allNotifications: "All Notifications",
+    markAsRead: "Mark as Read",
+    
+    // Error messages
+    error: "Error",
+    tryAgain: "Try Again",
+    networkError: "Network Error",
+    
+    // Success messages
+    success: "Success",
+    saved: "Saved",
+    updated: "Updated"
   },
   ml: {
     // Navigation - Malayalam
@@ -121,8 +167,54 @@ const translations = {
     heavyRainAlert: "നാളെ കനത്ത മഴ പ്രതീക്ഷിക്കുന്നു",
     pestActivityAlert: "ആർദ്രത കാരണം കീട പ്രവർത്തനം കൂടുതൽ",
     
-    // Common navigation
-    back: "തിരികെ"
+    // Navigation & Common
+    back: "തിരികെ",
+    signOut: "സൈൻ ഔട്ട്",
+    profile: "പ്രൊഫൈൽ",
+    community: "കമ്മ്യൂണിറ്റി",
+    notifications: "അറിയിപ്പുകൾ",
+    
+    // Profile page
+    profileTitle: "പ്രൊഫൈൽ",
+    welcomeProfile: "സ്വാഗതം",
+    viewUpdateDetails: "നിങ്ങളുടെ കൃഷിയിടത്തിന്റെ വിശദാംശങ്ങൾ കാണുകയും അപ്‌ഡേറ്റ് ചെയ്യുകയും ചെയ്യുക.",
+    farmDetails: "കൃഷിയിടത്തിന്റെ വിശദാംശങ്ങൾ",
+    personalInfo: "വ്യക്തിഗത വിവരങ്ങൾ",
+    fullName: "പൂർണ്ണ നാമം",
+    username: "ഉപയോക്തൃനാമം",
+    email: "ഇമെയിൽ",
+    farmSize: "കൃഷിയിടത്തിന്റെ വലുപ്പം (ഏക്കർ)",
+    location: "സ്ഥലം",
+    soilType: "മണ്ണിന്റെ തരം",
+    saveProfile: "പ്രൊഫൈൽ സേവ് ചെയ്യുക",
+    
+    // Government Schemes
+    schemesTitle: "സർക്കാർ പദ്ധതികൾ",
+    availableSchemes: "ലഭ്യമായ പദ്ധതികൾ",
+    schemeDetails: "പദ്ധതിയുടെ വിശദാംശങ്ങൾ",
+    eligibility: "യോഗ്യത",
+    apply: "അപേക്ഷിക്കുക",
+    
+    // Community
+    communityTitle: "കമ്മ്യൂണിറ്റി",
+    discussionForum: "ചർച്ചാ വേദി",
+    askQuestion: "ഒരു ചോദ്യം ചോദിക്കുക",
+    recentDiscussions: "സമീപകാല ചർച്ചകൾ",
+    
+    // Notifications
+    notificationsTitle: "അറിയിപ്പുകൾ",
+    allNotifications: "എല്ലാ അറിയിപ്പുകളും",
+    markAsRead: "വായിച്ചതായി അടയാളപ്പെടുത്തുക",
+    
+    // Error messages
+    error: "പിശക്",
+    tryAgain: "വീണ്ടും ശ്രമിക്കുക",
+    networkError: "നെറ്റ്‌വർക്ക് പിശക്",
+    
+    // Success messages
+    success: "വിജയം",
+    saved: "സേവ് ചെയ്തു",
+    updated: "അപ്‌ഡേറ്റ് ചെയ്തു"
   }
 };
 

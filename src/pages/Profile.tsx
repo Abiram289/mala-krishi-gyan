@@ -1,15 +1,20 @@
 
 import { useAuth } from "@/App";
+import FarmProfileForm from "@/components/FarmProfileForm";
+import { useLanguage } from "@/components/LanguageToggle";
 
 function Profile() {
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   return (
-    <div className="space-y-6 p-6">
-      <h1 className="text-3xl font-bold">Profile</h1>
-      <p>Welcome, {user?.email}!</p>
-      <p>This is your profile page. You can display and edit user information here.</p>
-      {/* You will build your custom profile display here using Supabase user data */}
+    <div className="space-y-6 p-4 md:p-6 flex flex-col items-center">
+      <div className="space-y-2 text-center">
+        <h1 className="text-3xl font-bold">{t('profileTitle')}</h1>
+        <p className="text-gray-500 dark:text-gray-400">{t('welcomeProfile')}, {user?.email}!</p>
+        <p>{t('viewUpdateDetails')}</p>
+      </div>
+      <FarmProfileForm />
     </div>
   );
 }
