@@ -61,6 +61,19 @@ class ProfileUpdate(BaseModel):
     location: str | None = None
     soil_type: str | None = None
 
+class ActivityCreate(BaseModel):
+    title: str
+    type: str  # 'planting', 'watering', 'fertilizing', 'harvesting'
+    date: str  # ISO date string
+    notes: str | None = None
+
+class ActivityUpdate(BaseModel):
+    title: str | None = None
+    type: str | None = None
+    status: str | None = None  # 'completed', 'pending', 'scheduled'
+    date: str | None = None
+    notes: str | None = None
+
 
 # ------------------------
 # Auth Helper
@@ -101,64 +114,95 @@ def root():
 
 @app.get("/profile")
 def get_profile(user=Depends(get_current_user)):
-    """Returns the authenticated user's profile."""
-    # For now, return user info from auth metadata until we set up proper profiles table
-    user_meta = user.user_metadata or {}
-    return {
-        "id": user.id,
-        "email": user.email,
-        "username": user_meta.get("username") or user_meta.get("full_name"),
-        "full_name": user_meta.get("full_name"),
-        "avatar_url": user_meta.get("avatar_url"),
-        "farm_size": user_meta.get("farm_size"),
-        "location": user_meta.get("location"),
-        "soil_type": user_meta.get("soil_type")
-    }
+    """Returns the authenticated user's profile from the profiles table."""
+    try:
+        # Get profile from user_profiles table
+        profile_response = supabase.table("user_profiles").select("*").eq("user_id", user.id).execute()
+        
+        # Get username from auth metadata as fallback
+        user_meta = user.user_metadata or {}
+        username = user_meta.get("username") or user_meta.get("full_name")
+        
+        if profile_response.data:
+            # Profile exists in database
+            profile = profile_response.data[0]
+            return {
+                "id": user.id,
+                "email": user.email,
+                "username": username,
+                "full_name": profile.get("full_name"),
+                "avatar_url": None,  # We'll add this later if needed
+                "farm_size": float(profile.get("farm_size")) if profile.get("farm_size") else None,
+                "location": profile.get("location"),
+                "soil_type": profile.get("soil_type")
+            }
+        else:
+            # No profile exists yet, return basic info
+            return {
+                "id": user.id,
+                "email": user.email,
+                "username": username,
+                "full_name": None,
+                "avatar_url": None,
+                "farm_size": None,
+                "location": None,
+                "soil_type": None
+            }
+    except Exception as e:
+        print(f"Error fetching profile: {type(e).__name__} - {e}")
+        # Return basic user info on error
+        user_meta = user.user_metadata or {}
+        return {
+            "id": user.id,
+            "email": user.email,
+            "username": user_meta.get("username") or user_meta.get("full_name"),
+            "full_name": None,
+            "avatar_url": None,
+            "farm_size": None,
+            "location": None,
+            "soil_type": None
+        }
 
 
 @app.patch("/profile")
 @app.put("/profile")
 def update_profile(profile_data: ProfileUpdate, user=Depends(get_current_user)):
-    """Updates the authenticated user's profile using Supabase auth metadata."""
+    """Updates the authenticated user's profile in the profiles table."""
+    print(f"\n🔄 PROFILE UPDATE ENDPOINT CALLED FOR USER: {user.id}")
+    print(f"📥 Received profile data: {profile_data}")
+    
     try:
-        # Prepare user metadata update
-        current_metadata = user.user_metadata or {}
-        
-        # Update only provided fields
-        if profile_data.username is not None:
-            current_metadata["username"] = profile_data.username
+        # Prepare profile data for database
+        update_data = {}
         if profile_data.full_name is not None:
-            current_metadata["full_name"] = profile_data.full_name
-        if profile_data.avatar_url is not None:
-            current_metadata["avatar_url"] = profile_data.avatar_url
+            update_data["full_name"] = profile_data.full_name
         if profile_data.farm_size is not None:
-            current_metadata["farm_size"] = profile_data.farm_size
+            update_data["farm_size"] = profile_data.farm_size
         if profile_data.location is not None:
-            current_metadata["location"] = profile_data.location
+            update_data["location"] = profile_data.location
         if profile_data.soil_type is not None:
-            current_metadata["soil_type"] = profile_data.soil_type
-
-        # Update user metadata in Supabase Auth
-        result = supabase.auth.admin.update_user_by_id(
-            user.id,
-            {"user_metadata": current_metadata}
-        )
+            update_data["soil_type"] = profile_data.soil_type
+        
+        print(f"💾 Upserting profile data: {update_data}")
+        
+        # Use upsert to insert or update profile
+        result = supabase.table("user_profiles").upsert({
+            "user_id": user.id,
+            **update_data
+        }, on_conflict="user_id").execute()
+        
+        print(f"✅ Profile upsert successful: {result.data}")
         
         return {
             "success": True, 
             "message": "Profile updated successfully",
-            "data": current_metadata
+            "data": result.data[0] if result.data else update_data
         }
         
     except Exception as e:
-        print(f"Profile update error: {type(e).__name__} - {e}")
-        # For now, just return success to prevent blocking the UI
-        # In a production app, you'd want proper error handling
-        return {
-            "success": True,
-            "message": "Profile update completed (basic mode)",
-            "note": "Profile saved locally, database sync pending"
-        }
+        print(f"❌ Profile update error: {type(e).__name__} - {e}")
+        print(f"Full error details: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to update profile: {str(e)}")
 
 
 @app.post("/tests")
@@ -198,6 +242,107 @@ def delete_test(test_id: int, user=Depends(get_current_user)):
         return {"success": True}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {e}")
+
+
+# ------------------------
+# Activity Management Routes
+# ------------------------
+@app.post("/activities")
+def create_activity(activity: ActivityCreate, user=Depends(get_current_user)):
+    """Creates a new farming activity for the authenticated user."""
+    try:
+        # Parse the date string to ensure it's valid
+        from datetime import datetime
+        try:
+            parsed_date = datetime.fromisoformat(activity.date.replace('Z', '+00:00'))
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid date format. Use ISO format (YYYY-MM-DD)")
+        
+        data = supabase.table("activities").insert({
+            "user_id": user.id,
+            "title": activity.title,
+            "type": activity.type,
+            "status": "scheduled",  # Default status for new activities
+            "date": activity.date,
+            "notes": activity.notes,
+            "created_at": datetime.now().isoformat()
+        }).execute()
+        
+        return {"success": True, "data": data.data[0]}
+    except Exception as e:
+        print(f"Activity creation error: {type(e).__name__} - {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@app.get("/activities")
+def list_activities(user=Depends(get_current_user)):
+    """Lists all farming activities for the authenticated user."""
+    try:
+        data = supabase.table("activities").select("*").eq("user_id", user.id).order("date", desc=True).execute()
+        return {"activities": data.data}
+    except Exception as e:
+        print(f"Activity fetch error: {type(e).__name__} - {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@app.put("/activities/{activity_id}")
+def update_activity(activity_id: int, activity_data: ActivityUpdate, user=Depends(get_current_user)):
+    """Updates a farming activity by ID (if it belongs to the authenticated user)."""
+    try:
+        # Prepare update data (only include non-None values)
+        update_data = {}
+        if activity_data.title is not None:
+            update_data["title"] = activity_data.title
+        if activity_data.type is not None:
+            update_data["type"] = activity_data.type
+        if activity_data.status is not None:
+            update_data["status"] = activity_data.status
+        if activity_data.date is not None:
+            # Validate date format
+            from datetime import datetime
+            try:
+                datetime.fromisoformat(activity_data.date.replace('Z', '+00:00'))
+                update_data["date"] = activity_data.date
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Invalid date format")
+        if activity_data.notes is not None:
+            update_data["notes"] = activity_data.notes
+        
+        if not update_data:
+            raise HTTPException(status_code=400, detail="No valid fields to update")
+        
+        # Add updated timestamp
+        from datetime import datetime
+        update_data["updated_at"] = datetime.now().isoformat()
+        
+        data = supabase.table("activities").update(update_data).eq("id", activity_id).eq("user_id", user.id).execute()
+        
+        if not data.data:
+            raise HTTPException(status_code=404, detail="Activity not found or access denied")
+        
+        return {"success": True, "data": data.data[0]}
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Activity update error: {type(e).__name__} - {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@app.delete("/activities/{activity_id}")
+def delete_activity(activity_id: int, user=Depends(get_current_user)):
+    """Deletes a farming activity by ID (if it belongs to the authenticated user)."""
+    try:
+        result = supabase.table("activities").delete().eq("id", activity_id).eq("user_id", user.id).execute()
+        
+        if not result.data:
+            raise HTTPException(status_code=404, detail="Activity not found or access denied")
+        
+        return {"success": True, "message": "Activity deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Activity deletion error: {type(e).__name__} - {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
 def get_current_season(month):

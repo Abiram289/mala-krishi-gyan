@@ -1,68 +1,71 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle, Clock, Plus, Sprout, Droplets, Bug, Scissors, Mic, MicOff, Volume2 } from "lucide-react";
+import { CheckCircle, Clock, Plus, Sprout, Droplets, Bug, Scissors, Mic, MicOff, Volume2, Trash2, Loader2 } from "lucide-react";
 import { useLanguage } from "./LanguageToggle";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import { useToast } from "@/hooks/use-toast";
-
-interface Activity {
-  id: string;
-  title: string;
-  type: 'planting' | 'watering' | 'fertilizing' | 'harvesting';
-  status: 'completed' | 'pending' | 'scheduled';
-  date: Date;
-  notes?: string;
-}
+import { activityService, type Activity, type ActivityCreate } from "@/services/activityService";
 
 export const ActivityLog = () => {
   const { t, language } = useLanguage();
-  const [activities, setActivities] = useState<Activity[]>([
-    {
-      id: '1',
-      title: 'Plant rice seedlings',
-      type: 'planting',
-      status: 'completed',
-      date: new Date('2024-09-12'),
-      notes: 'Planted in north field'
-    },
-    {
-      id: '2',
-      title: 'Water coconut trees',
-      type: 'watering',
-      status: 'pending',
-      date: new Date('2024-09-14'),
-    },
-    {
-      id: '3',
-      title: 'Apply organic fertilizer',
-      type: 'fertilizing',
-      status: 'scheduled',
-      date: new Date('2024-09-15'),
-      notes: 'Use compost from home preparation'
-    },
-    {
-      id: '4',
-      title: 'Harvest vegetables',
-      type: 'harvesting',
-      status: 'scheduled',
-      date: new Date('2024-09-16'),
-    }
-  ]);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'planting': return <Sprout className="h-4 w-4" />;
-      case 'watering': return <Droplets className="h-4 w-4" />;
-      case 'fertilizing': return <Bug className="h-4 w-4" />;
-      case 'harvesting': return <Scissors className="h-4 w-4" />;
-      default: return <Clock className="h-4 w-4" />;
+      case 'planting': return <Sprout className="h-6 w-6" />;
+      case 'watering': return <Droplets className="h-6 w-6" />;
+      case 'fertilizing': return <Bug className="h-6 w-6" />;
+      case 'harvesting': return <Scissors className="h-6 w-6" />;
+      default: return <Clock className="h-6 w-6" />;
     }
+  };
+
+  const getActivityTypeText = (type: string) => {
+    const types = {
+      'planting': {
+        en: 'Planting',
+        ml: 'നടീൽ'
+      },
+      'watering': {
+        en: 'Watering',
+        ml: 'നനയ്ക്കൽ'
+      },
+      'fertilizing': {
+        en: 'Fertilizing',
+        ml: 'വളപ്രയോഗം'
+      },
+      'harvesting': {
+        en: 'Harvesting',
+        ml: 'വിളവെടുപ്പ്'
+      }
+    };
+    return types[type as keyof typeof types]?.[language] || type;
+  };
+
+  const getStatusText = (status: string) => {
+    const statuses = {
+      'scheduled': {
+        en: 'Scheduled',
+        ml: 'ആസൂത്രിതം'
+      },
+      'pending': {
+        en: 'Pending', 
+        ml: 'തീർപ്പുകൽപ്പിക്കാത്തത്'
+      },
+      'completed': {
+        en: 'Completed',
+        ml: 'പൂർത്തിയായി'
+      }
+    };
+    return statuses[status as keyof typeof statuses]?.[language] || status;
   };
 
   const getStatusColor = (status: string) => {
@@ -98,6 +101,28 @@ export const ActivityLog = () => {
   } = useSpeechRecognition();
   const { speak } = useSpeechSynthesis();
 
+  // Load activities on component mount
+  useEffect(() => {
+    loadActivities();
+  }, []);
+
+  const loadActivities = async () => {
+    try {
+      setLoading(true);
+      const fetchedActivities = await activityService.getActivities();
+      setActivities(fetchedActivities);
+    } catch (error) {
+      console.error('Error loading activities:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load activities. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Update activity title when transcript changes
   if (transcript && transcript !== newActivity.title) {
     setNewActivity(prev => ({ ...prev, title: transcript }));
@@ -109,38 +134,103 @@ export const ActivityLog = () => {
     return activityDate.toDateString() === today.toDateString();
   });
 
-  const handleAddActivity = () => {
+  const handleAddActivity = async () => {
     if (newActivity.title.trim()) {
-      const activity: Activity = {
-        id: Date.now().toString(),
-        title: newActivity.title,
-        type: newActivity.type,
-        status: 'scheduled',
-        date: new Date(newActivity.date)
-      };
-      setActivities([...activities, activity]);
+      try {
+        setCreating(true);
+        
+        const activityData: ActivityCreate = {
+          title: newActivity.title,
+          type: newActivity.type,
+          date: newActivity.date,
+          notes: ''
+        };
+        
+        const createdActivity = await activityService.createActivity(activityData);
+        
+        // Add to local state
+        setActivities(prev => [createdActivity, ...prev]);
+        
+        // Announce success in the user's selected language
+        const successMessage = language === 'ml' 
+          ? `${newActivity.title} പ്രവർത്തനം വിജയകരമായി ചേർക്കപ്പെട്ടു`
+          : `Activity ${newActivity.title} added successfully`;
+        
+        speak(successMessage, language);
+        
+        toast({
+          title: language === 'ml' ? "പ്രവർത്തനം ചേർക്കപ്പെട്ടു" : "Activity Added",
+          description: language === 'ml' 
+            ? "നിങ്ങളുടെ പ്രവർത്തനം വിജയകരമായി ചേർക്കപ്പെട്ടു" 
+            : "Your activity has been added successfully",
+        });
+
+        // Reset form
+        setNewActivity({
+          title: '',
+          type: 'planting',
+          date: new Date().toISOString().split('T')[0]
+        });
+        resetTranscript();
+        setIsAddDialogOpen(false);
+      } catch (error) {
+        console.error('Error creating activity:', error);
+        toast({
+          title: "Error",
+          description: "Failed to create activity. Please try again.",
+          variant: "destructive"
+        });
+      } finally {
+        setCreating(false);
+      }
+    }
+  };
+
+  const handleStatusUpdate = async (id: string, newStatus: 'completed' | 'pending' | 'scheduled') => {
+    try {
+      await activityService.updateActivity(id, { status: newStatus });
       
-      // Announce success in the user's selected language
-      const successMessage = language === 'ml' 
-        ? `${newActivity.title} പ്രവർത്തനം വിജയകരമായി ചേർക്കപ്പെട്ടു`
-        : `Activity ${newActivity.title} added successfully`;
-      
-      speak(successMessage, language);
+      // Update local state
+      setActivities(prev => prev.map(activity => 
+        activity.id === id ? { ...activity, status: newStatus } : activity
+      ));
       
       toast({
-        title: language === 'ml' ? "പ്രവർത്തനം ചേർക്കപ്പെട്ടു" : "Activity Added",
-        description: language === 'ml' 
-          ? "നിങ്ങളുടെ പ്രവർത്തനം വിജയകരമായി ചേർക്കപ്പെട്ടു" 
-          : "Your activity has been added successfully",
+        title: "Updated",
+        description: `Activity status changed to ${newStatus}`,
       });
+    } catch (error) {
+      console.error('Error updating activity:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update activity status.",
+        variant: "destructive"
+      });
+    }
+  };
 
-      setNewActivity({
-        title: '',
-        type: 'planting',
-        date: new Date().toISOString().split('T')[0]
+  const handleDeleteActivity = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this activity?')) {
+      return;
+    }
+    
+    try {
+      await activityService.deleteActivity(id);
+      
+      // Remove from local state
+      setActivities(prev => prev.filter(activity => activity.id !== id));
+      
+      toast({
+        title: "Deleted",
+        description: "Activity deleted successfully",
       });
-      resetTranscript();
-      setIsAddDialogOpen(false);
+    } catch (error) {
+      console.error('Error deleting activity:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete activity.",
+        variant: "destructive"
+      });
     }
   };
 
@@ -152,6 +242,19 @@ export const ActivityLog = () => {
       startListening(language);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <Card className="p-6 max-w-4xl mx-auto">
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin" />
+            <span className="ml-2">Loading activities...</span>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -171,10 +274,12 @@ export const ActivityLog = () => {
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Activity Title</label>
+                  <label className="text-sm font-medium">
+                    {language === 'ml' ? 'പ്രവർത്തനത്തിന്റെ പേര്' : 'Activity Title'}
+                  </label>
                   <div className="flex gap-2">
                     <Input
-                      placeholder="Enter activity title..."
+                      placeholder={language === 'ml' ? 'പ്രവർത്തനത്തിന്റെ പേര് ടൈപ്പ് ചെയ്യുക...' : 'Enter activity title...'}
                       value={newActivity.title}
                       onChange={(e) => setNewActivity({...newActivity, title: e.target.value})}
                       className="flex-1"
@@ -193,39 +298,78 @@ export const ActivityLog = () => {
                     )}
                   </div>
                   {isListening && (
-                    <p className="text-sm text-primary animate-pulse">🎙️ Listening... Speak now</p>
+                    <p className="text-sm text-primary animate-pulse">
+                      🎙️ {language === 'ml' ? 'കേൾക്കുന്നു... ഇപ്പോൾ സംസാരിക്കുക' : 'Listening... Speak now'}
+                    </p>
                   )}
                   {transcript && (
-                    <p className="text-sm text-muted-foreground">Detected: "{transcript}"</p>
+                    <p className="text-sm text-muted-foreground">
+                      {language === 'ml' ? 'കണ്ടെത്തി: "' : 'Detected: "'}{transcript}"
+                    </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Type</label>
+                  <label className="text-sm font-medium">
+                    {language === 'ml' ? 'പ്രവർത്തനത്തിന്റെ തരം' : 'Type'}
+                  </label>
                   <Select 
                     value={newActivity.type} 
                     onValueChange={(value: Activity['type']) => setNewActivity({...newActivity, type: value})}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select activity type" />
+                      <SelectValue placeholder={language === 'ml' ? 'പ്രവർത്തനത്തിന്റെ തരം തിരഞ്ഞെടുക്കുക' : 'Select activity type'} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="planting">Planting</SelectItem>
-                      <SelectItem value="watering">Watering</SelectItem>
-                      <SelectItem value="fertilizing">Fertilizing</SelectItem>
-                      <SelectItem value="harvesting">Harvesting</SelectItem>
+                      <SelectItem value="planting">
+                        <div className="flex items-center space-x-2">
+                          <Sprout className="h-4 w-4" />
+                          <span>{language === 'ml' ? 'നടീൽ' : 'Planting'}</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="watering">
+                        <div className="flex items-center space-x-2">
+                          <Droplets className="h-4 w-4" />
+                          <span>{language === 'ml' ? 'നനയ്ക്കൽ' : 'Watering'}</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="fertilizing">
+                        <div className="flex items-center space-x-2">
+                          <Bug className="h-4 w-4" />
+                          <span>{language === 'ml' ? 'വളപ്രയോഗം' : 'Fertilizing'}</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="harvesting">
+                        <div className="flex items-center space-x-2">
+                          <Scissors className="h-4 w-4" />
+                          <span>{language === 'ml' ? 'വിളവെടുപ്പ്' : 'Harvesting'}</span>
+                        </div>
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Date</label>
+                  <label className="text-sm font-medium">
+                    {language === 'ml' ? 'തീയതി' : 'Date'}
+                  </label>
                   <Input
                     type="date"
                     value={newActivity.date}
                     onChange={(e) => setNewActivity({...newActivity, date: e.target.value})}
                   />
                 </div>
-                <Button onClick={handleAddActivity} className="w-full">
-                  Add Activity
+                <Button 
+                  onClick={handleAddActivity} 
+                  className="w-full" 
+                  disabled={creating || !newActivity.title.trim()}
+                >
+                  {creating ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      {language === 'ml' ? 'ചേർക്കുന്നു...' : 'Adding...'}
+                    </>
+                  ) : (
+                    language === 'ml' ? 'പ്രവർത്തനം ചേർക്കുക' : 'Add Activity'
+                  )}
                 </Button>
               </div>
             </DialogContent>
@@ -242,14 +386,28 @@ export const ActivityLog = () => {
                     <div className="text-primary">
                       {getActivityIcon(activity.type)}
                     </div>
-                    <span className="font-medium">{activity.title}</span>
-                  </div>
-                  <Badge className={getStatusColor(activity.status)}>
-                    <div className="flex items-center space-x-1">
-                      {getStatusIcon(activity.status)}
-                      <span className="capitalize text-xs">{activity.status}</span>
+                    <div>
+                      <div className="text-sm font-semibold text-primary mb-1">
+                        {getActivityTypeText(activity.type)}
+                      </div>
+                      <span className="font-medium">{activity.title}</span>
                     </div>
-                  </Badge>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge 
+                      className={`${getStatusColor(activity.status)} cursor-pointer`}
+                      onClick={() => {
+                        const nextStatus = activity.status === 'scheduled' ? 'pending' : 
+                                         activity.status === 'pending' ? 'completed' : 'scheduled';
+                        handleStatusUpdate(activity.id, nextStatus);
+                      }}
+                    >
+                      <div className="flex items-center space-x-1">
+                        {getStatusIcon(activity.status)}
+                        <span className="capitalize text-xs">{getStatusText(activity.status)}</span>
+                      </div>
+                    </Badge>
+                  </div>
                 </div>
               ))}
             </div>
@@ -266,21 +424,42 @@ export const ActivityLog = () => {
                     {getActivityIcon(activity.type)}
                   </div>
                   <div>
+                    <div className="text-sm font-semibold text-primary mb-1">
+                      {getActivityTypeText(activity.type)}
+                    </div>
                     <h5 className="font-medium text-card-foreground">{activity.title}</h5>
                     <p className="text-sm text-muted-foreground">
-                      {activity.date.toLocaleDateString()}
+                      {new Date(activity.date).toLocaleDateString()}
                     </p>
                     {activity.notes && (
                       <p className="text-sm text-muted-foreground mt-1">{activity.notes}</p>
                     )}
                   </div>
                 </div>
-                <Badge className={getStatusColor(activity.status)} variant="outline">
-                  <div className="flex items-center space-x-1">
-                    {getStatusIcon(activity.status)}
-                    <span className="capitalize text-xs">{activity.status}</span>
-                  </div>
-                </Badge>
+                <div className="flex items-center space-x-2">
+                  <Badge 
+                    className={`${getStatusColor(activity.status)} cursor-pointer`} 
+                    variant="outline"
+                    onClick={() => {
+                      const nextStatus = activity.status === 'scheduled' ? 'pending' : 
+                                       activity.status === 'pending' ? 'completed' : 'scheduled';
+                      handleStatusUpdate(activity.id, nextStatus);
+                    }}
+                  >
+                    <div className="flex items-center space-x-1">
+                      {getStatusIcon(activity.status)}
+                      <span className="capitalize text-xs">{getStatusText(activity.status)}</span>
+                    </div>
+                  </Badge>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDeleteActivity(activity.id)}
+                    className="p-1 h-8 w-8 text-destructive hover:text-destructive-foreground hover:bg-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </Card>
           ))}

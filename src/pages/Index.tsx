@@ -15,6 +15,24 @@ const Index = () => {
   useEffect(() => {
     const loadWeatherSummary = async () => {
       try {
+        // Try backend weather endpoint first
+        try {
+          const { fetchWithAuth } = await import('@/lib/apiClient');
+          const response = await fetchWithAuth('/weather');
+          if (response.ok) {
+            const weatherData = await response.json();
+            setWeatherSummary({
+              temp: weatherData.temperature,
+              condition: weatherData.description,
+              humidity: weatherData.humidity
+            });
+            return;
+          }
+        } catch (backendError) {
+          console.log('Backend weather failed for summary, using direct API');
+        }
+        
+        // Fallback to direct API
         const weatherData = await fetchWeatherData(undefined, undefined, language);
         setWeatherSummary({
           temp: weatherData.temperature,

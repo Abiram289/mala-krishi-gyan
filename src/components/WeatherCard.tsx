@@ -41,6 +41,20 @@ export const WeatherCard = () => {
           }
         }
         
+        // Use backend weather endpoint for better reliability
+        try {
+          const { fetchWithAuth } = await import('@/lib/apiClient');
+          const response = await fetchWithAuth('/weather');
+          if (response.ok) {
+            const weatherData = await response.json();
+            setWeather(weatherData);
+            return;
+          }
+        } catch (backendError) {
+          console.log('Backend weather failed, trying direct API:', backendError);
+        }
+        
+        // Fallback to direct API call if backend fails
         const weatherData = await fetchWeatherData(lat, lon, language);
         setWeather(weatherData);
       } catch (err) {

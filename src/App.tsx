@@ -56,9 +56,9 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     console.log("fetchProfile: Starting...");
     setProfileLoading(true);
     try {
-      // Add timeout for profile fetching
+      // Add timeout for profile fetching (reduced to 3 seconds)
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Profile fetch timeout')), 8000)
+        setTimeout(() => reject(new Error('Profile fetch timeout')), 3000)
       );
       
       const profilePromise = fetchWithAuth('/profile');
@@ -92,28 +92,25 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       console.log("AuthProvider: initializeSession starting.");
       setLoading(true);
       try {
-        // Add timeout to prevent infinite loading
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Session initialization timeout')), 10000)
-        );
+        // Try to get session quickly without timeout first
+        const { data: { session } } = await supabase.auth.getSession();
         
-        const sessionPromise = supabase.auth.getSession();
-        
-        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]) as any;
+        // Set session and user immediately to show UI faster
         setSession(session);
         setUser(session?.user ?? null);
+        setLoading(false); // Set loading to false immediately after getting session
+        
         console.log("AuthProvider: Session obtained.", session);
         if (session?.user) {
-          console.log("AuthProvider: User found, fetching profile.");
-          await fetchProfile();
+          console.log("AuthProvider: User found, starting profile fetch.");
+          // Make profile fetching non-blocking
+          fetchProfile().catch(err => console.error("Background profile fetch error:", err));
         }
       } catch (error) {
         console.error("AuthProvider: Error during session initialization:", error);
         setSession(null);
         setUser(null);
-      } finally {
         setLoading(false);
-        console.log("AuthProvider: setLoading(false).");
       }
     };
 
@@ -125,7 +122,8 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       setUser(session?.user ?? null);
       if (session?.user) {
         console.log("AuthProvider: onAuthStateChange - User found, fetching profile.");
-        await fetchProfile();
+        // Make profile fetching non-blocking
+        fetchProfile().catch(err => console.error("Background profile fetch error:", err));
       } else {
         setProfile(null); // Clear profile on logout
         console.log("AuthProvider: onAuthStateChange - No user, clearing profile.");
