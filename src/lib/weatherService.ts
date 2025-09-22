@@ -133,16 +133,11 @@ export const fetchWeatherData = async (lat?: number, lon?: number, language: str
 
 // Alternative: Use backend weather endpoint (recommended for production)
 export const fetchWeatherFromBackend = async (): Promise<WeatherData> => {
-  const BACKEND_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081';
+  // Use the existing fetchWithAuth function for proper authentication
+  const { fetchWithAuth } = await import('./apiClient');
   
   try {
-    const response = await fetch(`${BACKEND_URL}/weather`, {
-      credentials: 'include',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('supabase.auth.token') || ''}`,
-        'Content-Type': 'application/json'
-      }
-    });
+    const response = await fetchWithAuth('/weather');
     
     if (!response.ok) {
       throw new Error(`Backend weather API error: ${response.status}`);
