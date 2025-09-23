@@ -54,6 +54,10 @@ print(f"🌤️  OpenWeather API Key loaded: {'✅ Yes' if OPENWEATHER_API_KEY e
 if OPENWEATHER_API_KEY:
     print(f"OpenWeather API Key: {OPENWEATHER_API_KEY[:10]}...{OPENWEATHER_API_KEY[-4:]}")
 
+print(f"🤖 Gemini API Key loaded: {'✅ Yes' if GEMINI_API_KEY else '❌ No'}")
+if GEMINI_API_KEY:
+    print(f"Gemini API Key: {GEMINI_API_KEY[:10]}...{GEMINI_API_KEY[-4:]}")
+
 if not SUPABASE_URL or not SUPABASE_KEY:
     raise RuntimeError("Missing SUPABASE_URL or SUPABASE_KEY in environment")
 
@@ -765,12 +769,24 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
         full_prompt = f"{system_prompt}{conversation_context}{language_instruction}\n\nFarmer's New Question: {message.message}\nPreferred Response Language: {message.preferred_language}\nVoice Input Language: {message.voice_input_language}\n\nPersonalized Response:"
         
         # Generate response using Gemini
-        response = model.generate_content(full_prompt)
+        print(f"🤖 GEMINI DEBUG: Calling AI with prompt length: {len(full_prompt)} chars")
+        print(f"🤖 GEMINI DEBUG: First 200 chars of prompt: {full_prompt[:200]}...")
         
-        return {"reply": response.text}
+        try:
+            response = model.generate_content(full_prompt)
+            print(f"🤖 GEMINI SUCCESS: Got response with length: {len(response.text) if response.text else 0} chars")
+            return {"reply": response.text}
+        except Exception as gemini_error:
+            print(f"🤖 GEMINI ERROR: {type(gemini_error).__name__} - {gemini_error}")
+            # Return a fallback response instead of crashing
+            return {
+                "reply": f"Hello {username}! I'm having trouble connecting to my AI brain right now. Please try again in a moment, or check if your farming question is urgent and I'll do my best to help!"
+            }
         
     except Exception as e:
         print(f"Chat error: {type(e).__name__} - {e}")
+        import traceback
+        print(f"Full traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"AI service error: {str(e)}")
 
 
