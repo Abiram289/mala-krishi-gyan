@@ -239,7 +239,10 @@ export const ActivityLog = () => {
       stopListening();
     } else {
       resetTranscript();
-      startListening(language);
+      // Use 'ml' for Malayalam UI, 'en' for English UI
+      const voiceLanguage = language === 'ml' ? 'ml' : 'en';
+      console.log('🎤 Activity Log: Starting voice input in', language === 'ml' ? 'Malayalam' : 'English');
+      startListening(voiceLanguage);
     }
   };
 

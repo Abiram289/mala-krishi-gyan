@@ -379,9 +379,15 @@ export const ChatInterface = () => {
               onClick={() => {
                 if (isListening) {
                   stopListening();
-                  setInputMessage(transcript);
+                  // Transfer transcript to input message
+                  if (transcript.trim()) {
+                    setInputMessage(transcript.trim());
+                    // Give user a moment to review before they can manually send
+                    // No auto-send - let user click send button or press Enter
+                  }
                 } else {
                   resetTranscript();
+                  setInputMessage(''); // Clear input when starting new voice input
                   startListening(voiceLanguage);
                 }
               }}

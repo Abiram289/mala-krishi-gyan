@@ -37,7 +37,8 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
   const getBrowserInfo = () => {
     if (typeof window === 'undefined') return 'unknown';
     const userAgent = window.navigator.userAgent;
-    if (userAgent.includes('Chrome')) return 'Chrome';
+    if (userAgent.includes('Brave')) return 'Brave';
+    if (userAgent.includes('Chrome') && !userAgent.includes('Brave')) return 'Chrome';
     if (userAgent.includes('Firefox')) return 'Firefox';
     if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) return 'Safari';
     if (userAgent.includes('Edge')) return 'Edge';
@@ -160,6 +161,8 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
             alert('Firefox has limited speech recognition support. For better Malayalam recognition, please use Chrome or Edge.');
           } else if (browser === 'Safari') {
             alert('Safari has poor speech recognition support. Please use Chrome or Edge for voice input.');
+          } else if (browser === 'Brave') {
+            alert('Brave browser has limited speech recognition support. Please use Chrome or Edge for better voice input, or enable speech recognition in Brave settings.');
           } else {
             alert('Speech recognition service is not available. Try using Chrome or Edge browser.');
           }
