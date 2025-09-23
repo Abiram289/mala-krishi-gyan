@@ -23,6 +23,16 @@ interface Message {
 export const ChatInterface = () => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
+  
+  // State declarations - moved to top to avoid initialization order issues
+  const [inputMessage, setInputMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [voiceLanguage, setVoiceLanguage] = useState<'en' | 'ml'>('en');
+  const [responseLanguage, setResponseLanguage] = useState<'en' | 'ml'>('en');
+  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
+  const [showInstallGuide, setShowInstallGuide] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
   // Load chat history from localStorage on component mount
   const loadChatHistory = () => {
     try {
@@ -58,6 +68,18 @@ export const ChatInterface = () => {
     }
   }, [messages]);
 
+  // Hooks - after state declarations
+  const {
+    transcript,
+    isListening,
+    startListening,
+    stopListening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
+  
+  const { speak, stopSpeaking, isSpeaking } = useGoogleTTS();
+  
   // Handle automatic transcript transfer when speech recognition ends
   useEffect(() => {
     // If we were listening and now we're not, and we have a transcript
@@ -72,27 +94,11 @@ export const ChatInterface = () => {
       // Show success message to user
       toast({ 
         title: "Voice Input Captured!", 
-        description: `${voiceLanguage === 'ml' ? 'മലയാളം' : 'English'} voice input ready to send`,
+        description: `${voiceLanguage === 'ml' ? 'മലയാळം' : 'English'} voice input ready to send`,
         duration: 2000
       });
     }
   }, [isListening, transcript, voiceLanguage, toast]);
-  const {
-    transcript,
-    isListening,
-    startListening,
-    stopListening,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
-  } = useSpeechRecognition();
-  const { speak, stopSpeaking, isSpeaking } = useGoogleTTS();
-  const [inputMessage, setInputMessage] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [voiceLanguage, setVoiceLanguage] = useState<'en' | 'ml'>('en');
-  const [responseLanguage, setResponseLanguage] = useState<'en' | 'ml'>('en');
-  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
-  const [showInstallGuide, setShowInstallGuide] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

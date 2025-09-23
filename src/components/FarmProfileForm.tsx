@@ -10,43 +10,141 @@ import { Skeleton } from "./ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Edit, User, MapPin, Layers, Ruler, Save, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "./LanguageToggle";
 
-// Based on research of Kerala soil types
-const keralaSoilTypes = [
-  "Laterite",
-  "Red Soil",
-  "Alluvial Soil",
-  "Black Soil",
-  "Peat (Kari)",
-  "Sandy Soil",
-  "Forest Soil",
-  "Acid Saline Soil",
-  "Coastal Alluvium",
-  "Mixed Alluvium",
-];
+// Based on research of Kerala soil types with Malayalam translations
+const keralaSoilTypes = {
+  en: [
+    "Laterite",
+    "Red Soil", 
+    "Alluvial Soil",
+    "Black Soil",
+    "Peat (Kari)",
+    "Sandy Soil",
+    "Forest Soil",
+    "Acid Saline Soil",
+    "Coastal Alluvium",
+    "Mixed Alluvium",
+  ],
+  ml: [
+    "ലാറ്ററൈറ്റ്",
+    "ചുവന്ന മണ്ണ്",
+    "അലൂവിയൽ മണ്ണ്",
+    "കറുത്ത മണ്ണ്",
+    "പീറ്റ് (കാരി)",
+    "മണൽ മണ്ണ്",
+    "വന മണ്ണ്",
+    "ആസിഡ് സലൈൻ മണ്ണ്",
+    "തീരദേശ അലൂവിയം",
+    "മിശ്ര അലൂവിയം",
+  ]
+};
 
-// Kerala districts for location-specific farming advice
-const keralaDistricts = [
-  "Thiruvananthapuram",
-  "Kollam",
-  "Pathanamthitta",
-  "Alappuzha",
-  "Kottayam",
-  "Idukki",
-  "Ernakulam",
-  "Thrissur",
-  "Palakkad",
-  "Malappuram",
-  "Kozhikode",
-  "Wayanad",
-  "Kannur",
-  "Kasaragod",
-];
+// Mapping for soil type values (always store English values in backend)
+const soilTypeMapping: Record<string, string> = {
+  "ലാറ്ററൈറ്റ്": "Laterite",
+  "ചുവന്ന മണ്ണ്": "Red Soil",
+  "അലൂവിയൽ മണ്ണ്": "Alluvial Soil",
+  "കറുത്ത മണ്ണ്": "Black Soil",
+  "പീറ്റ് (കാരി)": "Peat (Kari)",
+  "മണൽ മണ്ണ്": "Sandy Soil",
+  "വന മണ്ണ്": "Forest Soil",
+  "ആസിഡ് സലൈൻ മണ്ണ്": "Acid Saline Soil",
+  "തീരദേശ അലൂവിയം": "Coastal Alluvium",
+  "മിശ്ര അലൂവിയം": "Mixed Alluvium",
+};
+
+// Reverse mapping for display (English to Malayalam)
+const soilTypeDisplayMapping: Record<string, string> = {
+  "Laterite": "ലാറ്ററൈറ്റ്",
+  "Red Soil": "ചുവന്ന മണ്ണ്",
+  "Alluvial Soil": "അലൂവിയൽ മണ്ണ്",
+  "Black Soil": "കറുത്ത മണ്ണ്",
+  "Peat (Kari)": "പീറ്റ് (കാരി)",
+  "Sandy Soil": "മണൽ മണ്ണ്",
+  "Forest Soil": "വന മണ്ണ്",
+  "Acid Saline Soil": "ആസിഡ് സലൈൻ മണ്ണ്",
+  "Coastal Alluvium": "തീരദേശ അലൂവിയം",
+  "Mixed Alluvium": "മിശ്ര അലൂവിയം",
+};
+
+// Kerala districts with Malayalam translations
+const keralaDistricts = {
+  en: [
+    "Thiruvananthapuram",
+    "Kollam",
+    "Pathanamthitta", 
+    "Alappuzha",
+    "Kottayam",
+    "Idukki",
+    "Ernakulam",
+    "Thrissur",
+    "Palakkad",
+    "Malappuram",
+    "Kozhikode",
+    "Wayanad",
+    "Kannur",
+    "Kasaragod",
+  ],
+  ml: [
+    "തിരുവനന്തപുരം",
+    "കൊല്ലം",
+    "പത്തനംതിട്ട",
+    "ആലപ്പുഴ",
+    "കോട്ടയം",
+    "ഇടുക്കി",
+    "എറണാകുളം",
+    "തൃശ്ശൂർ",
+    "പാലക്കാട്",
+    "മലപ്പുറം",
+    "കോഴിക്കോട്",
+    "വയനാട്",
+    "കണ്ണൂർ",
+    "കാസർകോട്",
+  ]
+};
+
+// District mapping (always store English values in backend)
+const districtMapping: Record<string, string> = {
+  "തിരുവനന്തപുരം": "Thiruvananthapuram",
+  "കൊല്ലം": "Kollam",
+  "പത്തനംതിട്ട": "Pathanamthitta",
+  "ആലപ്പുഴ": "Alappuzha",
+  "കോട്ടയം": "Kottayam",
+  "ഇടുക്കി": "Idukki",
+  "എറണാകുളം": "Ernakulam",
+  "തൃശ്ശൂർ": "Thrissur",
+  "പാലക്കാട്": "Palakkad",
+  "മലപ്പുറം": "Malappuram",
+  "കോഴിക്കോട്": "Kozhikode",
+  "വയനാട്": "Wayanad",
+  "കണ്ണൂർ": "Kannur",
+  "കാസർകോട്": "Kasaragod",
+};
+
+// Reverse mapping for display (English to Malayalam)
+const districtDisplayMapping: Record<string, string> = {
+  "Thiruvananthapuram": "തിരുവനന്തപുരം",
+  "Kollam": "കൊല്ലം",
+  "Pathanamthitta": "പത്തനംതിട്ട",
+  "Alappuzha": "ആലപ്പുഴ",
+  "Kottayam": "കോട്ടയം",
+  "Idukki": "ഇടുക്കി",
+  "Ernakulam": "എറണാകുളം",
+  "Thrissur": "തൃശ്ശൂർ",
+  "Palakkad": "പാലക്കാട്",
+  "Malappuram": "മലപ്പുറം",
+  "Kozhikode": "കോഴിക്കോട്",
+  "Wayanad": "വയനാട്",
+  "Kannur": "കണ്ണൂർ",
+  "Kasaragod": "കാസർകോട്",
+};
 
 const FarmProfileForm = () => {
   // Get global profile state and functions from the Auth context
   const { profile, profileLoading, refetchProfile, user } = useAuth();
   const { toast } = useToast();
+  const { language, t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   
@@ -187,6 +285,9 @@ const FarmProfileForm = () => {
     const submitData = {
       ...formData,
       farm_size: parseFloat(formData.farm_size) || null,
+      // Always store English values in backend
+      soil_type: soilTypeMapping[formData.soil_type] || formData.soil_type,
+      district: districtMapping[formData.district] || formData.district,
     };
     
     console.log("📤 Submitting profile data:", submitData);
@@ -252,10 +353,10 @@ const FarmProfileForm = () => {
           <div>
             <CardTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              Profile Information
+              {t('profileTitle')} {language === 'ml' ? 'വിവരങ്ങൾ' : 'Information'}
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              Hello, {profile.username || user?.email}!
+              {t('welcomeProfile')}, {profile.username || user?.email}!
             </p>
           </div>
           <Button 
@@ -265,40 +366,43 @@ const FarmProfileForm = () => {
             className="flex items-center gap-2"
           >
             <Edit className="h-4 w-4" />
-            Edit Profile
+            {language === 'ml' ? 'പ്രൊഫൈല് എഡിറ്റ് ചെയ്യുക' : 'Edit Profile'}
           </Button>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div>
-                <Label className="text-sm font-medium text-muted-foreground">Full Name</Label>
+                <Label className="text-sm font-medium text-muted-foreground">{t('fullName')}</Label>
                 <p className="text-lg font-medium">
-                  {profile.full_name || "Not provided"}
+                  {profile.full_name || (language === 'ml' ? 'നൽകിയിട്ടില്ല' : "Not provided")}
                 </p>
               </div>
               
               <div>
                 <Label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
-                  Location
+                  {t('location')}
                 </Label>
                 <p className="text-lg">
                   {parseLocationDisplay(profile.location)}
                 </p>
                 {profile.location && (
                   <p className="text-xs text-muted-foreground">
-                    Coordinates for weather and regional advice
+                    {language === 'ml' ? 'കാലാവസ്ഥയും പ്രാദേശിക ഉപദേശങ്ങൾക്കുള്ള കോങ്ക്രിക്രീേസുകൾ' : 'Coordinates for weather and regional advice'}
                   </p>
                 )}
               </div>
               
               <div>
                 <Label className="text-sm font-medium text-muted-foreground">
-                  Kerala District
+                  {language === 'ml' ? 'കേരള ജില്ല' : 'Kerala District'}
                 </Label>
                 <p className="text-lg font-medium">
-                  {profile.district || "Not provided"}
+                  {profile.district 
+                    ? (language === 'ml' ? districtDisplayMapping[profile.district] || profile.district : profile.district)
+                    : (language === 'ml' ? 'നൽകിയിട്ടില്ല' : "Not provided")
+                  }
                 </p>
               </div>
             </div>
@@ -307,25 +411,31 @@ const FarmProfileForm = () => {
               <div>
                 <Label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <Ruler className="h-4 w-4" />
-                  Farm Size
+                  {t('farmSize')}
                 </Label>
                 <p className="text-lg font-medium">
-                  {profile.farm_size ? `${profile.farm_size} acres` : "Not provided"}
+                  {profile.farm_size 
+                    ? `${profile.farm_size} ${language === 'ml' ? 'ഏക്കര്' : 'acres'}` 
+                    : (language === 'ml' ? 'നൽകിയിട്ടില്ല' : "Not provided")
+                  }
                 </p>
               </div>
               
               <div>
                 <Label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <Layers className="h-4 w-4" />
-                  Soil Type
+                  {t('soilType')}
                 </Label>
                 <div className="mt-2">
                   {profile.soil_type ? (
                     <Badge variant="secondary" className="text-sm">
-                      {profile.soil_type}
+                      {language === 'ml' 
+                        ? soilTypeDisplayMapping[profile.soil_type] || profile.soil_type 
+                        : profile.soil_type
+                      }
                     </Badge>
                   ) : (
-                    <p className="text-lg">Not provided</p>
+                    <p className="text-lg">{language === 'ml' ? 'നൽകിയിട്ടില്ല' : "Not provided"}</p>
                   )}
                 </div>
               </div>
@@ -335,7 +445,10 @@ const FarmProfileForm = () => {
           {(!profile.full_name || !profile.location || !profile.district || !profile.farm_size || !profile.soil_type) && (
             <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
               <p className="text-sm text-amber-800">
-                💡 Complete your profile to get personalized farming advice and weather alerts!
+                💡 {language === 'ml' 
+                  ? 'വ്യക്തിഗത കൃഷി ഉപദേശങ്ങൾയും കാലാവസ്ഥാ മുന്നറിയിപ്പുകൾയും ലഭിക്കാൻ നിങ്ങളുടെ പ്രൊഫൈല് പൂര്ത്തിയാക്കുക!' 
+                  : 'Complete your profile to get personalized farming advice and weather alerts!'
+                }
               </p>
             </div>
           )}
@@ -349,7 +462,10 @@ const FarmProfileForm = () => {
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <Edit className="h-5 w-5" />
-          {profile ? "Edit Profile" : "Complete Your Profile"}
+          {profile 
+            ? (language === 'ml' ? 'പ്രൊഫൈല് എഡിറ്റ് ചെയ്യുക' : "Edit Profile")
+            : (language === 'ml' ? 'നിങ്ങളുടെ പ്രൊഫൈല് പൂര്ത്തിയാക്കുക' : "Complete Your Profile")
+          }
         </CardTitle>
         {profile && (
           <Button 
@@ -359,72 +475,103 @@ const FarmProfileForm = () => {
             className="flex items-center gap-2"
           >
             <X className="h-4 w-4" />
-            Cancel
+            {language === 'ml' ? 'റദ്ദുചെയ്യുക' : 'Cancel'}
           </Button>
         )}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="full_name">Full Name</Label>
-            <Input id="full_name" placeholder="Enter your full name" value={formData.full_name} onChange={handleChange} disabled={isSubmitting} />
+            <Label htmlFor="full_name">{t('fullName')}</Label>
+            <Input 
+              id="full_name" 
+              placeholder={language === 'ml' ? 'നിങ്ങളുടെ പൂര്ണ്ണ നാമം നൽകുക' : "Enter your full name"} 
+              value={formData.full_name} 
+              onChange={handleChange} 
+              disabled={isSubmitting} 
+            />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="location">Location</Label>
+            <Label htmlFor="location">{t('location')}</Label>
             <div className="flex gap-2">
-              <Input id="location" placeholder="latitude, longitude" value={formData.location} onChange={handleChange} disabled={isSubmitting} />
+              <Input 
+                id="location" 
+                placeholder={language === 'ml' ? 'അക്ഷാംശ, രേഖാംശ' : "latitude, longitude"} 
+                value={formData.location} 
+                onChange={handleChange} 
+                disabled={isSubmitting} 
+              />
               <Button type="button" onClick={handleLocationCapture} disabled={isSubmitting}>
-                Get Location
+                {language === 'ml' ? 'സ്ഥലം കണ്ടെത്തുക' : 'Get Location'}
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Click "Get Location" to automatically fill your coordinates.
+              {language === 'ml' 
+                ? '"സ്ഥലം കണ്ടെത്തുക" ക്ലിക്ക് ചെയ്ത് നിങ്ങളുടെ കോണാഇൻറ്റ്സ വിവരങ്ങൾ സ്വയങ്ക്രിയമായി ഭരിക്കാൻ.' 
+                : 'Click "Get Location" to automatically fill your coordinates.'
+              }
             </p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="district">Kerala District</Label>
+            <Label htmlFor="district">{language === 'ml' ? 'കേരള ജില്ല' : 'Kerala District'}</Label>
             <Select value={formData.district} onValueChange={handleDistrictChange} disabled={isSubmitting}>
               <SelectTrigger>
-                <SelectValue placeholder="Select your district" />
+                <SelectValue placeholder={language === 'ml' ? 'നിങ്ങളുടെ ജില്ല തിരഞ്ഞെടുക്കുക' : "Select your district"} />
               </SelectTrigger>
               <SelectContent>
-                {keralaDistricts.map((district) => (
-                  <SelectItem key={district} value={district}>
+                {keralaDistricts[language].map((district, index) => (
+                  <SelectItem key={district} value={language === 'ml' ? district : keralaDistricts.en[index]}>
                     {district}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground">
-              Select your Kerala district for region-specific farming advice.
+              {language === 'ml' 
+                ? 'പ്രാദേശിക കൃഷി ഉപദേശങ്ങൾക്കായി നിങ്ങളുടെ കേരള ജില്ല തിരഞ്ഞെടുക്കുക.' 
+                : 'Select your Kerala district for region-specific farming advice.'
+              }
             </p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="farm_size">Farm Size (in acres)</Label>
-            <Input id="farm_size" type="number" placeholder="Enter farm size" value={formData.farm_size} onChange={handleChange} disabled={isSubmitting} />
+            <Label htmlFor="farm_size">{t('farmSize')}</Label>
+            <Input 
+              id="farm_size" 
+              type="number" 
+              placeholder={language === 'ml' ? 'കൃഷിയിടത്തിന്റെ വലുപ്പം നൽകുക' : "Enter farm size"} 
+              value={formData.farm_size} 
+              onChange={handleChange} 
+              disabled={isSubmitting} 
+            />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="soil_type">Soil Type</Label>
+            <Label htmlFor="soil_type">{t('soilType')}</Label>
             <Select value={formData.soil_type} onValueChange={handleSoilTypeChange} disabled={isSubmitting}>
               <SelectTrigger>
-                <SelectValue placeholder="Select your soil type" />
+                <SelectValue placeholder={language === 'ml' ? 'നിങ്ങളുടെ മണ്ണിന്റെ തരം തിരഞ്ഞെടുക്കുക' : "Select your soil type"} />
               </SelectTrigger>
               <SelectContent>
-                {keralaSoilTypes.map((soil) => (
-                  <SelectItem key={soil} value={soil}>
+                {keralaSoilTypes[language].map((soil, index) => (
+                  <SelectItem key={soil} value={language === 'ml' ? soil : keralaSoilTypes.en[index]}>
                     {soil}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground">
-              Select the soil type that best matches your farm.
+              {language === 'ml' 
+                ? 'നിങ്ങളുടെ കൃഷിയിടത്തിന് ഇണങ്ങുന്ന മണ്ണിന്റെ തരം തിരഞ്ഞെടുക്കുക.' 
+                : 'Select the soil type that best matches your farm.'
+              }
             </p>
           </div>
           <div className="flex gap-3">
             <Button type="submit" className="flex-1 flex items-center gap-2" disabled={isSubmitting}>
               <Save className="h-4 w-4" />
-              {isSubmitting ? "Saving..." : "Save Profile"}
+              {isSubmitting 
+                ? (language === 'ml' ? 'സേവ് ചെയ്യുന്നു...' : "Saving...") 
+                : (language === 'ml' ? 'പ്രൊഫൈല് സേവ് ചെയ്യുക' : "Save Profile")
+              }
             </Button>
             {profile && (
               <Button 
@@ -435,7 +582,7 @@ const FarmProfileForm = () => {
                 className="flex items-center gap-2"
               >
                 <X className="h-4 w-4" />
-                Cancel
+                {language === 'ml' ? 'റദ്ദുചെയ്യുക' : 'Cancel'}
               </Button>
             )}
           </div>

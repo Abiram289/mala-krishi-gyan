@@ -44,7 +44,8 @@ export const WeatherCard = () => {
         // Use backend weather endpoint for better reliability
         try {
           const { fetchWithAuth } = await import('@/lib/apiClient');
-          const response = await fetchWithAuth('/weather');
+          const weatherUrl = `/weather?language=${language}${lat && lon ? `&lat=${lat}&lon=${lon}` : ''}`;
+          const response = await fetchWithAuth(weatherUrl);
           if (response.ok) {
             const weatherData = await response.json();
             setWeather(weatherData);

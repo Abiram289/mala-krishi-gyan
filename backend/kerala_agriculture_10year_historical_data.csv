@@ -1,0 +1,601 @@
+Year,District,Crop,Season,Area_Hectares,Production_Tonnes,Productivity_Tonnes_per_Hectare,Sowing_Period,Harvest_Period,Weather_Impact_Factor,Category
+2014,Alappuzha,Rice,Virippu,23058.8,72971.99,3.165,April-May,September-October,1.0,Food Crop
+2014,Alappuzha,Rice,Mundakan,16260.05,58371.9,3.59,September-October,December-January,1.0,Food Crop
+2014,Alappuzha,Rice,Puncha,6670.97,20947.26,3.14,December-January,March-April,1.0,Food Crop
+2014,Thrissur,Rice,Virippu,18881.81,64131.38,3.396,April-May,September-October,1.0,Food Crop
+2014,Thrissur,Rice,Mundakan,11962.45,39941.36,3.339,September-October,December-January,1.0,Food Crop
+2014,Thrissur,Rice,Puncha,5128.35,15799.29,3.081,December-January,March-April,1.0,Food Crop
+2014,Palakkad,Rice,Virippu,15181.47,41144.83,2.71,April-May,September-October,1.0,Food Crop
+2014,Palakkad,Rice,Mundakan,9594.42,29321.06,3.056,September-October,December-January,1.0,Food Crop
+2014,Palakkad,Rice,Puncha,4272.11,14014.44,3.28,December-January,March-April,1.0,Food Crop
+2014,Ernakulam,Rice,Virippu,11932.48,33869.76,2.838,April-May,September-October,1.0,Food Crop
+2014,Ernakulam,Rice,Mundakan,9391.22,29509.11,3.142,September-October,December-January,1.0,Food Crop
+2014,Ernakulam,Rice,Puncha,3762.66,10668.14,2.835,December-January,March-April,1.0,Food Crop
+2014,Kottayam,Rice,Virippu,9727.81,31405.22,3.228,April-May,September-October,1.0,Food Crop
+2014,Kottayam,Rice,Mundakan,6597.15,21745.39,3.296,September-October,December-January,1.0,Food Crop
+2014,Kottayam,Rice,Puncha,2909.9,9094.4,3.125,December-January,March-April,1.0,Food Crop
+2014,Kollam,Rice,Virippu,8729.23,32072.8,3.674,April-May,September-October,1.0,Food Crop
+2014,Kollam,Rice,Mundakan,6295.75,18441.67,2.929,September-October,December-January,1.0,Food Crop
+2014,Kollam,Rice,Puncha,2811.04,8116.79,2.887,December-January,March-April,1.0,Food Crop
+2014,Thiruvananthapuram,Rice,Virippu,7578.32,20448.78,2.698,April-May,September-October,1.0,Food Crop
+2014,Thiruvananthapuram,Rice,Mundakan,4901.35,15931.33,3.25,September-October,December-January,1.0,Food Crop
+2014,Thiruvananthapuram,Rice,Puncha,2333.08,7568.2,3.244,December-January,March-April,1.0,Food Crop
+2014,Malappuram,Coconut,Whole Year,104392.85,764086505.75,7319.338,Year-round,Year-round,1.0,Plantation
+2014,Kozhikode,Coconut,Whole Year,106498.5,752741342.73,7068.093,Year-round,Year-round,1.0,Plantation
+2014,Kannur,Coconut,Whole Year,81088.35,659594795.93,8134.273,Year-round,Year-round,1.0,Plantation
+2014,Thrissur,Coconut,Whole Year,80357.29,517675812.03,6442.176,Year-round,Year-round,1.0,Plantation
+2014,Thiruvananthapuram,Coconut,Whole Year,72150.5,524458408.68,7268.951,Year-round,Year-round,1.0,Plantation
+2014,Ernakulam,Coconut,Whole Year,62800.0,494047990.09,7867.006,Year-round,Year-round,1.0,Plantation
+2014,Kollam,Coconut,Whole Year,57835.25,466080855.52,8058.768,Year-round,Year-round,1.0,Plantation
+2014,Wayanad,Pepper,Whole Year,14370.59,4905.29,0.341,June-July,December-February,1.0,Spice
+2014,Idukki,Pepper,Whole Year,18298.14,6904.17,0.377,June-July,December-February,1.0,Spice
+2014,Kottayam,Pepper,Whole Year,11712.5,4038.49,0.345,June-July,December-February,1.0,Spice
+2014,Pathanamthitta,Pepper,Whole Year,9446.83,2989.98,0.317,June-July,December-February,1.0,Spice
+2014,Kozhikode,Pepper,Whole Year,8325.01,3229.89,0.388,June-July,December-February,1.0,Spice
+2014,Palakkad,Pepper,Whole Year,5978.4,2260.43,0.378,June-July,December-February,1.0,Spice
+2014,Idukki,Cardamom,Whole Year,86536.95,14772.75,0.171,May-June,October-December,1.0,Spice
+2014,Wayanad,Cardamom,Whole Year,8144.56,1646.4,0.202,May-June,October-December,1.0,Spice
+2014,Palakkad,Cardamom,Whole Year,1996.42,404.34,0.203,May-June,October-December,1.0,Spice
+2014,Wayanad,Ginger,Whole Year,3041.54,40519.16,13.322,April-May,December-January,1.0,Spice
+2014,Kozhikode,Ginger,Whole Year,3013.06,36762.29,12.201,April-May,December-January,1.0,Spice
+2014,Palakkad,Ginger,Whole Year,2812.85,29569.86,10.512,April-May,December-January,1.0,Spice
+2014,Malappuram,Ginger,Whole Year,2472.54,31789.74,12.857,April-May,December-January,1.0,Spice
+2014,Idukki,Ginger,Whole Year,2147.79,25734.23,11.982,April-May,December-January,1.0,Spice
+2014,Kannur,Ginger,Whole Year,1727.24,20723.79,11.998,April-May,December-January,1.0,Spice
+2014,Palakkad,Turmeric,Whole Year,2614.43,22807.07,8.724,April-May,January-February,1.0,Spice
+2014,Malappuram,Turmeric,Whole Year,1947.02,17229.26,8.849,April-May,January-February,1.0,Spice
+2014,Kozhikode,Turmeric,Whole Year,1808.74,16565.64,9.159,April-May,January-February,1.0,Spice
+2014,Ernakulam,Turmeric,Whole Year,1447.35,11979.96,8.277,April-May,January-February,1.0,Spice
+2014,Wayanad,Turmeric,Whole Year,1176.47,8829.21,7.505,April-May,January-February,1.0,Spice
+2014,Kottayam,Rubber,Whole Year,106554.63,195803.93,1.838,Year-round tapping,Year-round tapping,1.0,Plantation
+2014,Pathanamthitta,Rubber,Whole Year,95024.29,167833.75,1.766,Year-round tapping,Year-round tapping,1.0,Plantation
+2014,Ernakulam,Rubber,Whole Year,78984.67,137388.08,1.739,Year-round tapping,Year-round tapping,1.0,Plantation
+2014,Kollam,Rubber,Whole Year,73714.82,124170.56,1.684,Year-round tapping,Year-round tapping,1.0,Plantation
+2014,Thiruvananthapuram,Rubber,Whole Year,64475.82,119807.9,1.858,Year-round tapping,Year-round tapping,1.0,Plantation
+2014,Thrissur,Rubber,Whole Year,49243.92,89877.01,1.825,Year-round tapping,Year-round tapping,1.0,Plantation
+2014,Thrissur,Banana,Whole Year,8103.02,281916.64,34.792,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2014,Ernakulam,Banana,Whole Year,6328.43,221025.24,34.926,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2014,Thiruvananthapuram,Banana,Whole Year,6018.07,252139.51,41.897,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2014,Kollam,Banana,Whole Year,5447.1,195247.69,35.844,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2014,Palakkad,Banana,Whole Year,4991.32,158363.18,31.728,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2014,Alappuzha,Banana,Whole Year,4757.14,176515.46,37.105,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2015,Alappuzha,Rice,Virippu,23389.91,69402.47,2.967,April-May,September-October,1.0,Food Crop
+2015,Alappuzha,Rice,Mundakan,16854.7,47886.33,2.841,September-October,December-January,1.0,Food Crop
+2015,Alappuzha,Rice,Puncha,6948.06,26129.98,3.761,December-January,March-April,1.0,Food Crop
+2015,Thrissur,Rice,Virippu,16633.28,50815.13,3.055,April-May,September-October,1.0,Food Crop
+2015,Thrissur,Rice,Mundakan,12311.04,37808.55,3.071,September-October,December-January,1.0,Food Crop
+2015,Thrissur,Rice,Puncha,4842.95,15582.45,3.218,December-January,March-April,1.0,Food Crop
+2015,Palakkad,Rice,Virippu,14203.27,47172.47,3.321,April-May,September-October,1.0,Food Crop
+2015,Palakkad,Rice,Mundakan,10017.3,36030.06,3.597,September-October,December-January,1.0,Food Crop
+2015,Palakkad,Rice,Puncha,4323.77,13479.57,3.118,December-January,March-April,1.0,Food Crop
+2015,Ernakulam,Rice,Virippu,13008.45,37528.06,2.885,April-May,September-October,1.0,Food Crop
+2015,Ernakulam,Rice,Mundakan,8849.51,31279.74,3.535,September-October,December-January,1.0,Food Crop
+2015,Ernakulam,Rice,Puncha,3448.6,11198.51,3.247,December-January,March-April,1.0,Food Crop
+2015,Kottayam,Rice,Virippu,10129.94,34443.29,3.4,April-May,September-October,1.0,Food Crop
+2015,Kottayam,Rice,Mundakan,6567.07,18794.7,2.862,September-October,December-January,1.0,Food Crop
+2015,Kottayam,Rice,Puncha,3078.29,10084.57,3.276,December-January,March-April,1.0,Food Crop
+2015,Kollam,Rice,Virippu,9112.72,29968.92,3.289,April-May,September-October,1.0,Food Crop
+2015,Kollam,Rice,Mundakan,6085.79,19836.38,3.259,September-October,December-January,1.0,Food Crop
+2015,Kollam,Rice,Puncha,2739.56,8265.61,3.017,December-January,March-April,1.0,Food Crop
+2015,Thiruvananthapuram,Rice,Virippu,8199.67,27233.56,3.321,April-May,September-October,1.0,Food Crop
+2015,Thiruvananthapuram,Rice,Mundakan,4937.28,16629.15,3.368,September-October,December-January,1.0,Food Crop
+2015,Thiruvananthapuram,Rice,Puncha,2140.35,7280.38,3.401,December-January,March-April,1.0,Food Crop
+2015,Malappuram,Coconut,Whole Year,111082.63,778421572.31,7007.591,Year-round,Year-round,1.0,Plantation
+2015,Kozhikode,Coconut,Whole Year,120539.41,933899417.89,7747.669,Year-round,Year-round,1.0,Plantation
+2015,Kannur,Coconut,Whole Year,86411.55,746429515.09,8638.076,Year-round,Year-round,1.0,Plantation
+2015,Thrissur,Coconut,Whole Year,78030.72,549941633.09,7047.758,Year-round,Year-round,1.0,Plantation
+2015,Thiruvananthapuram,Coconut,Whole Year,67842.22,475608847.96,7010.514,Year-round,Year-round,1.0,Plantation
+2015,Ernakulam,Coconut,Whole Year,64749.42,498874281.22,7704.691,Year-round,Year-round,1.0,Plantation
+2015,Kollam,Coconut,Whole Year,55760.9,445881437.05,7996.31,Year-round,Year-round,1.0,Plantation
+2015,Wayanad,Pepper,Whole Year,15009.75,5864.29,0.391,June-July,December-February,1.0,Spice
+2015,Idukki,Pepper,Whole Year,17761.81,7569.46,0.426,June-July,December-February,1.0,Spice
+2015,Kottayam,Pepper,Whole Year,12375.4,4034.38,0.326,June-July,December-February,1.0,Spice
+2015,Pathanamthitta,Pepper,Whole Year,9464.55,3440.45,0.364,June-July,December-February,1.0,Spice
+2015,Kozhikode,Pepper,Whole Year,7910.61,2926.86,0.37,June-July,December-February,1.0,Spice
+2015,Palakkad,Pepper,Whole Year,6141.97,2137.17,0.348,June-July,December-February,1.0,Spice
+2015,Idukki,Cardamom,Whole Year,81401.13,12876.53,0.158,May-June,October-December,1.0,Spice
+2015,Wayanad,Cardamom,Whole Year,7821.39,1504.31,0.192,May-June,October-December,1.0,Spice
+2015,Palakkad,Cardamom,Whole Year,2021.41,327.59,0.162,May-June,October-December,1.0,Spice
+2015,Wayanad,Ginger,Whole Year,3530.31,45489.12,12.885,April-May,December-January,1.0,Spice
+2015,Kozhikode,Ginger,Whole Year,2867.42,36283.56,12.654,April-May,December-January,1.0,Spice
+2015,Palakkad,Ginger,Whole Year,2808.15,31892.23,11.357,April-May,December-January,1.0,Spice
+2015,Malappuram,Ginger,Whole Year,2544.72,33236.08,13.061,April-May,December-January,1.0,Spice
+2015,Idukki,Ginger,Whole Year,2108.31,28575.55,13.554,April-May,December-January,1.0,Spice
+2015,Kannur,Ginger,Whole Year,1676.01,19378.32,11.562,April-May,December-January,1.0,Spice
+2015,Palakkad,Turmeric,Whole Year,2564.38,22693.15,8.849,April-May,January-February,1.0,Spice
+2015,Malappuram,Turmeric,Whole Year,2051.5,22812.44,11.12,April-May,January-February,1.0,Spice
+2015,Kozhikode,Turmeric,Whole Year,1851.38,17166.34,9.272,April-May,January-February,1.0,Spice
+2015,Ernakulam,Turmeric,Whole Year,1571.55,14054.29,8.943,April-May,January-February,1.0,Spice
+2015,Wayanad,Turmeric,Whole Year,1181.08,10648.77,9.016,April-May,January-February,1.0,Spice
+2015,Kottayam,Rubber,Whole Year,100942.67,178254.47,1.766,Year-round tapping,Year-round tapping,1.0,Plantation
+2015,Pathanamthitta,Rubber,Whole Year,92694.52,167943.0,1.812,Year-round tapping,Year-round tapping,1.0,Plantation
+2015,Ernakulam,Rubber,Whole Year,94837.3,145206.7,1.531,Year-round tapping,Year-round tapping,1.0,Plantation
+2015,Kollam,Rubber,Whole Year,77573.48,121617.28,1.568,Year-round tapping,Year-round tapping,1.0,Plantation
+2015,Thiruvananthapuram,Rubber,Whole Year,63466.22,124191.27,1.957,Year-round tapping,Year-round tapping,1.0,Plantation
+2015,Thrissur,Rubber,Whole Year,45144.63,74254.1,1.645,Year-round tapping,Year-round tapping,1.0,Plantation
+2015,Thrissur,Banana,Whole Year,7713.88,284664.28,36.903,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2015,Ernakulam,Banana,Whole Year,6744.37,240140.66,35.606,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2015,Thiruvananthapuram,Banana,Whole Year,6013.67,199506.67,33.176,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2015,Kollam,Banana,Whole Year,6089.58,223944.31,36.775,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2015,Palakkad,Banana,Whole Year,4493.71,159626.05,35.522,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2015,Alappuzha,Banana,Whole Year,4351.1,162673.69,37.387,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2016,Alappuzha,Rice,Virippu,16315.87,39060.94,2.394,April-May,September-October,0.755,Food Crop
+2016,Alappuzha,Rice,Mundakan,11881.46,33798.21,2.845,September-October,December-January,0.785,Food Crop
+2016,Alappuzha,Rice,Puncha,5666.13,14775.53,2.608,December-January,March-April,0.86,Food Crop
+2016,Thrissur,Rice,Virippu,14771.49,41957.8,2.84,April-May,September-October,0.806,Food Crop
+2016,Thrissur,Rice,Mundakan,11299.47,32643.69,2.889,September-October,December-January,0.834,Food Crop
+2016,Thrissur,Rice,Puncha,4560.3,11809.42,2.59,December-January,March-April,0.902,Food Crop
+2016,Palakkad,Rice,Virippu,12953.74,37190.27,2.871,April-May,September-October,0.845,Food Crop
+2016,Palakkad,Rice,Mundakan,8860.67,22163.69,2.501,September-October,December-January,0.845,Food Crop
+2016,Palakkad,Rice,Puncha,3686.5,8810.78,2.39,December-January,March-April,0.83,Food Crop
+2016,Ernakulam,Rice,Virippu,10220.31,27453.09,2.686,April-May,September-October,0.759,Food Crop
+2016,Ernakulam,Rice,Mundakan,7979.36,19224.93,2.409,September-October,December-January,0.851,Food Crop
+2016,Ernakulam,Rice,Puncha,2994.12,8043.83,2.687,December-January,March-April,0.783,Food Crop
+2016,Kottayam,Rice,Virippu,7628.2,17551.8,2.301,April-May,September-October,0.755,Food Crop
+2016,Kottayam,Rice,Mundakan,6251.61,17480.94,2.796,September-October,December-January,0.865,Food Crop
+2016,Kottayam,Rice,Puncha,2725.18,6612.87,2.427,December-January,March-April,0.842,Food Crop
+2016,Kollam,Rice,Virippu,7700.66,20500.21,2.662,April-May,September-October,0.827,Food Crop
+2016,Kollam,Rice,Mundakan,4882.34,11345.26,2.324,September-October,December-January,0.764,Food Crop
+2016,Kollam,Rice,Puncha,2127.73,4947.29,2.325,December-January,March-April,0.755,Food Crop
+2016,Thiruvananthapuram,Rice,Virippu,5631.27,14888.44,2.644,April-May,September-October,0.774,Food Crop
+2016,Thiruvananthapuram,Rice,Mundakan,5090.13,16826.59,3.306,September-October,December-January,0.925,Food Crop
+2016,Thiruvananthapuram,Rice,Puncha,1888.16,5117.82,2.71,December-January,March-April,0.806,Food Crop
+2016,Malappuram,Coconut,Whole Year,98333.41,633949593.37,6446.94,Year-round,Year-round,0.911,Plantation
+2016,Kozhikode,Coconut,Whole Year,94707.34,591074373.0,6241.062,Year-round,Year-round,0.824,Plantation
+2016,Kannur,Coconut,Whole Year,75100.7,576306667.93,7673.786,Year-round,Year-round,0.936,Plantation
+2016,Thrissur,Coconut,Whole Year,70339.76,516628696.36,7344.761,Year-round,Year-round,0.9,Plantation
+2016,Thiruvananthapuram,Coconut,Whole Year,64718.78,461114518.71,7124.895,Year-round,Year-round,0.931,Plantation
+2016,Ernakulam,Coconut,Whole Year,56364.33,344686642.81,6115.333,Year-round,Year-round,0.814,Plantation
+2016,Kollam,Coconut,Whole Year,40874.39,246335858.11,6026.656,Year-round,Year-round,0.752,Plantation
+2016,Wayanad,Pepper,Whole Year,14330.39,4666.21,0.326,June-July,December-February,0.94,Spice
+2016,Idukki,Pepper,Whole Year,16559.58,5281.45,0.319,June-July,December-February,0.84,Spice
+2016,Kottayam,Pepper,Whole Year,10080.15,2817.46,0.28,June-July,December-February,0.885,Spice
+2016,Pathanamthitta,Pepper,Whole Year,9429.09,3156.21,0.335,June-July,December-February,0.908,Spice
+2016,Kozhikode,Pepper,Whole Year,6088.36,1506.25,0.247,June-July,December-February,0.762,Spice
+2016,Palakkad,Pepper,Whole Year,4983.67,1847.05,0.371,June-July,December-February,0.928,Spice
+2016,Idukki,Cardamom,Whole Year,63449.25,8663.64,0.137,May-June,October-December,0.779,Spice
+2016,Wayanad,Cardamom,Whole Year,6350.91,976.14,0.154,May-June,October-December,0.77,Spice
+2016,Palakkad,Cardamom,Whole Year,1547.83,204.37,0.132,May-June,October-December,0.765,Spice
+2016,Wayanad,Ginger,Whole Year,2756.92,28250.08,10.247,April-May,December-January,0.766,Spice
+2016,Kozhikode,Ginger,Whole Year,2539.46,25705.95,10.123,April-May,December-January,0.913,Spice
+2016,Palakkad,Ginger,Whole Year,2075.46,22055.02,10.627,April-May,December-January,0.767,Spice
+2016,Malappuram,Ginger,Whole Year,2119.56,24729.38,11.667,April-May,December-January,0.835,Spice
+2016,Idukki,Ginger,Whole Year,1661.96,17521.67,10.543,April-May,December-January,0.844,Spice
+2016,Kannur,Ginger,Whole Year,1644.69,17263.13,10.496,April-May,December-January,0.899,Spice
+2016,Palakkad,Turmeric,Whole Year,2113.24,14924.0,7.062,April-May,January-February,0.825,Spice
+2016,Malappuram,Turmeric,Whole Year,1644.29,10750.81,6.538,April-May,January-February,0.795,Spice
+2016,Kozhikode,Turmeric,Whole Year,1713.41,14902.32,8.697,April-May,January-February,0.949,Spice
+2016,Ernakulam,Turmeric,Whole Year,1422.71,10708.24,7.527,April-May,January-February,0.944,Spice
+2016,Wayanad,Turmeric,Whole Year,1188.39,9273.46,7.803,April-May,January-February,0.889,Spice
+2016,Kottayam,Rubber,Whole Year,100819.8,147657.3,1.465,Year-round tapping,Year-round tapping,0.867,Plantation
+2016,Pathanamthitta,Rubber,Whole Year,82571.97,140052.45,1.696,Year-round tapping,Year-round tapping,0.874,Plantation
+2016,Ernakulam,Rubber,Whole Year,68625.29,99108.12,1.444,Year-round tapping,Year-round tapping,0.843,Plantation
+2016,Kollam,Rubber,Whole Year,60380.41,71154.56,1.178,Year-round tapping,Year-round tapping,0.766,Plantation
+2016,Thiruvananthapuram,Rubber,Whole Year,53675.65,90217.03,1.681,Year-round tapping,Year-round tapping,0.812,Plantation
+2016,Thrissur,Rubber,Whole Year,36219.51,54977.74,1.518,Year-round tapping,Year-round tapping,0.783,Plantation
+2016,Thrissur,Banana,Whole Year,6997.78,262989.14,37.582,"April-May, Sep-Oct",Year-round,0.937,Food Crop
+2016,Ernakulam,Banana,Whole Year,6361.28,198491.54,31.203,"April-May, Sep-Oct",Year-round,0.912,Food Crop
+2016,Thiruvananthapuram,Banana,Whole Year,5178.75,189634.77,36.618,"April-May, Sep-Oct",Year-round,0.944,Food Crop
+2016,Kollam,Banana,Whole Year,4704.52,142026.22,30.189,"April-May, Sep-Oct",Year-round,0.844,Food Crop
+2016,Palakkad,Banana,Whole Year,3502.93,88858.79,25.367,"April-May, Sep-Oct",Year-round,0.761,Food Crop
+2016,Alappuzha,Banana,Whole Year,4330.19,147452.49,34.052,"April-May, Sep-Oct",Year-round,0.95,Food Crop
+2017,Alappuzha,Rice,Virippu,25361.87,91800.56,3.62,April-May,September-October,1.127,Food Crop
+2017,Alappuzha,Rice,Mundakan,16478.91,48879.73,2.966,September-October,December-January,1.063,Food Crop
+2017,Alappuzha,Rice,Puncha,7285.39,26041.33,3.574,December-January,March-April,1.073,Food Crop
+2017,Thrissur,Rice,Virippu,20009.3,78097.62,3.903,April-May,September-October,1.086,Food Crop
+2017,Thrissur,Rice,Mundakan,13724.19,45500.28,3.315,September-October,December-January,1.102,Food Crop
+2017,Thrissur,Rice,Puncha,5994.12,24477.12,4.084,December-January,March-April,1.135,Food Crop
+2017,Palakkad,Rice,Virippu,18823.31,78149.85,4.152,April-May,September-October,1.138,Food Crop
+2017,Palakkad,Rice,Mundakan,10491.19,34586.1,3.297,September-October,December-January,1.053,Food Crop
+2017,Palakkad,Rice,Puncha,5204.53,20702.9,3.978,December-January,March-April,1.12,Food Crop
+2017,Ernakulam,Rice,Virippu,12858.2,42078.65,3.273,April-May,September-October,1.051,Food Crop
+2017,Ernakulam,Rice,Mundakan,10035.09,30056.19,2.995,September-October,December-January,1.089,Food Crop
+2017,Ernakulam,Rice,Puncha,4248.33,14586.09,3.433,December-January,March-April,1.085,Food Crop
+2017,Kottayam,Rice,Virippu,11715.07,41091.33,3.508,April-May,September-October,1.09,Food Crop
+2017,Kottayam,Rice,Mundakan,8408.0,31620.63,3.761,September-October,December-January,1.145,Food Crop
+2017,Kottayam,Rice,Puncha,3007.73,10500.99,3.491,December-January,March-April,1.096,Food Crop
+2017,Kollam,Rice,Virippu,9742.86,34849.72,3.577,April-May,September-October,1.083,Food Crop
+2017,Kollam,Rice,Mundakan,6228.22,22207.26,3.566,September-October,December-January,1.058,Food Crop
+2017,Kollam,Rice,Puncha,2767.09,9978.16,3.606,December-January,March-April,1.085,Food Crop
+2017,Thiruvananthapuram,Rice,Virippu,8349.42,32117.57,3.847,April-May,September-October,1.117,Food Crop
+2017,Thiruvananthapuram,Rice,Mundakan,5410.36,17555.1,3.245,September-October,December-January,1.054,Food Crop
+2017,Thiruvananthapuram,Rice,Puncha,2338.63,7483.46,3.2,December-January,March-April,1.068,Food Crop
+2017,Malappuram,Coconut,Whole Year,105895.16,849633997.76,8023.351,Year-round,Year-round,1.086,Plantation
+2017,Kozhikode,Coconut,Whole Year,133108.53,1055122468.89,7926.783,Year-round,Year-round,1.054,Plantation
+2017,Kannur,Coconut,Whole Year,90088.38,783872408.72,8701.149,Year-round,Year-round,1.058,Plantation
+2017,Thrissur,Coconut,Whole Year,88817.34,739826347.37,8329.751,Year-round,Year-round,1.131,Plantation
+2017,Thiruvananthapuram,Coconut,Whole Year,73236.67,615508760.8,8404.379,Year-round,Year-round,1.071,Plantation
+2017,Ernakulam,Coconut,Whole Year,71274.78,484888733.18,6803.09,Year-round,Year-round,1.112,Plantation
+2017,Kollam,Coconut,Whole Year,59923.22,416840759.86,6956.248,Year-round,Year-round,1.125,Plantation
+2017,Wayanad,Pepper,Whole Year,16993.68,6712.6,0.395,June-July,December-February,1.101,Spice
+2017,Idukki,Pepper,Whole Year,18747.4,7228.92,0.386,June-July,December-February,1.095,Spice
+2017,Kottayam,Pepper,Whole Year,11885.08,4552.68,0.383,June-July,December-February,1.077,Spice
+2017,Pathanamthitta,Pepper,Whole Year,10720.94,4045.28,0.377,June-July,December-February,1.082,Spice
+2017,Kozhikode,Pepper,Whole Year,8221.15,2791.34,0.34,June-July,December-February,1.062,Spice
+2017,Palakkad,Pepper,Whole Year,6780.65,2846.32,0.42,June-July,December-February,1.118,Spice
+2017,Idukki,Cardamom,Whole Year,89952.95,19171.36,0.213,May-June,October-December,1.059,Spice
+2017,Wayanad,Cardamom,Whole Year,10064.37,2202.55,0.219,May-June,October-December,1.125,Spice
+2017,Palakkad,Cardamom,Whole Year,2044.9,390.89,0.191,May-June,October-December,1.078,Spice
+2017,Wayanad,Ginger,Whole Year,4145.18,51352.93,12.389,April-May,December-January,1.107,Spice
+2017,Kozhikode,Ginger,Whole Year,2958.13,40967.3,13.849,April-May,December-January,1.06,Spice
+2017,Palakkad,Ginger,Whole Year,2916.62,36920.01,12.659,April-May,December-January,1.066,Spice
+2017,Malappuram,Ginger,Whole Year,2589.31,32158.03,12.42,April-May,December-January,1.067,Spice
+2017,Idukki,Ginger,Whole Year,2009.1,30415.97,15.139,April-May,December-January,1.148,Spice
+2017,Kannur,Ginger,Whole Year,2039.84,27121.52,13.296,April-May,December-January,1.147,Spice
+2017,Palakkad,Turmeric,Whole Year,2721.39,25429.62,9.344,April-May,January-February,1.076,Spice
+2017,Malappuram,Turmeric,Whole Year,2343.13,20983.21,8.955,April-May,January-February,1.143,Spice
+2017,Kozhikode,Turmeric,Whole Year,2138.64,22135.38,10.35,April-May,January-February,1.078,Spice
+2017,Ernakulam,Turmeric,Whole Year,1569.76,15101.25,9.62,April-May,January-February,1.082,Spice
+2017,Wayanad,Turmeric,Whole Year,1307.12,9318.24,7.129,April-May,January-February,1.074,Spice
+2017,Kottayam,Rubber,Whole Year,114751.7,206720.85,1.801,Year-round tapping,Year-round tapping,1.079,Plantation
+2017,Pathanamthitta,Rubber,Whole Year,98379.02,198621.63,2.019,Year-round tapping,Year-round tapping,1.098,Plantation
+2017,Ernakulam,Rubber,Whole Year,89109.07,174474.24,1.958,Year-round tapping,Year-round tapping,1.084,Plantation
+2017,Kollam,Rubber,Whole Year,81337.18,173661.49,2.135,Year-round tapping,Year-round tapping,1.118,Plantation
+2017,Thiruvananthapuram,Rubber,Whole Year,73204.4,161242.81,2.203,Year-round tapping,Year-round tapping,1.097,Plantation
+2017,Thrissur,Rubber,Whole Year,46880.45,88480.27,1.887,Year-round tapping,Year-round tapping,1.143,Plantation
+2017,Thrissur,Banana,Whole Year,9320.48,355108.46,38.1,"April-May, Sep-Oct",Year-round,1.144,Food Crop
+2017,Ernakulam,Banana,Whole Year,8133.02,363663.35,44.714,"April-May, Sep-Oct",Year-round,1.134,Food Crop
+2017,Thiruvananthapuram,Banana,Whole Year,6529.36,236503.49,36.222,"April-May, Sep-Oct",Year-round,1.07,Food Crop
+2017,Kollam,Banana,Whole Year,6123.92,236323.43,38.59,"April-May, Sep-Oct",Year-round,1.131,Food Crop
+2017,Palakkad,Banana,Whole Year,5508.08,244096.68,44.316,"April-May, Sep-Oct",Year-round,1.086,Food Crop
+2017,Alappuzha,Banana,Whole Year,5023.67,214062.39,42.611,"April-May, Sep-Oct",Year-round,1.132,Food Crop
+2018,Alappuzha,Rice,Virippu,17025.22,42200.09,2.479,April-May,September-October,0.843,Food Crop
+2018,Alappuzha,Rice,Mundakan,14100.43,35787.85,2.538,September-October,December-January,0.851,Food Crop
+2018,Alappuzha,Rice,Puncha,5671.98,14743.27,2.599,December-January,March-April,0.827,Food Crop
+2018,Thrissur,Rice,Virippu,15992.97,45115.0,2.821,April-May,September-October,0.875,Food Crop
+2018,Thrissur,Rice,Mundakan,8824.27,23974.56,2.717,September-October,December-January,0.778,Food Crop
+2018,Thrissur,Rice,Puncha,4612.18,13905.6,3.015,December-January,March-April,0.857,Food Crop
+2018,Palakkad,Rice,Virippu,11811.46,30079.75,2.547,April-May,September-October,0.78,Food Crop
+2018,Palakkad,Rice,Mundakan,8922.3,23984.4,2.688,September-October,December-January,0.899,Food Crop
+2018,Palakkad,Rice,Puncha,4075.75,11320.86,2.778,December-January,March-April,0.902,Food Crop
+2018,Ernakulam,Rice,Virippu,11229.56,35032.46,3.12,April-May,September-October,0.914,Food Crop
+2018,Ernakulam,Rice,Mundakan,7850.39,21057.81,2.682,September-October,December-January,0.909,Food Crop
+2018,Ernakulam,Rice,Puncha,3282.51,8979.95,2.736,December-January,March-April,0.894,Food Crop
+2018,Kottayam,Rice,Virippu,9274.35,29238.07,3.153,April-May,September-October,0.889,Food Crop
+2018,Kottayam,Rice,Mundakan,5266.02,14113.79,2.68,September-October,December-January,0.819,Food Crop
+2018,Kottayam,Rice,Puncha,2302.44,6949.5,3.018,December-January,March-April,0.842,Food Crop
+2018,Kollam,Rice,Virippu,7921.48,26787.74,3.382,April-May,September-October,0.872,Food Crop
+2018,Kollam,Rice,Mundakan,5633.43,16962.76,3.011,September-October,December-January,0.889,Food Crop
+2018,Kollam,Rice,Puncha,2130.22,5508.68,2.586,December-January,March-April,0.781,Food Crop
+2018,Thiruvananthapuram,Rice,Virippu,6850.38,20270.15,2.959,April-May,September-October,0.835,Food Crop
+2018,Thiruvananthapuram,Rice,Mundakan,4954.48,14944.34,3.016,September-October,December-January,0.935,Food Crop
+2018,Thiruvananthapuram,Rice,Puncha,2025.25,6075.36,3.0,December-January,March-April,0.947,Food Crop
+2018,Malappuram,Coconut,Whole Year,98188.74,636692129.74,6484.37,Year-round,Year-round,0.83,Plantation
+2018,Kozhikode,Coconut,Whole Year,103888.33,685253369.57,6596.057,Year-round,Year-round,0.911,Plantation
+2018,Kannur,Coconut,Whole Year,80822.89,461036610.91,5704.282,Year-round,Year-round,0.934,Plantation
+2018,Thrissur,Coconut,Whole Year,66329.45,400222043.32,6033.852,Year-round,Year-round,0.898,Plantation
+2018,Thiruvananthapuram,Coconut,Whole Year,55190.79,340647090.39,6172.172,Year-round,Year-round,0.84,Plantation
+2018,Ernakulam,Coconut,Whole Year,54550.18,340039401.4,6233.516,Year-round,Year-round,0.85,Plantation
+2018,Kollam,Coconut,Whole Year,47055.83,286617406.93,6091.008,Year-round,Year-round,0.822,Plantation
+2018,Wayanad,Pepper,Whole Year,12332.95,3541.49,0.287,June-July,December-February,0.753,Spice
+2018,Idukki,Pepper,Whole Year,16097.28,5527.9,0.343,June-July,December-February,0.942,Spice
+2018,Kottayam,Pepper,Whole Year,9081.09,2222.22,0.245,June-July,December-February,0.767,Spice
+2018,Pathanamthitta,Pepper,Whole Year,8691.07,2677.09,0.308,June-July,December-February,0.869,Spice
+2018,Kozhikode,Pepper,Whole Year,6340.26,1754.09,0.277,June-July,December-February,0.792,Spice
+2018,Palakkad,Pepper,Whole Year,4701.67,1313.03,0.279,June-July,December-February,0.788,Spice
+2018,Idukki,Cardamom,Whole Year,73232.17,10880.93,0.149,May-June,October-December,0.863,Spice
+2018,Wayanad,Cardamom,Whole Year,7170.76,851.68,0.119,May-June,October-December,0.838,Spice
+2018,Palakkad,Cardamom,Whole Year,1659.42,194.6,0.117,May-June,October-December,0.781,Spice
+2018,Wayanad,Ginger,Whole Year,3334.92,38354.77,11.501,April-May,December-January,0.939,Spice
+2018,Kozhikode,Ginger,Whole Year,2450.86,25247.44,10.301,April-May,December-January,0.879,Spice
+2018,Palakkad,Ginger,Whole Year,2147.86,20857.95,9.711,April-May,December-January,0.781,Spice
+2018,Malappuram,Ginger,Whole Year,1976.9,20566.3,10.403,April-May,December-January,0.755,Spice
+2018,Idukki,Ginger,Whole Year,1706.46,17765.27,10.411,April-May,December-January,0.884,Spice
+2018,Kannur,Ginger,Whole Year,1543.42,17653.31,11.438,April-May,December-January,0.881,Spice
+2018,Palakkad,Turmeric,Whole Year,1961.58,13071.78,6.664,April-May,January-February,0.799,Spice
+2018,Malappuram,Turmeric,Whole Year,1897.22,15297.45,8.063,April-May,January-February,0.916,Spice
+2018,Kozhikode,Turmeric,Whole Year,1541.0,9526.13,6.182,April-May,January-February,0.791,Spice
+2018,Ernakulam,Turmeric,Whole Year,1162.38,7251.71,6.239,April-May,January-February,0.753,Spice
+2018,Wayanad,Turmeric,Whole Year,1021.21,9197.84,9.007,April-May,January-February,0.929,Spice
+2018,Kottayam,Rubber,Whole Year,81997.28,128286.64,1.565,Year-round tapping,Year-round tapping,0.802,Plantation
+2018,Pathanamthitta,Rubber,Whole Year,81365.7,101189.07,1.244,Year-round tapping,Year-round tapping,0.804,Plantation
+2018,Ernakulam,Rubber,Whole Year,68452.6,120897.85,1.766,Year-round tapping,Year-round tapping,0.86,Plantation
+2018,Kollam,Rubber,Whole Year,64297.85,104015.07,1.618,Year-round tapping,Year-round tapping,0.94,Plantation
+2018,Thiruvananthapuram,Rubber,Whole Year,58404.23,100206.38,1.716,Year-round tapping,Year-round tapping,0.924,Plantation
+2018,Thrissur,Rubber,Whole Year,42938.44,70156.74,1.634,Year-round tapping,Year-round tapping,0.91,Plantation
+2018,Thrissur,Banana,Whole Year,6312.98,176779.9,28.003,"April-May, Sep-Oct",Year-round,0.804,Food Crop
+2018,Ernakulam,Banana,Whole Year,6215.7,183761.2,29.564,"April-May, Sep-Oct",Year-round,0.802,Food Crop
+2018,Thiruvananthapuram,Banana,Whole Year,5729.82,187095.94,32.653,"April-May, Sep-Oct",Year-round,0.947,Food Crop
+2018,Kollam,Banana,Whole Year,4139.5,117492.4,28.383,"April-May, Sep-Oct",Year-round,0.804,Food Crop
+2018,Palakkad,Banana,Whole Year,4063.46,105502.26,25.964,"April-May, Sep-Oct",Year-round,0.805,Food Crop
+2018,Alappuzha,Banana,Whole Year,4535.09,153733.16,33.899,"April-May, Sep-Oct",Year-round,0.916,Food Crop
+2019,Alappuzha,Rice,Virippu,25295.89,96919.19,3.831,April-May,September-October,1.11,Food Crop
+2019,Alappuzha,Rice,Mundakan,17075.44,64916.11,3.802,September-October,December-January,1.141,Food Crop
+2019,Alappuzha,Rice,Puncha,6753.17,21374.49,3.165,December-January,March-April,1.102,Food Crop
+2019,Thrissur,Rice,Virippu,19092.41,68913.05,3.609,April-May,September-October,1.11,Food Crop
+2019,Thrissur,Rice,Mundakan,12812.05,39254.54,3.064,September-October,December-January,1.079,Food Crop
+2019,Thrissur,Rice,Puncha,6048.65,19420.99,3.211,December-January,March-April,1.08,Food Crop
+2019,Palakkad,Rice,Virippu,15950.6,68981.29,4.325,April-May,September-October,1.116,Food Crop
+2019,Palakkad,Rice,Mundakan,11304.31,39315.16,3.478,September-October,December-January,1.071,Food Crop
+2019,Palakkad,Rice,Puncha,4805.94,17076.39,3.553,December-January,March-April,1.1,Food Crop
+2019,Ernakulam,Rice,Virippu,12898.46,50194.51,3.892,April-May,September-October,1.127,Food Crop
+2019,Ernakulam,Rice,Mundakan,9772.73,39945.89,4.087,September-October,December-January,1.119,Food Crop
+2019,Ernakulam,Rice,Puncha,3914.01,13722.9,3.506,December-January,March-April,1.132,Food Crop
+2019,Kottayam,Rice,Virippu,11112.76,41287.08,3.715,April-May,September-October,1.077,Food Crop
+2019,Kottayam,Rice,Mundakan,6760.6,25011.07,3.7,September-October,December-January,1.059,Food Crop
+2019,Kottayam,Rice,Puncha,3193.61,11461.93,3.589,December-January,March-April,1.069,Food Crop
+2019,Kollam,Rice,Virippu,10647.09,38635.13,3.629,April-May,September-October,1.123,Food Crop
+2019,Kollam,Rice,Mundakan,7248.49,28205.31,3.891,September-October,December-January,1.119,Food Crop
+2019,Kollam,Rice,Puncha,2899.83,10713.94,3.695,December-January,March-April,1.099,Food Crop
+2019,Thiruvananthapuram,Rice,Virippu,8182.5,28430.68,3.475,April-May,September-October,1.068,Food Crop
+2019,Thiruvananthapuram,Rice,Mundakan,5756.65,19612.65,3.407,September-October,December-January,1.053,Food Crop
+2019,Thiruvananthapuram,Rice,Puncha,2431.55,9638.21,3.964,December-January,March-April,1.142,Food Crop
+2019,Malappuram,Coconut,Whole Year,125842.38,1063830610.1,8453.675,Year-round,Year-round,1.134,Plantation
+2019,Kozhikode,Coconut,Whole Year,126860.44,961158356.32,7576.502,Year-round,Year-round,1.054,Plantation
+2019,Kannur,Coconut,Whole Year,81957.41,678992635.05,8284.701,Year-round,Year-round,1.062,Plantation
+2019,Thrissur,Coconut,Whole Year,86586.13,676976431.48,7818.532,Year-round,Year-round,1.084,Plantation
+2019,Thiruvananthapuram,Coconut,Whole Year,75786.37,621377090.4,8199.062,Year-round,Year-round,1.082,Plantation
+2019,Ernakulam,Coconut,Whole Year,75409.6,621499777.33,8241.653,Year-round,Year-round,1.082,Plantation
+2019,Kollam,Coconut,Whole Year,63789.89,543851274.93,8525.666,Year-round,Year-round,1.112,Plantation
+2019,Wayanad,Pepper,Whole Year,17229.2,7485.98,0.434,June-July,December-February,1.144,Spice
+2019,Idukki,Pepper,Whole Year,20823.62,7511.19,0.361,June-July,December-February,1.09,Spice
+2019,Kottayam,Pepper,Whole Year,15217.23,5881.82,0.387,June-July,December-February,1.137,Spice
+2019,Pathanamthitta,Pepper,Whole Year,10292.6,3478.7,0.338,June-July,December-February,1.124,Spice
+2019,Kozhikode,Pepper,Whole Year,8501.26,3156.92,0.371,June-July,December-February,1.085,Spice
+2019,Palakkad,Pepper,Whole Year,6116.19,2104.53,0.344,June-July,December-February,1.073,Spice
+2019,Idukki,Cardamom,Whole Year,92356.33,18433.29,0.2,May-June,October-December,1.088,Spice
+2019,Wayanad,Cardamom,Whole Year,8669.65,1884.39,0.217,May-June,October-December,1.145,Spice
+2019,Palakkad,Cardamom,Whole Year,2401.6,486.27,0.202,May-June,October-December,1.144,Spice
+2019,Wayanad,Ginger,Whole Year,4164.62,52580.94,12.626,April-May,December-January,1.067,Spice
+2019,Kozhikode,Ginger,Whole Year,3360.05,48491.21,14.432,April-May,December-January,1.111,Spice
+2019,Palakkad,Ginger,Whole Year,2754.76,36981.67,13.425,April-May,December-January,1.068,Spice
+2019,Malappuram,Ginger,Whole Year,2732.04,36808.52,13.473,April-May,December-January,1.128,Spice
+2019,Idukki,Ginger,Whole Year,2236.94,31638.27,14.144,April-May,December-January,1.147,Spice
+2019,Kannur,Ginger,Whole Year,2158.42,28827.89,13.356,April-May,December-January,1.12,Spice
+2019,Palakkad,Turmeric,Whole Year,2727.17,24111.41,8.841,April-May,January-February,1.072,Spice
+2019,Malappuram,Turmeric,Whole Year,2241.1,18568.94,8.286,April-May,January-February,1.109,Spice
+2019,Kozhikode,Turmeric,Whole Year,1961.92,19223.39,9.798,April-May,January-February,1.138,Spice
+2019,Ernakulam,Turmeric,Whole Year,1655.97,15533.31,9.38,April-May,January-February,1.139,Spice
+2019,Wayanad,Turmeric,Whole Year,1362.14,13904.06,10.208,April-May,January-February,1.105,Spice
+2019,Kottayam,Rubber,Whole Year,113153.19,207307.63,1.832,Year-round tapping,Year-round tapping,1.087,Plantation
+2019,Pathanamthitta,Rubber,Whole Year,109078.51,199474.69,1.829,Year-round tapping,Year-round tapping,1.1,Plantation
+2019,Ernakulam,Rubber,Whole Year,93988.17,195476.31,2.08,Year-round tapping,Year-round tapping,1.135,Plantation
+2019,Kollam,Rubber,Whole Year,68714.1,127645.52,1.858,Year-round tapping,Year-round tapping,1.109,Plantation
+2019,Thiruvananthapuram,Rubber,Whole Year,70879.04,154524.44,2.18,Year-round tapping,Year-round tapping,1.118,Plantation
+2019,Thrissur,Rubber,Whole Year,47006.67,99839.48,2.124,Year-round tapping,Year-round tapping,1.138,Plantation
+2019,Thrissur,Banana,Whole Year,9348.64,404334.85,43.251,"April-May, Sep-Oct",Year-round,1.135,Food Crop
+2019,Ernakulam,Banana,Whole Year,8096.86,339656.97,41.949,"April-May, Sep-Oct",Year-round,1.134,Food Crop
+2019,Thiruvananthapuram,Banana,Whole Year,7026.97,299035.34,42.555,"April-May, Sep-Oct",Year-round,1.112,Food Crop
+2019,Kollam,Banana,Whole Year,6056.3,250515.34,41.364,"April-May, Sep-Oct",Year-round,1.138,Food Crop
+2019,Palakkad,Banana,Whole Year,5372.29,206124.17,38.368,"April-May, Sep-Oct",Year-round,1.084,Food Crop
+2019,Alappuzha,Banana,Whole Year,4917.49,202509.22,41.181,"April-May, Sep-Oct",Year-round,1.132,Food Crop
+2020,Alappuzha,Rice,Virippu,16928.03,44858.74,2.65,April-May,September-October,0.751,Food Crop
+2020,Alappuzha,Rice,Mundakan,15512.59,41374.78,2.667,September-October,December-January,0.946,Food Crop
+2020,Alappuzha,Rice,Puncha,5516.0,16400.54,2.973,December-January,March-April,0.877,Food Crop
+2020,Thrissur,Rice,Virippu,14508.61,36426.1,2.511,April-May,September-October,0.771,Food Crop
+2020,Thrissur,Rice,Mundakan,11690.81,39713.24,3.397,September-October,December-January,0.943,Food Crop
+2020,Thrissur,Rice,Puncha,5213.31,13820.18,2.651,December-January,March-April,0.936,Food Crop
+2020,Palakkad,Rice,Virippu,11881.62,31282.79,2.633,April-May,September-October,0.81,Food Crop
+2020,Palakkad,Rice,Mundakan,8932.46,25112.04,2.811,September-October,December-January,0.866,Food Crop
+2020,Palakkad,Rice,Puncha,3620.29,7723.01,2.133,December-January,March-April,0.759,Food Crop
+2020,Ernakulam,Rice,Virippu,9609.67,22237.93,2.314,April-May,September-October,0.755,Food Crop
+2020,Ernakulam,Rice,Mundakan,8365.55,23610.81,2.822,September-October,December-January,0.887,Food Crop
+2020,Ernakulam,Rice,Puncha,3257.54,9575.08,2.939,December-January,March-April,0.949,Food Crop
+2020,Kottayam,Rice,Virippu,7260.55,14986.7,2.064,April-May,September-October,0.783,Food Crop
+2020,Kottayam,Rice,Mundakan,5739.37,15737.44,2.742,September-October,December-January,0.794,Food Crop
+2020,Kottayam,Rice,Puncha,2674.92,7200.04,2.692,December-January,March-April,0.881,Food Crop
+2020,Kollam,Rice,Virippu,8354.56,22793.61,2.728,April-May,September-October,0.939,Food Crop
+2020,Kollam,Rice,Mundakan,5708.49,13855.77,2.427,September-October,December-January,0.83,Food Crop
+2020,Kollam,Rice,Puncha,2245.66,5625.56,2.505,December-January,March-April,0.796,Food Crop
+2020,Thiruvananthapuram,Rice,Virippu,6488.41,21374.67,3.294,April-May,September-October,0.923,Food Crop
+2020,Thiruvananthapuram,Rice,Mundakan,4236.75,10646.55,2.513,September-October,December-January,0.787,Food Crop
+2020,Thiruvananthapuram,Rice,Puncha,2069.28,6206.0,2.999,December-January,March-April,0.904,Food Crop
+2020,Malappuram,Coconut,Whole Year,94014.02,647132730.6,6883.364,Year-round,Year-round,0.875,Plantation
+2020,Kozhikode,Coconut,Whole Year,105597.87,761004516.58,7206.627,Year-round,Year-round,0.909,Plantation
+2020,Kannur,Coconut,Whole Year,61012.88,353242375.99,5789.636,Year-round,Year-round,0.775,Plantation
+2020,Thrissur,Coconut,Whole Year,60307.33,408856320.5,6779.546,Year-round,Year-round,0.79,Plantation
+2020,Thiruvananthapuram,Coconut,Whole Year,59235.42,384469193.1,6490.529,Year-round,Year-round,0.866,Plantation
+2020,Ernakulam,Coconut,Whole Year,55003.36,317509995.26,5772.556,Year-round,Year-round,0.812,Plantation
+2020,Kollam,Coconut,Whole Year,41464.78,237262480.93,5722.025,Year-round,Year-round,0.764,Plantation
+2020,Wayanad,Pepper,Whole Year,12754.93,3130.77,0.245,June-July,December-February,0.87,Spice
+2020,Idukki,Pepper,Whole Year,17445.78,5137.34,0.294,June-July,December-February,0.922,Spice
+2020,Kottayam,Pepper,Whole Year,9117.68,2538.15,0.278,June-July,December-February,0.798,Spice
+2020,Pathanamthitta,Pepper,Whole Year,9974.42,3103.13,0.311,June-July,December-February,0.89,Spice
+2020,Kozhikode,Pepper,Whole Year,6450.28,1844.56,0.286,June-July,December-February,0.815,Spice
+2020,Palakkad,Pepper,Whole Year,4705.14,1354.65,0.288,June-July,December-February,0.82,Spice
+2020,Idukki,Cardamom,Whole Year,69722.34,10593.34,0.152,May-June,October-December,0.864,Spice
+2020,Wayanad,Cardamom,Whole Year,6632.74,990.24,0.149,May-June,October-December,0.79,Spice
+2020,Palakkad,Cardamom,Whole Year,1618.47,236.63,0.146,May-June,October-December,0.756,Spice
+2020,Wayanad,Ginger,Whole Year,3527.74,41920.86,11.883,April-May,December-January,0.924,Spice
+2020,Kozhikode,Ginger,Whole Year,2563.5,27539.96,10.743,April-May,December-January,0.818,Spice
+2020,Palakkad,Ginger,Whole Year,2572.33,31604.11,12.286,April-May,December-January,0.913,Spice
+2020,Malappuram,Ginger,Whole Year,2360.07,23840.36,10.102,April-May,December-January,0.855,Spice
+2020,Idukki,Ginger,Whole Year,1495.98,14483.73,9.682,April-May,December-January,0.762,Spice
+2020,Kannur,Ginger,Whole Year,1609.65,17878.66,11.107,April-May,December-January,0.924,Spice
+2020,Palakkad,Turmeric,Whole Year,2152.77,15910.5,7.391,April-May,January-February,0.908,Spice
+2020,Malappuram,Turmeric,Whole Year,1720.05,14746.8,8.573,April-May,January-February,0.861,Spice
+2020,Kozhikode,Turmeric,Whole Year,1628.95,13935.75,8.555,April-May,January-February,0.949,Spice
+2020,Ernakulam,Turmeric,Whole Year,1187.11,8047.09,6.779,April-May,January-February,0.79,Spice
+2020,Wayanad,Turmeric,Whole Year,884.57,5781.47,6.536,April-May,January-February,0.756,Spice
+2020,Kottayam,Rubber,Whole Year,95735.66,137921.19,1.441,Year-round tapping,Year-round tapping,0.924,Plantation
+2020,Pathanamthitta,Rubber,Whole Year,83034.84,133534.86,1.608,Year-round tapping,Year-round tapping,0.835,Plantation
+2020,Ernakulam,Rubber,Whole Year,75603.88,113840.41,1.506,Year-round tapping,Year-round tapping,0.948,Plantation
+2020,Kollam,Rubber,Whole Year,61886.75,115672.0,1.869,Year-round tapping,Year-round tapping,0.895,Plantation
+2020,Thiruvananthapuram,Rubber,Whole Year,63719.93,106354.6,1.669,Year-round tapping,Year-round tapping,0.93,Plantation
+2020,Thrissur,Rubber,Whole Year,35890.27,53534.5,1.492,Year-round tapping,Year-round tapping,0.868,Plantation
+2020,Thrissur,Banana,Whole Year,7702.54,268407.12,34.847,"April-May, Sep-Oct",Year-round,0.897,Food Crop
+2020,Ernakulam,Banana,Whole Year,6653.63,205094.31,30.824,"April-May, Sep-Oct",Year-round,0.932,Food Crop
+2020,Thiruvananthapuram,Banana,Whole Year,5509.78,172312.94,31.274,"April-May, Sep-Oct",Year-round,0.944,Food Crop
+2020,Kollam,Banana,Whole Year,4742.06,137536.04,29.003,"April-May, Sep-Oct",Year-round,0.848,Food Crop
+2020,Palakkad,Banana,Whole Year,4309.33,122800.61,28.496,"April-May, Sep-Oct",Year-round,0.839,Food Crop
+2020,Alappuzha,Banana,Whole Year,3471.98,107536.37,30.973,"April-May, Sep-Oct",Year-round,0.869,Food Crop
+2021,Alappuzha,Rice,Virippu,22092.25,64362.79,2.913,April-May,September-October,1.0,Food Crop
+2021,Alappuzha,Rice,Mundakan,14730.44,51514.87,3.497,September-October,December-January,1.0,Food Crop
+2021,Alappuzha,Rice,Puncha,6592.15,21679.64,3.289,December-January,March-April,1.0,Food Crop
+2021,Thrissur,Rice,Virippu,17458.94,58000.75,3.322,April-May,September-October,1.0,Food Crop
+2021,Thrissur,Rice,Mundakan,12297.05,35311.65,2.872,September-October,December-January,1.0,Food Crop
+2021,Thrissur,Rice,Puncha,5511.52,16940.2,3.074,December-January,March-April,1.0,Food Crop
+2021,Palakkad,Rice,Virippu,13832.56,42748.19,3.09,April-May,September-October,1.0,Food Crop
+2021,Palakkad,Rice,Mundakan,11287.9,38578.16,3.418,September-October,December-January,1.0,Food Crop
+2021,Palakkad,Rice,Puncha,4421.55,13753.64,3.111,December-January,March-April,1.0,Food Crop
+2021,Ernakulam,Rice,Virippu,12298.98,45895.45,3.732,April-May,September-October,1.0,Food Crop
+2021,Ernakulam,Rice,Mundakan,8917.1,29516.4,3.31,September-October,December-January,1.0,Food Crop
+2021,Ernakulam,Rice,Puncha,3943.18,12859.22,3.261,December-January,March-April,1.0,Food Crop
+2021,Kottayam,Rice,Virippu,9870.48,31089.39,3.15,April-May,September-October,1.0,Food Crop
+2021,Kottayam,Rice,Mundakan,6974.94,22253.34,3.19,September-October,December-January,1.0,Food Crop
+2021,Kottayam,Rice,Puncha,3109.14,9990.61,3.213,December-January,March-April,1.0,Food Crop
+2021,Kollam,Rice,Virippu,9329.69,29662.22,3.179,April-May,September-October,1.0,Food Crop
+2021,Kollam,Rice,Mundakan,6324.77,17003.9,2.688,September-October,December-January,1.0,Food Crop
+2021,Kollam,Rice,Puncha,2823.7,9286.32,3.289,December-January,March-April,1.0,Food Crop
+2021,Thiruvananthapuram,Rice,Virippu,7874.25,19359.31,2.459,April-May,September-October,1.0,Food Crop
+2021,Thiruvananthapuram,Rice,Mundakan,5798.2,18347.04,3.164,September-October,December-January,1.0,Food Crop
+2021,Thiruvananthapuram,Rice,Puncha,2374.67,6966.77,2.934,December-January,March-April,1.0,Food Crop
+2021,Malappuram,Coconut,Whole Year,108217.06,743229449.49,6867.951,Year-round,Year-round,1.0,Plantation
+2021,Kozhikode,Coconut,Whole Year,111413.33,963549125.94,8648.419,Year-round,Year-round,1.0,Plantation
+2021,Kannur,Coconut,Whole Year,82208.67,627289930.41,7630.46,Year-round,Year-round,1.0,Plantation
+2021,Thrissur,Coconut,Whole Year,82436.77,642793204.06,7797.409,Year-round,Year-round,1.0,Plantation
+2021,Thiruvananthapuram,Coconut,Whole Year,71533.99,552169172.74,7718.977,Year-round,Year-round,1.0,Plantation
+2021,Ernakulam,Coconut,Whole Year,72811.1,543566082.07,7465.429,Year-round,Year-round,1.0,Plantation
+2021,Kollam,Coconut,Whole Year,55553.02,451667884.14,8130.393,Year-round,Year-round,1.0,Plantation
+2021,Wayanad,Pepper,Whole Year,15829.14,6066.31,0.383,June-July,December-February,1.0,Spice
+2021,Idukki,Pepper,Whole Year,18574.86,5906.73,0.318,June-July,December-February,1.0,Spice
+2021,Kottayam,Pepper,Whole Year,12980.06,4126.39,0.318,June-July,December-February,1.0,Spice
+2021,Pathanamthitta,Pepper,Whole Year,10151.32,3338.57,0.329,June-July,December-February,1.0,Spice
+2021,Kozhikode,Pepper,Whole Year,7974.34,2864.43,0.359,June-July,December-February,1.0,Spice
+2021,Palakkad,Pepper,Whole Year,6096.41,2205.76,0.362,June-July,December-February,1.0,Spice
+2021,Idukki,Cardamom,Whole Year,91858.27,17134.41,0.187,May-June,October-December,1.0,Spice
+2021,Wayanad,Cardamom,Whole Year,7902.34,1532.13,0.194,May-June,October-December,1.0,Spice
+2021,Palakkad,Cardamom,Whole Year,2118.95,343.95,0.162,May-June,October-December,1.0,Spice
+2021,Wayanad,Ginger,Whole Year,3604.55,47584.22,13.201,April-May,December-January,1.0,Spice
+2021,Kozhikode,Ginger,Whole Year,2955.37,41007.78,13.876,April-May,December-January,1.0,Spice
+2021,Palakkad,Ginger,Whole Year,2778.99,35086.38,12.626,April-May,December-January,1.0,Spice
+2021,Malappuram,Ginger,Whole Year,2478.37,31018.19,12.516,April-May,December-January,1.0,Spice
+2021,Idukki,Ginger,Whole Year,1890.37,20907.42,11.06,April-May,December-January,1.0,Spice
+2021,Kannur,Ginger,Whole Year,1943.51,22647.74,11.653,April-May,December-January,1.0,Spice
+2021,Palakkad,Turmeric,Whole Year,2376.08,16717.35,7.036,April-May,January-February,1.0,Spice
+2021,Malappuram,Turmeric,Whole Year,1936.1,14714.97,7.6,April-May,January-February,1.0,Spice
+2021,Kozhikode,Turmeric,Whole Year,1947.78,17893.64,9.187,April-May,January-February,1.0,Spice
+2021,Ernakulam,Turmeric,Whole Year,1448.39,14529.74,10.032,April-May,January-February,1.0,Spice
+2021,Wayanad,Turmeric,Whole Year,1258.91,10422.63,8.279,April-May,January-February,1.0,Spice
+2021,Kottayam,Rubber,Whole Year,91878.12,195690.82,2.13,Year-round tapping,Year-round tapping,1.0,Plantation
+2021,Pathanamthitta,Rubber,Whole Year,88399.53,138174.0,1.563,Year-round tapping,Year-round tapping,1.0,Plantation
+2021,Ernakulam,Rubber,Whole Year,89345.92,192212.06,2.151,Year-round tapping,Year-round tapping,1.0,Plantation
+2021,Kollam,Rubber,Whole Year,80191.02,150855.59,1.881,Year-round tapping,Year-round tapping,1.0,Plantation
+2021,Thiruvananthapuram,Rubber,Whole Year,66932.95,128704.83,1.923,Year-round tapping,Year-round tapping,1.0,Plantation
+2021,Thrissur,Rubber,Whole Year,46707.59,85964.92,1.84,Year-round tapping,Year-round tapping,1.0,Plantation
+2021,Thrissur,Banana,Whole Year,8041.68,280049.42,34.825,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2021,Ernakulam,Banana,Whole Year,6736.11,230470.09,34.214,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2021,Thiruvananthapuram,Banana,Whole Year,5492.11,190711.69,34.725,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2021,Kollam,Banana,Whole Year,5228.14,166829.6,31.91,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2021,Palakkad,Banana,Whole Year,5044.97,196237.39,38.898,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2021,Alappuzha,Banana,Whole Year,4706.62,144034.84,30.603,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2022,Alappuzha,Rice,Virippu,23340.45,87647.45,3.755,April-May,September-October,1.091,Food Crop
+2022,Alappuzha,Rice,Mundakan,17492.04,61788.55,3.532,September-October,December-January,1.118,Food Crop
+2022,Alappuzha,Rice,Puncha,7605.97,24370.24,3.204,December-January,March-April,1.121,Food Crop
+2022,Thrissur,Rice,Virippu,18975.02,60416.81,3.184,April-May,September-October,1.076,Food Crop
+2022,Thrissur,Rice,Mundakan,13836.24,52270.92,3.778,September-October,December-January,1.131,Food Crop
+2022,Thrissur,Rice,Puncha,5675.71,20323.34,3.581,December-January,March-April,1.113,Food Crop
+2022,Palakkad,Rice,Virippu,17082.61,64564.95,3.78,April-May,September-October,1.132,Food Crop
+2022,Palakkad,Rice,Mundakan,11087.96,39227.8,3.538,September-October,December-January,1.071,Food Crop
+2022,Palakkad,Rice,Puncha,4745.07,19628.72,4.137,December-January,March-April,1.134,Food Crop
+2022,Ernakulam,Rice,Virippu,13236.33,48211.02,3.642,April-May,September-October,1.074,Food Crop
+2022,Ernakulam,Rice,Mundakan,9551.41,37084.69,3.883,September-October,December-January,1.132,Food Crop
+2022,Ernakulam,Rice,Puncha,4334.81,13723.7,3.166,December-January,March-April,1.06,Food Crop
+2022,Kottayam,Rice,Virippu,10623.55,44157.26,4.157,April-May,September-October,1.109,Food Crop
+2022,Kottayam,Rice,Mundakan,8162.5,27934.66,3.422,September-October,December-January,1.136,Food Crop
+2022,Kottayam,Rice,Puncha,3127.84,10423.82,3.333,December-January,March-April,1.052,Food Crop
+2022,Kollam,Rice,Virippu,10550.77,42140.12,3.994,April-May,September-October,1.105,Food Crop
+2022,Kollam,Rice,Mundakan,6794.69,21479.26,3.161,September-October,December-January,1.109,Food Crop
+2022,Kollam,Rice,Puncha,2916.98,9926.76,3.403,December-January,March-April,1.064,Food Crop
+2022,Thiruvananthapuram,Rice,Virippu,7866.8,31117.8,3.956,April-May,September-October,1.093,Food Crop
+2022,Thiruvananthapuram,Rice,Mundakan,6327.43,25322.3,4.002,September-October,December-January,1.149,Food Crop
+2022,Thiruvananthapuram,Rice,Puncha,2493.15,9715.5,3.897,December-January,March-April,1.077,Food Crop
+2022,Malappuram,Coconut,Whole Year,107704.26,826951001.17,7677.979,Year-round,Year-round,1.085,Plantation
+2022,Kozhikode,Coconut,Whole Year,121734.65,905401776.27,7437.503,Year-round,Year-round,1.057,Plantation
+2022,Kannur,Coconut,Whole Year,88783.17,776373242.68,8744.599,Year-round,Year-round,1.104,Plantation
+2022,Thrissur,Coconut,Whole Year,88602.35,782048251.91,8826.496,Year-round,Year-round,1.103,Plantation
+2022,Thiruvananthapuram,Coconut,Whole Year,74653.79,563672151.77,7550.483,Year-round,Year-round,1.117,Plantation
+2022,Ernakulam,Coconut,Whole Year,77234.37,656459851.53,8499.582,Year-round,Year-round,1.097,Plantation
+2022,Kollam,Coconut,Whole Year,63320.79,514490124.86,8125.138,Year-round,Year-round,1.146,Plantation
+2022,Wayanad,Pepper,Whole Year,16483.79,5719.0,0.347,June-July,December-February,1.07,Spice
+2022,Idukki,Pepper,Whole Year,18808.94,7255.64,0.386,June-July,December-February,1.095,Spice
+2022,Kottayam,Pepper,Whole Year,12905.17,5541.66,0.429,June-July,December-February,1.116,Spice
+2022,Pathanamthitta,Pepper,Whole Year,10368.04,3430.41,0.331,June-July,December-February,1.065,Spice
+2022,Kozhikode,Pepper,Whole Year,9351.55,3648.1,0.39,June-July,December-February,1.102,Spice
+2022,Palakkad,Pepper,Whole Year,6500.2,2606.81,0.401,June-July,December-February,1.126,Spice
+2022,Idukki,Cardamom,Whole Year,96537.55,19365.38,0.201,May-June,October-December,1.128,Spice
+2022,Wayanad,Cardamom,Whole Year,8223.04,1493.04,0.182,May-June,October-December,1.086,Spice
+2022,Palakkad,Cardamom,Whole Year,1979.31,404.01,0.204,May-June,October-December,1.09,Spice
+2022,Wayanad,Ginger,Whole Year,4271.06,53487.45,12.523,April-May,December-January,1.102,Spice
+2022,Kozhikode,Ginger,Whole Year,3446.6,52832.27,15.329,April-May,December-January,1.149,Spice
+2022,Palakkad,Ginger,Whole Year,3138.98,46515.28,14.819,April-May,December-January,1.143,Spice
+2022,Malappuram,Ginger,Whole Year,2731.29,36853.73,13.493,April-May,December-January,1.088,Spice
+2022,Idukki,Ginger,Whole Year,2222.35,31454.51,14.154,April-May,December-January,1.08,Spice
+2022,Kannur,Ginger,Whole Year,1904.43,23872.49,12.535,April-May,December-January,1.067,Spice
+2022,Palakkad,Turmeric,Whole Year,2720.21,29320.91,10.779,April-May,January-February,1.148,Spice
+2022,Malappuram,Turmeric,Whole Year,2241.96,21031.54,9.381,April-May,January-February,1.063,Spice
+2022,Kozhikode,Turmeric,Whole Year,2277.56,21284.23,9.345,April-May,January-February,1.126,Spice
+2022,Ernakulam,Turmeric,Whole Year,1635.65,13562.2,8.292,April-May,January-February,1.09,Spice
+2022,Wayanad,Turmeric,Whole Year,1244.61,10292.72,8.27,April-May,January-February,1.057,Spice
+2022,Kottayam,Rubber,Whole Year,120732.14,259731.59,2.151,Year-round tapping,Year-round tapping,1.147,Plantation
+2022,Pathanamthitta,Rubber,Whole Year,95135.5,178725.18,1.879,Year-round tapping,Year-round tapping,1.101,Plantation
+2022,Ernakulam,Rubber,Whole Year,90249.41,178895.37,1.982,Year-round tapping,Year-round tapping,1.114,Plantation
+2022,Kollam,Rubber,Whole Year,85884.9,154688.53,1.801,Year-round tapping,Year-round tapping,1.115,Plantation
+2022,Thiruvananthapuram,Rubber,Whole Year,67895.66,144421.93,2.127,Year-round tapping,Year-round tapping,1.056,Plantation
+2022,Thrissur,Rubber,Whole Year,46449.22,85884.52,1.849,Year-round tapping,Year-round tapping,1.062,Plantation
+2022,Thrissur,Banana,Whole Year,8679.12,331756.5,38.225,"April-May, Sep-Oct",Year-round,1.119,Food Crop
+2022,Ernakulam,Banana,Whole Year,8054.0,305186.97,37.893,"April-May, Sep-Oct",Year-round,1.15,Food Crop
+2022,Thiruvananthapuram,Banana,Whole Year,6625.4,274453.88,41.424,"April-May, Sep-Oct",Year-round,1.081,Food Crop
+2022,Kollam,Banana,Whole Year,6159.44,278671.82,45.243,"April-May, Sep-Oct",Year-round,1.093,Food Crop
+2022,Palakkad,Banana,Whole Year,5062.51,189100.85,37.353,"April-May, Sep-Oct",Year-round,1.087,Food Crop
+2022,Alappuzha,Banana,Whole Year,5360.41,205419.71,38.322,"April-May, Sep-Oct",Year-round,1.123,Food Crop
+2023,Alappuzha,Rice,Virippu,21851.43,55430.36,2.537,April-May,September-October,1.0,Food Crop
+2023,Alappuzha,Rice,Mundakan,15319.83,50560.07,3.3,September-October,December-January,1.0,Food Crop
+2023,Alappuzha,Rice,Puncha,6250.87,20296.19,3.247,December-January,March-April,1.0,Food Crop
+2023,Thrissur,Rice,Virippu,17486.6,58550.37,3.348,April-May,September-October,1.0,Food Crop
+2023,Thrissur,Rice,Mundakan,12323.24,36364.59,2.951,September-October,December-January,1.0,Food Crop
+2023,Thrissur,Rice,Puncha,5564.1,17579.31,3.159,December-January,March-April,1.0,Food Crop
+2023,Palakkad,Rice,Virippu,14979.52,44355.61,2.961,April-May,September-October,1.0,Food Crop
+2023,Palakkad,Rice,Mundakan,10267.28,30529.65,2.973,September-October,December-January,1.0,Food Crop
+2023,Palakkad,Rice,Puncha,4461.09,16230.32,3.638,December-January,March-April,1.0,Food Crop
+2023,Ernakulam,Rice,Virippu,11642.56,32446.98,2.787,April-May,September-October,1.0,Food Crop
+2023,Ernakulam,Rice,Mundakan,9393.64,29556.26,3.146,September-October,December-January,1.0,Food Crop
+2023,Ernakulam,Rice,Puncha,3624.55,12563.47,3.466,December-January,March-April,1.0,Food Crop
+2023,Kottayam,Rice,Virippu,9697.19,35564.05,3.667,April-May,September-October,1.0,Food Crop
+2023,Kottayam,Rice,Mundakan,7237.27,22255.3,3.075,September-October,December-January,1.0,Food Crop
+2023,Kottayam,Rice,Puncha,3323.6,10120.14,3.045,December-January,March-April,1.0,Food Crop
+2023,Kollam,Rice,Virippu,9333.94,30583.77,3.277,April-May,September-October,1.0,Food Crop
+2023,Kollam,Rice,Mundakan,6710.05,24154.48,3.6,September-October,December-January,1.0,Food Crop
+2023,Kollam,Rice,Puncha,2704.32,8132.23,3.007,December-January,March-April,1.0,Food Crop
+2023,Thiruvananthapuram,Rice,Virippu,7672.49,23220.83,3.027,April-May,September-October,1.0,Food Crop
+2023,Thiruvananthapuram,Rice,Mundakan,5778.51,18693.22,3.235,September-October,December-January,1.0,Food Crop
+2023,Thiruvananthapuram,Rice,Puncha,2208.9,7172.92,3.247,December-January,March-April,1.0,Food Crop
+2023,Malappuram,Coconut,Whole Year,97927.59,677368211.39,6917.032,Year-round,Year-round,1.0,Plantation
+2023,Kozhikode,Coconut,Whole Year,121902.38,866221664.18,7105.863,Year-round,Year-round,1.0,Plantation
+2023,Kannur,Coconut,Whole Year,78655.32,615241251.87,7821.992,Year-round,Year-round,1.0,Plantation
+2023,Thrissur,Coconut,Whole Year,83683.53,663725216.76,7931.372,Year-round,Year-round,1.0,Plantation
+2023,Thiruvananthapuram,Coconut,Whole Year,74535.97,525174696.35,7045.923,Year-round,Year-round,1.0,Plantation
+2023,Ernakulam,Coconut,Whole Year,60379.12,507232883.63,8400.8,Year-round,Year-round,1.0,Plantation
+2023,Kollam,Coconut,Whole Year,54112.63,397700787.73,7349.5,Year-round,Year-round,1.0,Plantation
+2023,Wayanad,Pepper,Whole Year,15996.15,5847.78,0.366,June-July,December-February,1.0,Spice
+2023,Idukki,Pepper,Whole Year,18410.3,7559.64,0.411,June-July,December-February,1.0,Spice
+2023,Kottayam,Pepper,Whole Year,11613.89,4366.58,0.376,June-July,December-February,1.0,Spice
+2023,Pathanamthitta,Pepper,Whole Year,10028.51,3585.4,0.358,June-July,December-February,1.0,Spice
+2023,Kozhikode,Pepper,Whole Year,8611.39,3136.43,0.364,June-July,December-February,1.0,Spice
+2023,Palakkad,Pepper,Whole Year,6161.49,2341.55,0.38,June-July,December-February,1.0,Spice
+2023,Idukki,Cardamom,Whole Year,83448.95,14012.36,0.168,May-June,October-December,1.0,Spice
+2023,Wayanad,Cardamom,Whole Year,7582.08,1150.08,0.152,May-June,October-December,1.0,Spice
+2023,Palakkad,Cardamom,Whole Year,2205.62,361.97,0.164,May-June,October-December,1.0,Spice
+2023,Wayanad,Ginger,Whole Year,3461.28,42307.88,12.223,April-May,December-January,1.0,Spice
+2023,Kozhikode,Ginger,Whole Year,3046.11,40561.21,13.316,April-May,December-January,1.0,Spice
+2023,Palakkad,Ginger,Whole Year,2920.47,34802.97,11.917,April-May,December-January,1.0,Spice
+2023,Malappuram,Ginger,Whole Year,2479.11,31689.42,12.783,April-May,December-January,1.0,Spice
+2023,Idukki,Ginger,Whole Year,1975.13,27863.85,14.107,April-May,December-January,1.0,Spice
+2023,Kannur,Ginger,Whole Year,1844.19,24407.6,13.235,April-May,December-January,1.0,Spice
+2023,Palakkad,Turmeric,Whole Year,2582.86,24015.34,9.298,April-May,January-February,1.0,Spice
+2023,Malappuram,Turmeric,Whole Year,2018.1,15374.21,7.618,April-May,January-February,1.0,Spice
+2023,Kozhikode,Turmeric,Whole Year,1835.97,14792.57,8.057,April-May,January-February,1.0,Spice
+2023,Ernakulam,Turmeric,Whole Year,1460.35,12995.29,8.899,April-May,January-February,1.0,Spice
+2023,Wayanad,Turmeric,Whole Year,1274.3,10849.96,8.514,April-May,January-February,1.0,Spice
+2023,Kottayam,Rubber,Whole Year,106621.37,218053.39,2.045,Year-round tapping,Year-round tapping,1.0,Plantation
+2023,Pathanamthitta,Rubber,Whole Year,96143.58,209077.9,2.175,Year-round tapping,Year-round tapping,1.0,Plantation
+2023,Ernakulam,Rubber,Whole Year,87403.42,135165.03,1.546,Year-round tapping,Year-round tapping,1.0,Plantation
+2023,Kollam,Rubber,Whole Year,77825.03,144356.62,1.855,Year-round tapping,Year-round tapping,1.0,Plantation
+2023,Thiruvananthapuram,Rubber,Whole Year,69191.7,131252.37,1.897,Year-round tapping,Year-round tapping,1.0,Plantation
+2023,Thrissur,Rubber,Whole Year,44688.47,72560.72,1.624,Year-round tapping,Year-round tapping,1.0,Plantation
+2023,Thrissur,Banana,Whole Year,7916.39,258221.13,32.619,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2023,Ernakulam,Banana,Whole Year,6796.82,249089.87,36.648,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2023,Thiruvananthapuram,Banana,Whole Year,6500.97,234718.09,36.105,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2023,Kollam,Banana,Whole Year,5171.13,187427.1,36.245,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2023,Palakkad,Banana,Whole Year,5299.16,176422.79,33.293,"April-May, Sep-Oct",Year-round,1.0,Food Crop
+2023,Alappuzha,Banana,Whole Year,4469.85,156628.45,35.041,"April-May, Sep-Oct",Year-round,1.0,Food Crop

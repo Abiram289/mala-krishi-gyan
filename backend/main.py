@@ -8,6 +8,7 @@ import google.generativeai as genai
 from google.cloud import texttospeech
 import requests
 import base64
+from agriculture_data_service import agriculture_data_service
 
 # Load environment variables from parent directory
 load_dotenv("../.env")
@@ -441,6 +442,54 @@ def delete_activity(activity_id: int, user=Depends(get_current_user)):
         print(f"Activity deletion error: {type(e).__name__} - {e}")
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
+
+def translate_alert_to_malayalam(english_alert):
+    """Translate weather alerts to Malayalam"""
+    translations = {
+        "🌡️ High temperature - Critical irrigation needed": "🌡️ ഉയർന്ന താപനില - ജലസേചനം അത്യാവശ്യം",
+        "🌴 Coconut palms need deep watering - check soil moisture": "🌴 തേങ്ങാമരങ്ങൾക്ക് ആഴത്തിലുള്ള നനവ് വേണം - മണ്ണിലെ ഈർപ്പം പരിശോധിക്കുക",
+        "🍌 Banana plants - provide shade nets if available": "🍌 വാഴച്ചെടികൾക്ക് നിഴൽവല നൽകുക",
+        "🌡️ Cool weather - Excellent for hill crops": "🌡️ തണുത്ത കാലാവസ്ഥ - മലമുകളിലെ കൃഷിക്ക് അനുകൂലം",
+        "☁️ Perfect temperature for cardamom & tea cultivation": "☁️ ഏലക്കയ്ക്കും ചായക്കും അനുകൂല താപനില",
+        "💧 Very high humidity - Pest alert level HIGH": "💧 വളരെ ഉയർന്ന ആർദ്രത - കീടബാധയുടെ അപകടസാധ്യത ഉയർന്നത്",
+        "🪫 Coconut: Check for rhinoceros beetle in crown": "🪫 തേങ്ങ: കിരീടത്തിൽ വണ്ട് പരിശോധിക്കുക",
+        "🌳 Rubber: Apply preventive fungicide spray": "🌳 റബ്ബർ: കുമിൾനാശിനി സ്പ്രേ ചെയ്യുക",
+        "🌶️ Pepper: Watch for foot rot - improve drainage": "🌶️ കുരുമുളക്: വേരുചീയൽ ശ്രദ്ധിക്കുക - നീർവാർച്ച മെച്ചപ്പെടുത്തുക",
+        "🐛 General pest monitoring required - check all crops": "🐛 പൊതുവായ കീട നിരീക്ഷണം - എല്ലാ വിളകളും പരിശോധിക്കുക",
+        "💧 High humidity - Favorable for rice growth": "💧 ഉയർന്ന ആർദ്രത - നെല്ല് കൃഷിക്ക് അനുകൂലം",
+        "🌧️ Monsoon humidity - Perfect for rice transplanting": "🌧️ മൺസൂൺ ആർദ്രത - നെല്ല് നടീലിന് അനുകൂലം",
+        "🍂 Post-monsoon humidity - Good for spice planting": "🍂 മൺസൂണ് ശേഷം - സുഗന്ധവ്യഞ്ജന കൃഷിക്ക് അനുകൂലം",
+        "🌧️ Rainy weather - Pause coconut harvesting": "🌧️ മഴക്കാലം - തേങ്ങ പറിക്കൽ നിർത്തുക",
+        "🌱 Good time for rice transplanting if flooded fields ready": "🌱 വയലുകൾ തയ്യാറായാൽ നെല്ല് നടാൻ ഉത്തമസമയം",
+        "☔ Avoid rubber tapping during heavy rains": "☔ കനത്ത മഴയ്ക്കിടെ റബ്ബർ ചീകൽ ഒഴിവാക്കുക",
+        "☀️ Dry weather - Ideal for rubber tapping (morning)": "☀️ വരണ്ട കാലാവസ്ഥ - റബ്ബർ ചീകലിന് അനുകൂലം (രാവിലെ)",
+        "🌾 Good for drying harvested spices": "🌾 വിളവെടുത്ത സുഗന്ധവ്യഞ്ജനങ്ങൾ ഉണക്കാൻ നല്ലത്",
+        "💨 Strong winds - Secure banana plants & coconut palms": "💨 ശക്തമായ കാറ്റ് - വാഴയും തേങ്ങയും സുരക്ഷിതമാക്കുക",
+        "🌊 SW Monsoon - Peak rice planting season": "🌊 തെക്കുപടിഞ്ഞാറൻ മൺസൂൺ - നെല്ല് നടീലിന്റെ പ്രധാന കാലം",
+        "🌾 Excellent for Kharif rice in Kuttanad region": "🌾 കുട്ടനാട് പ്രദേശത്ത് ഖറീഫ് നെല്ലിന് അനുകൂലം",
+        "🌾 Post-monsoon - Rice harvest time in many areas": "🌾 മൺസൂൺ ശേഷം - പല പ്രദേശങ്ങളിലും നെല്ല് വിളവെടുക്കാൻ സമയം",
+        "🌶️ Start pepper planting preparations": "🌶️ കുരുമുളക് നടീലിന് തയ്യാറെടുക്കുക",
+        "🌊 NE Monsoon - Second growing season for vegetables": "🌊 വടക്കുകിഴക്കൻ മൺസൂൺ - പച്ചക്കറികളുടെ രണ്ടാം കൃഷിക്കാലം",
+        "🌿 Cool weather perfect for cardamom flowering": "🌿 തണുത്ത കാലാവസ്ഥ ഏലക്ക പൂവിടലിന് അനുകൂലം",
+        "☀️ Dry season - Focus on irrigation management": "☀️ വരണ്ട കാലം - ജലസേചന നിയന്ത്രണത്തിൽ ശ്രദ്ധിക്കുക",
+        "🥥 Peak coconut harvesting season": "🥥 തേങ്ങ വിളവെടുപ്പിന്റെ പ്രധാന കാലം",
+        "🔥 Hot season - Prepare land for monsoon crops": "🔥 ചൂടുകാലം - മൺസൂൺ വിളകൾക്കായി ഭൂമി തയ്യാറാക്കുക",
+        "🌡️ Apply mulching to retain soil moisture": "🌡️ മണ്ണിലെ ഈർപ്പം നിലനിർത്താൻ പുതച്ചിൽ നൽകുക",
+        "Weather data unavailable - using fallback data": "കാലാവസ്ഥാ വിവരങ്ങൾ ലഭ്യമല്ല - കരുതൽ വിവരങ്ങൾ ഉപയോഗിക്കുന്നു"
+    }
+    
+    # Try to find exact match first
+    if english_alert in translations:
+        return translations[english_alert]
+    
+    # Try to find partial matches for dynamic content (like crop names)
+    for english_key, malayalam_value in translations.items():
+        if english_key.split(' - ')[0] in english_alert:
+            # Handle dynamic parts like crop names
+            return malayalam_value
+    
+    # If no translation found, return original
+    return english_alert
 
 def get_current_season(month):
     """Determine Kerala agricultural season based on dual monsoon pattern"""
@@ -923,7 +972,7 @@ def get_kerala_crop_calendar(month, district=None):
 
 @app.get("/crop-calendar")
 def get_crop_calendar(month: int = None, user=Depends(get_current_user)):
-    """Get Kerala-specific crop calendar based on monsoon patterns and user's district"""
+    """Get Kerala-specific crop calendar based on monsoon patterns and user's district with data insights"""
     try:
         from datetime import datetime
         
@@ -947,6 +996,41 @@ def get_crop_calendar(month: int = None, user=Depends(get_current_user)):
         # Get Kerala-specific crop calendar
         calendar_data = get_kerala_crop_calendar(month, district)
         
+        # Enhance with agriculture data insights
+        if district:
+            # Get data-driven seasonal recommendations
+            seasonal_data = agriculture_data_service.get_seasonal_calendar(month, district)
+            if "error" not in seasonal_data:
+                calendar_data["data_driven_recommendations"] = {
+                    "suitable_crops_count": seasonal_data.get("total_suitable_crops", 0),
+                    "major_district_crops": [c["crop"] for c in seasonal_data.get("major_district_crops", [])[:5]],
+                    "intensive_cultivation_crops": [c["crop"] for c in seasonal_data.get("intensive_cultivation_crops", [])[:5]],
+                    "categories": list(seasonal_data.get("calendar_by_category", {}).keys())
+                }
+            
+            # Get historical productivity insights
+            historical_insights = []
+            major_crops = ["Rice", "Coconut", "Rubber", "Pepper", "Cardamom"]
+            for crop in major_crops:
+                productivity_data = agriculture_data_service.get_historical_productivity_data(crop, district, years=3)
+                if "error" not in productivity_data:
+                    historical_insights.append({
+                        "crop": crop,
+                        "avg_productivity": productivity_data.get("average_productivity", 0),
+                        "weather_trend": productivity_data.get("weather_impact_trends", [])[-1:] if productivity_data.get("weather_impact_trends") else []
+                    })
+            
+            calendar_data["historical_insights"] = historical_insights[:3]  # Top 3 crops
+            
+            # Get smart recommendations
+            smart_recs = agriculture_data_service.get_smart_recommendations(district, month)
+            if "error" not in smart_recs:
+                calendar_data["smart_recommendations"] = {
+                    "seasonal_planting_opportunities": len(smart_recs.get("seasonal_planting", [])),
+                    "district_advantages": [adv["category"] for adv in smart_recs.get("district_advantages", [])],
+                    "high_productivity_crops": [insight["crop"] for insight in smart_recs.get("productivity_insights", [])[:3]]
+                }
+        
         return calendar_data
         
     except HTTPException:
@@ -956,8 +1040,8 @@ def get_crop_calendar(month: int = None, user=Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=f"Failed to get crop calendar: {str(e)}")
 
 @app.get("/weather")
-def get_weather(lat: float = None, lon: float = None, user=Depends(get_current_user)):
-    """Get weather data for user's location or coordinates."""
+def get_weather(lat: float = None, lon: float = None, language: str = "en", user=Depends(get_current_user)):
+    """Get weather data for user's location or coordinates with language-specific alerts."""
     try:
         # Get user profile for location if coordinates not provided
         if lat is None or lon is None:
@@ -1029,26 +1113,84 @@ def get_weather(lat: float = None, lon: float = None, user=Depends(get_current_u
         else:
             condition = "cloudy"
         
-        # Generate Kerala-specific farming alerts
+        # Generate Kerala-specific farming alerts with data context
         alerts = []
         temp = round(data["main"]["temp"])
         humidity = data["main"]["humidity"]
         wind_speed = round(data["wind"]["speed"] * 3.6)  # Convert m/s to km/h
         
-        # Temperature-based alerts for Kerala crops
-        if temp > 35:
-            alerts.append("🌡️ High temperature - Increase irrigation for coconut & banana")
-            alerts.append("☀️ Provide shade nets for cardamom & pepper")
-        elif temp < 20:
-            alerts.append("🌡️ Cool weather - Good for tea & cardamom growth")
+        # Get user's district for context
+        user_district = None
+        try:
+            profile_response = supabase.table("user_profiles").select("district").eq("user_id", user.id).execute()
+            if profile_response.data:
+                user_district = profile_response.data[0].get("district")
+        except:
+            pass
         
-        # Humidity-based Kerala crop alerts
+        # Get data-driven context for alerts
+        from datetime import datetime
+        current_month = datetime.now().month
+        data_context = agriculture_data_service.get_ai_context_for_query(
+            f"weather alert for {user_district or 'Kerala'}", 
+            user_district, 
+            current_month
+        )
+        
+        # Enhanced temperature-based alerts with data insights
+        if temp > 35:
+            alerts.append("🌡️ High temperature - Critical irrigation needed")
+            if user_district:
+                # Get district-specific heat-sensitive crops
+                district_data = agriculture_data_service.get_crop_recommendations_for_district(user_district)
+                if "error" not in district_data:
+                    plantation_crops = district_data.get("recommendations", {}).get("Plantation", [])
+                    if plantation_crops:
+                        heat_sensitive = [c["crop"] for c in plantation_crops[:2]]
+                        alerts.append(f"☀️ Increase watering frequency for {', '.join(heat_sensitive)}")
+            alerts.append("🌴 Coconut palms need deep watering - check soil moisture")
+            alerts.append("🍌 Banana plants - provide shade nets if available")
+        elif temp < 20:
+            alerts.append("🌡️ Cool weather - Excellent for hill crops")
+            if user_district in ["Idukki", "Wayanad"]:
+                alerts.append("☁️ Perfect temperature for cardamom & tea cultivation")
+        
+        # Enhanced humidity-based alerts with data context
         if humidity > 85:
-            alerts.append("💧 Very high humidity - Check coconut for rhinoceros beetle")
-            alerts.append("🐛 Monitor pepper plants for foot rot disease")
-            alerts.append("🌿 Apply copper fungicide to rubber trees")
+            alerts.append("💧 Very high humidity - Pest alert level HIGH")
+            
+            # District-specific high humidity alerts
+            if user_district:
+                district_data = agriculture_data_service.get_crop_recommendations_for_district(user_district)
+                if "error" not in district_data:
+                    # Get plantation crops for beetle/disease warnings
+                    plantation_crops = district_data.get("recommendations", {}).get("Plantation", [])
+                    spice_crops = district_data.get("recommendations", {}).get("Spice", [])
+                    
+                    if plantation_crops:
+                        coconut_present = any("coconut" in c["crop"].lower() for c in plantation_crops)
+                        rubber_present = any("rubber" in c["crop"].lower() for c in plantation_crops)
+                        
+                        if coconut_present:
+                            alerts.append("🪫 Coconut: Check for rhinoceros beetle in crown")
+                        if rubber_present:
+                            alerts.append("🌳 Rubber: Apply preventive fungicide spray")
+                    
+                    if spice_crops:
+                        pepper_present = any("pepper" in c["crop"].lower() for c in spice_crops)
+                        if pepper_present:
+                            alerts.append("🌶️ Pepper: Watch for foot rot - improve drainage")
+            
+            alerts.append("🐛 General pest monitoring required - check all crops")
+            
         elif humidity > 75:
-            alerts.append("💧 High humidity - Good for rice, monitor spice crops")
+            alerts.append("💧 High humidity - Favorable for rice growth")
+            
+            # Add seasonal context for humidity
+            if current_month in [6, 7, 8, 9]:
+                alerts.append("🌧️ Monsoon humidity - Perfect for rice transplanting")
+            elif current_month in [10, 11, 12]:
+                alerts.append("🍂 Post-monsoon humidity - Good for spice planting")
         
         # Rain-based alerts for Kerala agriculture
         if condition == "rainy":
@@ -1064,8 +1206,7 @@ def get_weather(lat: float = None, lon: float = None, user=Depends(get_current_u
             alerts.append("💨 Strong winds - Secure banana plants & coconut palms")
         
         # Month-specific Kerala agricultural advice
-        from datetime import datetime
-        current_month = datetime.now().month
+        # datetime already imported above
         
         if current_month in [6, 7, 8]:  # Southwest monsoon
             alerts.append("🌊 SW Monsoon - Peak rice planting season")
@@ -1100,6 +1241,13 @@ def get_weather(lat: float = None, lon: float = None, user=Depends(get_current_u
             except:
                 pass  # Use API location as fallback
         
+        # Translate alerts to Malayalam if requested
+        if language == "ml":
+            translated_alerts = []
+            for alert in alerts:
+                translated_alerts.append(translate_alert_to_malayalam(alert))
+            alerts = translated_alerts
+        
         return {
             "temperature": temp,
             "humidity": humidity,
@@ -1113,6 +1261,10 @@ def get_weather(lat: float = None, lon: float = None, user=Depends(get_current_u
     except Exception as e:
         print(f"Weather error: {type(e).__name__} - {e}")
         # Return fallback data
+        fallback_alert = "Weather data unavailable - using fallback data"
+        if language == "ml":
+            fallback_alert = translate_alert_to_malayalam(fallback_alert)
+        
         return {
             "temperature": 28,
             "humidity": 75,
@@ -1120,8 +1272,131 @@ def get_weather(lat: float = None, lon: float = None, user=Depends(get_current_u
             "windSpeed": 12,
             "location": "Kochi, IN",
             "description": "Partly cloudy",
-            "alerts": ["Weather data unavailable - using fallback data"]
+            "alerts": [fallback_alert]
         }
+
+
+# ------------------------
+# Agriculture Data API Endpoints
+# ------------------------
+@app.get("/agriculture/district-recommendations/{district}")
+def get_district_crop_recommendations(district: str, season: str = None, user=Depends(get_current_user)):
+    """Get crop recommendations for a specific district."""
+    try:
+        recommendations = agriculture_data_service.get_crop_recommendations_for_district(district, season)
+        if "error" in recommendations:
+            raise HTTPException(status_code=404, detail=recommendations["error"])
+        return recommendations
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting recommendations: {str(e)}")
+
+@app.get("/agriculture/productivity/{crop}")
+def get_crop_productivity_data(crop: str, district: str = None, years: int = 5, user=Depends(get_current_user)):
+    """Get historical productivity data for a crop."""
+    try:
+        # Get user's district if not specified
+        if not district:
+            try:
+                profile_response = supabase.table("user_profiles").select("district").eq("user_id", user.id).execute()
+                if profile_response.data:
+                    district = profile_response.data[0].get("district")
+            except:
+                pass
+        
+        productivity_data = agriculture_data_service.get_historical_productivity_data(crop, district, years)
+        if "error" in productivity_data:
+            raise HTTPException(status_code=404, detail=productivity_data["error"])
+        return productivity_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting productivity data: {str(e)}")
+
+@app.get("/agriculture/seasonal-calendar")
+def get_agriculture_seasonal_calendar(month: int = None, district: str = None, user=Depends(get_current_user)):
+    """Get seasonal planting calendar based on comprehensive data."""
+    try:
+        from datetime import datetime
+        
+        if month is None:
+            month = datetime.now().month
+        
+        # Get user's district if not specified
+        if not district:
+            try:
+                profile_response = supabase.table("user_profiles").select("district").eq("user_id", user.id).execute()
+                if profile_response.data:
+                    district = profile_response.data[0].get("district")
+            except:
+                pass
+        
+        calendar_data = agriculture_data_service.get_seasonal_calendar(month, district)
+        if "error" in calendar_data:
+            raise HTTPException(status_code=404, detail=calendar_data["error"])
+        return calendar_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting seasonal calendar: {str(e)}")
+
+@app.get("/agriculture/weather-impact-analysis")
+def get_weather_impact_analysis(years: str = None, user=Depends(get_current_user)):
+    """Get weather impact analysis for specified years."""
+    try:
+        year_list = None
+        if years:
+            try:
+                year_list = [int(y.strip()) for y in years.split(',')]
+            except:
+                raise HTTPException(status_code=400, detail="Invalid years format. Use comma-separated years like '2021,2022,2023'")
+        
+        analysis = agriculture_data_service.get_weather_impact_analysis(year_list)
+        if "error" in analysis:
+            raise HTTPException(status_code=404, detail=analysis["error"])
+        return analysis
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting weather analysis: {str(e)}")
+
+@app.get("/agriculture/district-specialization")
+def get_district_specialization_analysis(user=Depends(get_current_user)):
+    """Get district specialization analysis."""
+    try:
+        analysis = agriculture_data_service.get_district_specialization_analysis()
+        if "error" in analysis:
+            raise HTTPException(status_code=404, detail=analysis["error"])
+        return analysis
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting specialization analysis: {str(e)}")
+
+@app.get("/agriculture/smart-recommendations")
+def get_smart_agricultural_recommendations(district: str = None, month: int = None, user=Depends(get_current_user)):
+    """Get intelligent recommendations based on all available data."""
+    try:
+        from datetime import datetime
+        
+        # Get user profile if district/month not specified
+        if not district or month is None:
+            try:
+                profile_response = supabase.table("user_profiles").select("*").eq("user_id", user.id).execute()
+                if profile_response.data:
+                    profile = profile_response.data[0]
+                    if not district:
+                        district = profile.get("district")
+            except:
+                pass
+        
+        if not district:
+            raise HTTPException(status_code=400, detail="District is required. Please complete your profile.")
+        
+        if month is None:
+            month = datetime.now().month
+        
+        recommendations = agriculture_data_service.get_smart_recommendations(district, month)
+        if "error" in recommendations:
+            raise HTTPException(status_code=404, detail=recommendations["error"])
+        return recommendations
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating recommendations: {str(e)}")
 
 
 @app.post("/chat")
@@ -1254,22 +1529,39 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
         if not any([farm_size, location, district, soil_type]):
             personal_context += "- Profile: Incomplete (gently encourage completing profile, but provide general seasonal advice)\n"
         
-        # Add Kerala-specific agricultural knowledge base
-        personal_context += f"\n\nKERALA AGRICULTURAL KNOWLEDGE:\n"
-        personal_context += f"\n🌴 MAJOR KERALA CROPS & SEASONS:\n"
-        personal_context += f"- Coconut: Year-round, peak harvest Jan-Mar, spacing 25-30ft\n"
-        personal_context += f"- Rice: Kharif (Jun-Oct), Rabi (Nov-Mar), Mundakan (Apr-Aug)\n"
-        personal_context += f"- Pepper: Plant Jun-Jul, harvest Nov-Feb, needs support trees\n"
-        personal_context += f"- Rubber: Tap Oct-Mar, rest Apr-Sep, latex collection morning\n"
-        personal_context += f"- Cardamom: Plant Jun-Jul, harvest Oct-Feb, shade-loving\n"
-        personal_context += f"- Banana: Year-round planting, harvest after 12-15 months\n"
-        personal_context += f"- Tea: Year-round in highlands, best growth monsoon period\n"
-        personal_context += f"- Cashew: Plant Jun-Jul, harvest Feb-Apr, drought tolerant\n"
+        # Add comprehensive agriculture data context
+        personal_context += f"\n\nKERALA AGRICULTURAL DATA INTELLIGENCE:\n"
         
-        personal_context += f"\n🌧️ KERALA MONSOON PATTERNS:\n"
-        personal_context += f"- SW Monsoon: Jun-Sep (75% of rainfall), main growing season\n"
-        personal_context += f"- NE Monsoon: Oct-Dec (20% of rainfall), second crops possible\n"
-        personal_context += f"- Dry Season: Jan-May, irrigation critical, coconut harvesting\n"
+        # Add real data context from CSV files
+        data_context = agriculture_data_service.get_ai_context_for_query(message.message, district, current_date.month)
+        if data_context:
+            personal_context += data_context
+        
+        personal_context += f"\n\n🌴 MAJOR KERALA CROPS & SEASONS (Data-backed):\n"
+        personal_context += f"- Coconut: Year-round, peak harvest Jan-Mar, avg productivity 7000+ nuts/ha\n"
+        personal_context += f"- Rice: Kharif (Jun-Oct), Rabi (Nov-Mar), Mundakan (Apr-Aug), avg 3.2 tonnes/ha\n"
+        personal_context += f"- Pepper: Plant Jun-Jul, harvest Nov-Feb, avg 0.35 tonnes/ha, weather-sensitive\n"
+        personal_context += f"- Rubber: Tap Oct-Mar, rest Apr-Sep, avg 1.8 tonnes/ha latex\n"
+        personal_context += f"- Cardamom: Plant Jun-Jul, harvest Oct-Feb, avg 0.18 tonnes/ha, Idukki major\n"
+        personal_context += f"- Banana: Year-round planting, harvest 12-15 months, avg 35 tonnes/ha\n"
+        
+        personal_context += f"\n🌧️ KERALA MONSOON PATTERNS (Historical Data):\n"
+        personal_context += f"- SW Monsoon: Jun-Sep (75% rainfall), weather impact factor 0.8-1.2\n"
+        personal_context += f"- NE Monsoon: Oct-Dec (20% rainfall), good for second crops\n"
+        personal_context += f"- Dry Season: Jan-May, irrigation critical, best productivity period\n"
+        
+        # Add recent weather impact analysis
+        weather_analysis = agriculture_data_service.get_weather_impact_analysis([2021, 2022, 2023])
+        if "error" not in weather_analysis:
+            good_years = weather_analysis.get("good_weather_years", [])
+            poor_years = weather_analysis.get("poor_weather_years", [])
+            sensitive_crops = weather_analysis.get("most_weather_sensitive_crops", [])[:3]
+            
+            personal_context += f"- Recent good weather years: {', '.join(map(str, good_years))}\n"
+            if poor_years:
+                personal_context += f"- Recent challenging years: {', '.join(map(str, poor_years))}\n"
+            if sensitive_crops:
+                personal_context += f"- Weather-sensitive crops: {', '.join(sensitive_crops)}\n"
         
         personal_context += f"\n🐛 COMMON KERALA PEST & DISEASES:\n"
         personal_context += f"- Coconut: Rhinoceros beetle (high humidity), Red palm weevil\n"
@@ -1294,29 +1586,54 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
         personal_context += f"- Kari soil: Acidic peat, needs lime, good for rice with drainage\n"
         personal_context += f"- Coastal soil: Saline issues, coconut thrives, improve drainage\n"
         
-        # Add district-specific advice if district is known
+        # Add enhanced district-specific advice with real data
         if district:
-            personal_context += f"\n🗺️ DISTRICT-SPECIFIC ADVICE ({district.upper()}):\n"
+            personal_context += f"\n🗺️ DISTRICT-SPECIFIC DATA INSIGHTS ({district.upper()}):\n"
             
-            district_advice = {
-                "Thiruvananthapuram": "Coastal area - Focus on coconut, cashew, rubber. Watch for saltwater intrusion.",
-                "Kollam": "Cashew processing hub - Ideal for cashew, coconut, pepper cultivation.",
-                "Pathanamthitta": "Hilly terrain - Perfect for spices (pepper, cardamom), rubber plantations.",
-                "Alappuzha": "Backwater region - Rice cultivation in Kuttanad, coconut, banana farming.",
-                "Kottayam": "Rubber belt - Major rubber production, suitable for spices, rice.",
-                "Idukki": "High altitude - Tea, cardamom, coffee cultivation. Cool climate crops.",
-                "Ernakulam": "Commercial hub - Mixed farming, coconut, vegetable cultivation near city.",
-                "Thrissur": "Rice bowl - Paddy cultivation, coconut, banana, vegetable farming.",
-                "Palakkad": "Rice granary - Major rice production, coconut, sugarcane, vegetables.",
-                "Malappuram": "Coconut, arecanut, pepper cultivation. Good for mixed farming.",
-                "Kozhikode": "Spice coast - Pepper, coconut, banana, vegetable cultivation.",
-                "Wayanad": "Coffee & spice hills - Coffee, pepper, cardamom, banana cultivation.",
-                "Kannur": "Coconut & cashew region - Major coconut production, cashew, pepper.",
-                "Kasaragod": "Northernmost - Coconut, cashew, pepper, arecanut cultivation."
-            }
-            
-            if district in district_advice:
-                personal_context += f"- {district_advice[district]}\n"
+            # Get real district data
+            district_data = agriculture_data_service.get_crop_recommendations_for_district(district)
+            if "error" not in district_data:
+                total_crops = district_data.get("total_crops", 0)
+                recommendations = district_data.get("recommendations", {})
+                
+                personal_context += f"- Total suitable crops: {total_crops}\n"
+                
+                # Add category-wise major crops
+                for category, crops in recommendations.items():
+                    major_crops = [c["crop"] for c in crops if c["is_major_district"]]
+                    if major_crops:
+                        personal_context += f"- {category} specializations: {', '.join(major_crops[:3])}\n"
+                
+                # Get historical productivity data for district
+                productivity_insights = []
+                for crop_name in ["Rice", "Coconut", "Pepper", "Rubber"]:
+                    prod_data = agriculture_data_service.get_historical_productivity_data(crop_name, district, years=3)
+                    if "error" not in prod_data and prod_data.get("average_productivity", 0) > 0:
+                        productivity_insights.append(f"{crop_name}: {prod_data['average_productivity']} t/ha")
+                
+                if productivity_insights:
+                    personal_context += f"- Recent productivity data: {', '.join(productivity_insights[:3])}\n"
+            else:
+                # Fallback to static advice if data not available
+                district_advice = {
+                    "Thiruvananthapuram": "Coastal area - Focus on coconut, cashew, rubber. Watch for saltwater intrusion.",
+                    "Kollam": "Cashew processing hub - Ideal for cashew, coconut, pepper cultivation.",
+                    "Pathanamthitta": "Hilly terrain - Perfect for spices (pepper, cardamom), rubber plantations.",
+                    "Alappuzha": "Backwater region - Rice cultivation in Kuttanad, coconut, banana farming.",
+                    "Kottayam": "Rubber belt - Major rubber production, suitable for spices, rice.",
+                    "Idukki": "High altitude - Tea, cardamom, coffee cultivation. Cool climate crops.",
+                    "Ernakulam": "Commercial hub - Mixed farming, coconut, vegetable cultivation near city.",
+                    "Thrissur": "Rice bowl - Paddy cultivation, coconut, banana, vegetable farming.",
+                    "Palakkad": "Rice granary - Major rice production, coconut, sugarcane, vegetables.",
+                    "Malappuram": "Coconut, arecanut, pepper cultivation. Good for mixed farming.",
+                    "Kozhikode": "Spice coast - Pepper, coconut, banana, vegetable cultivation.",
+                    "Wayanad": "Coffee & spice hills - Coffee, pepper, cardamom, banana cultivation.",
+                    "Kannur": "Coconut & cashew region - Major coconut production, cashew, pepper.",
+                    "Kasaragod": "Northernmost - Coconut, cashew, pepper, arecanut cultivation."
+                }
+                
+                if district in district_advice:
+                    personal_context += f"- {district_advice[district]}\n"
         
         # Create a personalized system prompt with context awareness
         system_prompt = f"""

@@ -1,0 +1,227 @@
+District,Crop,Season,Category,Planting_Period,Harvest_Period,Is_Major_District,Cultivation_Type
+Thiruvananthapuram,Coconut,Year-round,Plantation,May-June (monsoon onset),Year-round,True,Intensive
+Thiruvananthapuram,Rice,Virippu (Kharif),Food Crop,April-May,September-October,False,Moderate
+Thiruvananthapuram,Rice,Mundakan (Rabi),Food Crop,April-May,September-October,False,Moderate
+Thiruvananthapuram,Rice,Puncha (Summer),Food Crop,April-May,September-October,False,Moderate
+Thiruvananthapuram,Banana,Year-round,Food Crop,"April-May, September-October",10-12 months after planting,True,Intensive
+Kollam,Coconut,Year-round,Plantation,May-June (monsoon onset),Year-round,False,Moderate
+Kollam,Rice,Virippu (Kharif),Food Crop,April-May,September-October,False,Moderate
+Kollam,Rice,Mundakan (Rabi),Food Crop,April-May,September-October,False,Moderate
+Kollam,Rice,Puncha (Summer),Food Crop,April-May,September-October,False,Moderate
+Kollam,Rubber,Year-round tapping,Plantation,May-July,Year-round,True,Intensive
+Kollam,Banana,Year-round,Food Crop,"April-May, September-October",10-12 months after planting,True,Intensive
+Pathanamthitta,Rubber,Year-round tapping,Plantation,May-July,Year-round,True,Intensive
+Pathanamthitta,Pepper,Monsoon planting,Spice,June-July (monsoon),December-February,True,Intensive
+Pathanamthitta,Pepper,Harvest season,Spice,June-July (monsoon),December-February,True,Intensive
+Pathanamthitta,Ginger,Monsoon season,Spice,April-May,December-January,False,Moderate
+Pathanamthitta,Rice,Virippu (Kharif),Food Crop,April-May,September-October,False,Moderate
+Pathanamthitta,Rice,Mundakan (Rabi),Food Crop,April-May,September-October,False,Moderate
+Pathanamthitta,Rice,Puncha (Summer),Food Crop,April-May,September-October,False,Moderate
+Pathanamthitta,Cardamom,Main season,Spice,May-June,October-December,False,Moderate
+Pathanamthitta,Cardamom,Secondary season,Spice,May-June,October-December,False,Moderate
+Alappuzha,Rice,Virippu (Kharif),Food Crop,April-May,September-October,True,Intensive
+Alappuzha,Rice,Mundakan (Rabi),Food Crop,April-May,September-October,True,Intensive
+Alappuzha,Rice,Puncha (Summer),Food Crop,April-May,September-October,True,Intensive
+Alappuzha,Coconut,Year-round,Plantation,May-June (monsoon onset),Year-round,False,Moderate
+Alappuzha,Banana,Year-round,Food Crop,"April-May, September-October",10-12 months after planting,False,Moderate
+Kottayam,Rubber,Year-round tapping,Plantation,May-July,Year-round,True,Intensive
+Kottayam,Rice,Virippu (Kharif),Food Crop,April-May,September-October,True,Intensive
+Kottayam,Rice,Mundakan (Rabi),Food Crop,April-May,September-October,True,Intensive
+Kottayam,Rice,Puncha (Summer),Food Crop,April-May,September-October,True,Intensive
+Kottayam,Pepper,Monsoon planting,Spice,June-July (monsoon),December-February,True,Intensive
+Kottayam,Pepper,Harvest season,Spice,June-July (monsoon),December-February,True,Intensive
+Kottayam,Coconut,Year-round,Plantation,May-June (monsoon onset),Year-round,False,Moderate
+Idukki,Cardamom,Main season,Spice,May-June,October-December,True,Intensive
+Idukki,Cardamom,Secondary season,Spice,May-June,October-December,True,Intensive
+Idukki,Pepper,Monsoon planting,Spice,June-July (monsoon),December-February,True,Intensive
+Idukki,Pepper,Harvest season,Spice,June-July (monsoon),December-February,True,Intensive
+Idukki,Tea,Year-round harvesting,Plantation,May-June,Year-round,True,Intensive
+Idukki,Coffee,Harvest season,Plantation,June-July,November-January,True,Intensive
+Idukki,Ginger,Monsoon season,Spice,April-May,December-January,False,Moderate
+Ernakulam,Coconut,Year-round,Plantation,May-June (monsoon onset),Year-round,False,Moderate
+Ernakulam,Rice,Virippu (Kharif),Food Crop,April-May,September-October,True,Intensive
+Ernakulam,Rice,Mundakan (Rabi),Food Crop,April-May,September-October,True,Intensive
+Ernakulam,Rice,Puncha (Summer),Food Crop,April-May,September-October,True,Intensive
+Ernakulam,Banana,Year-round,Food Crop,"April-May, September-October",10-12 months after planting,True,Intensive
+Ernakulam,Rubber,Year-round tapping,Plantation,May-July,Year-round,True,Intensive
+Thrissur,Coconut,Year-round,Plantation,May-June (monsoon onset),Year-round,True,Intensive
+Thrissur,Rice,Virippu (Kharif),Food Crop,April-May,September-October,True,Intensive
+Thrissur,Rice,Mundakan (Rabi),Food Crop,April-May,September-October,True,Intensive
+Thrissur,Rice,Puncha (Summer),Food Crop,April-May,September-October,True,Intensive
+Thrissur,Banana,Year-round,Food Crop,"April-May, September-October",10-12 months after planting,True,Intensive
+Palakkad,Rice,Virippu (Kharif),Food Crop,April-May,September-October,True,Intensive
+Palakkad,Rice,Mundakan (Rabi),Food Crop,April-May,September-October,True,Intensive
+Palakkad,Rice,Puncha (Summer),Food Crop,April-May,September-October,True,Intensive
+Palakkad,Coconut,Year-round,Plantation,May-June (monsoon onset),Year-round,False,Moderate
+Palakkad,Ginger,Monsoon season,Spice,April-May,December-January,True,Intensive
+Palakkad,Turmeric,Monsoon season,Spice,April-May,January-February,True,Intensive
+Malappuram,Coconut,Year-round,Plantation,May-June (monsoon onset),Year-round,True,Intensive
+Malappuram,Rice,Virippu (Kharif),Food Crop,April-May,September-October,False,Moderate
+Malappuram,Rice,Mundakan (Rabi),Food Crop,April-May,September-October,False,Moderate
+Malappuram,Rice,Puncha (Summer),Food Crop,April-May,September-October,False,Moderate
+Malappuram,Ginger,Monsoon season,Spice,April-May,December-January,True,Intensive
+Malappuram,Turmeric,Monsoon season,Spice,April-May,January-February,True,Intensive
+Kozhikode,Coconut,Year-round,Plantation,May-June (monsoon onset),Year-round,True,Intensive
+Kozhikode,Pepper,Monsoon planting,Spice,June-July (monsoon),December-February,True,Intensive
+Kozhikode,Pepper,Harvest season,Spice,June-July (monsoon),December-February,True,Intensive
+Kozhikode,Ginger,Monsoon season,Spice,April-May,December-January,True,Intensive
+Kozhikode,Turmeric,Monsoon season,Spice,April-May,January-February,True,Intensive
+Wayanad,Pepper,Monsoon planting,Spice,June-July (monsoon),December-February,True,Intensive
+Wayanad,Pepper,Harvest season,Spice,June-July (monsoon),December-February,True,Intensive
+Wayanad,Cardamom,Main season,Spice,May-June,October-December,True,Intensive
+Wayanad,Cardamom,Secondary season,Spice,May-June,October-December,True,Intensive
+Wayanad,Ginger,Monsoon season,Spice,April-May,December-January,True,Intensive
+Wayanad,Coffee,Harvest season,Plantation,June-July,November-January,True,Intensive
+Wayanad,Tea,Year-round harvesting,Plantation,May-June,Year-round,True,Intensive
+Kannur,Coconut,Year-round,Plantation,May-June (monsoon onset),Year-round,True,Intensive
+Kannur,Pepper,Monsoon planting,Spice,June-July (monsoon),December-February,False,Moderate
+Kannur,Pepper,Harvest season,Spice,June-July (monsoon),December-February,False,Moderate
+Kannur,Rice,Virippu (Kharif),Food Crop,April-May,September-October,False,Moderate
+Kannur,Rice,Mundakan (Rabi),Food Crop,April-May,September-October,False,Moderate
+Kannur,Rice,Puncha (Summer),Food Crop,April-May,September-October,False,Moderate
+Kasargod,Coconut,Year-round,Plantation,May-June (monsoon onset),Year-round,False,Moderate
+Kasargod,Pepper,Monsoon planting,Spice,June-July (monsoon),December-February,False,Moderate
+Kasargod,Pepper,Harvest season,Spice,June-July (monsoon),December-February,False,Moderate
+Kasargod,Rice,Virippu (Kharif),Food Crop,April-May,September-October,False,Moderate
+Kasargod,Rice,Mundakan (Rabi),Food Crop,April-May,September-October,False,Moderate
+Kasargod,Rice,Puncha (Summer),Food Crop,April-May,September-October,False,Moderate
+Thiruvananthapuram,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Thiruvananthapuram,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Thiruvananthapuram,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Thiruvananthapuram,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Thiruvananthapuram,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Thiruvananthapuram,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Thiruvananthapuram,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Thiruvananthapuram,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Thiruvananthapuram,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Thiruvananthapuram,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kollam,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Kollam,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Kollam,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Kollam,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Kollam,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Kollam,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Kollam,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Kollam,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kollam,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kollam,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Pathanamthitta,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Pathanamthitta,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Pathanamthitta,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Pathanamthitta,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Pathanamthitta,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Pathanamthitta,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Pathanamthitta,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Pathanamthitta,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Pathanamthitta,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Pathanamthitta,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Alappuzha,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Alappuzha,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Alappuzha,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Alappuzha,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Alappuzha,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Alappuzha,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Alappuzha,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Alappuzha,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Alappuzha,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Alappuzha,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kottayam,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Kottayam,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Kottayam,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Kottayam,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Kottayam,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Kottayam,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Kottayam,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Kottayam,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kottayam,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kottayam,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Idukki,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Idukki,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Idukki,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Idukki,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Idukki,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Idukki,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Idukki,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Idukki,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Idukki,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Idukki,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Ernakulam,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Ernakulam,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Ernakulam,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Ernakulam,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Ernakulam,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Ernakulam,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Ernakulam,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Ernakulam,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Ernakulam,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Ernakulam,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Thrissur,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Thrissur,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Thrissur,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Thrissur,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Thrissur,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Thrissur,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Thrissur,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Thrissur,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Thrissur,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Thrissur,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Palakkad,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Palakkad,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Palakkad,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Palakkad,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Palakkad,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Palakkad,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Palakkad,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Palakkad,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Palakkad,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Palakkad,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Malappuram,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Malappuram,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Malappuram,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Malappuram,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Malappuram,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Malappuram,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Malappuram,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Malappuram,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Malappuram,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Malappuram,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kozhikode,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Kozhikode,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Kozhikode,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Kozhikode,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Kozhikode,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Kozhikode,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Kozhikode,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Kozhikode,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kozhikode,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kozhikode,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Wayanad,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Wayanad,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Wayanad,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Wayanad,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Wayanad,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Wayanad,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Wayanad,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Wayanad,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Wayanad,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Wayanad,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kannur,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Kannur,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Kannur,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Kannur,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Kannur,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Kannur,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Kannur,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Kannur,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kannur,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kannur,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kasargod,Tomato,"Rabi, Summer",Vegetable,September-December,90-120 days,True,Seasonal
+Kasargod,Cucumber,"Rabi, Summer",Vegetable,"January-March, September-December",50-60 days,True,Seasonal
+Kasargod,Pumpkin,Multiple,Vegetable,"January-March, May-June, September-December",90-120 days,True,Seasonal
+Kasargod,Okra,Multiple,Vegetable,"February-March, June-July, October-November",45-60 days,True,Seasonal
+Kasargod,Green Chilli,Multiple,Vegetable,"May-June, August-September",90-120 days,True,Seasonal
+Kasargod,Bitter Gourd,Multiple,Vegetable,"January-March, May-June, September-December",90-100 days,True,Seasonal
+Kasargod,Snake Gourd,Multiple,Vegetable,"January-March, September-December",120-150 days,True,Seasonal
+Kasargod,Cabbage,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kasargod,Cauliflower,Winter,Vegetable,October-November,90-120 days,True,Seasonal
+Kasargod,Carrot,Winter,Vegetable,October-November,90-120 days,True,Seasonal
