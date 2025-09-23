@@ -205,6 +205,18 @@ async def synthesize_speech(req: TextToSpeechRequest, user=Depends(get_current_u
 def root():
     return {"message": "Kerala Krishi Sahai API is running 🚀"}
 
+@app.get("/health")
+def health_check():
+    """Health check endpoint for Railway deployment"""
+    return {
+        "status": "healthy", 
+        "message": "Kerala Krishi Sahai API is running",
+        "data_loaded": {
+            "historical": len(agriculture_data_service.historical_data) if agriculture_data_service.historical_data is not None else 0,
+            "comprehensive": len(agriculture_data_service.comprehensive_data) if agriculture_data_service.comprehensive_data is not None else 0
+        }
+    }
+
 
 @app.get("/profile")
 def get_profile(user=Depends(get_current_user)):

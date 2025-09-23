@@ -13,12 +13,7 @@ if (!BASE_URL) {
 // adding the Supabase auth token and signing the user out if the token is invalid.
 // It now takes an endpoint (e.g., '/profile') instead of a full URL.
 export const fetchWithAuth = async (endpoint: string, options: RequestInit = {}) => {
-  console.log("--- fetchWithAuth DEBUG START ---");
-  console.log("Endpoint:", endpoint);
-  console.log("Initial Options:", JSON.stringify(options, null, 2));
-
   const url = `${BASE_URL}${endpoint}`;
-  console.log(`fetchWithAuth: Attempting to fetch ${url}`);
 
   try {
     // Get the current session
@@ -35,20 +30,13 @@ export const fetchWithAuth = async (endpoint: string, options: RequestInit = {})
       return Promise.reject(new Error("User not authenticated."));
     }
 
-    console.log("Session Object:", JSON.stringify(session, null, 2));
-
-    console.log("fetchWithAuth: Session found. Adding Authorization header.");
     // Add the Authorization header to the request
     const headers = new Headers(options.headers);
     headers.set("Authorization", `Bearer ${session.access_token}`);
     options.headers = headers;
 
-    console.log("Final Headers:", JSON.stringify(Object.fromEntries(headers.entries()), null, 2));
-    console.log("--- fetchWithAuth DEBUG END ---");
-
     // Make the actual fetch request
     const response = await fetch(url, options);
-    console.log(`fetchWithAuth: Received response with status ${response.status}`);
 
     // If the response is 401 (Unauthorized), the token is no longer valid.
     if (response.status === 401) {
