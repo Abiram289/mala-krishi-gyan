@@ -21,7 +21,7 @@ const Navbar = () => {
         <div className="mr-4 flex items-center">
           <Link to="/" className="flex items-center space-x-2">
             <Leaf className="h-6 w-6 text-primary" />
-            <span className="font-bold">Mala Krishi Gyan</span>
+            <span className="font-bold">Kerala Krishi Sahai</span>
           </Link>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">

@@ -163,26 +163,27 @@ export const ChatInterface = () => {
   };
 
   return (
-    <Card className="h-[calc(100vh-100px)] max-w-3xl mx-auto flex flex-col">
+    <Card className="h-[calc(100vh-100px)] w-full max-w-3xl lg:mx-auto flex flex-col">
       <div className="p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold flex items-center gap-2">
             <Bot className="h-5 w-5" />
-            {t('chatTitle')}
+            <span className="hidden sm:inline">{t('chatTitle')}</span>
+            <span className="sm:hidden">Chat</span>
           </h3>
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="text-xs">
-              Voice: {voiceLanguage === 'en' ? 'English' : 'മലയാളം'}
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Badge variant="secondary" className="text-xs hidden sm:inline-flex">
+              Voice: {voiceLanguage === 'en' ? 'EN' : 'ML'}
             </Badge>
-            <Badge variant="secondary" className="text-xs">
-              Reply: {responseLanguage === 'en' ? 'English' : 'മലയാളം'}
+            <Badge variant="secondary" className="text-xs hidden sm:inline-flex">
+              Reply: {responseLanguage === 'en' ? 'EN' : 'ML'}
             </Badge>
             {responseLanguage === 'ml' && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowInstallGuide(!showInstallGuide)}
-                className="text-primary-foreground hover:bg-primary/80 text-xs"
+                className="text-primary-foreground hover:bg-primary/80 text-xs hidden sm:inline-flex"
                 title="Install Malayalam voices for better audio"
               >
                 🔊 Install Voices
@@ -192,7 +193,8 @@ export const ChatInterface = () => {
               variant="ghost"
               size="sm"
               onClick={() => setShowLanguageSelector(!showLanguageSelector)}
-              className="text-primary-foreground hover:bg-primary/80"
+              className="text-primary-foreground hover:bg-primary/80 p-1 sm:p-2"
+              title="Language settings"
             >
               <Languages className="h-4 w-4" />
             </Button>
@@ -200,7 +202,7 @@ export const ChatInterface = () => {
               variant="ghost"
               size="sm"
               onClick={clearChat}
-              className="text-primary-foreground hover:bg-primary/80"
+              className="text-primary-foreground hover:bg-primary/80 p-1 sm:p-2"
               title="Clear chat history"
             >
               <Trash2 className="h-4 w-4" />
@@ -254,7 +256,7 @@ export const ChatInterface = () => {
         
         {showLanguageSelector && (
           <div className="mt-3 pt-3 border-t border-primary-foreground/20">
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm">
               <div>
                 <label className="block text-xs mb-1 opacity-80">Voice Input Language:</label>
                 <Select value={voiceLanguage} onValueChange={(value: 'en' | 'ml') => setVoiceLanguage(value)}>
