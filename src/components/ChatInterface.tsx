@@ -57,6 +57,15 @@ export const ChatInterface = () => {
       console.error('Error saving chat history:', error);
     }
   }, [messages]);
+
+  // Handle automatic transcript transfer when speech recognition ends
+  useEffect(() => {
+    // If we were listening and now we're not, and we have a transcript
+    if (!isListening && transcript.trim() && inputMessage !== transcript.trim()) {
+      console.log('🎤 Auto-transferring transcript to input:', transcript.trim());
+      setInputMessage(transcript.trim());
+    }
+  }, [isListening, transcript, inputMessage]);
   const {
     transcript,
     isListening,
@@ -360,7 +369,10 @@ export const ChatInterface = () => {
       
       <div className="p-4 border-t">
         {isListening && (
-          <p className="text-sm text-primary animate-pulse mb-2">🎙️ Listening... Speak now</p>
+          <p className="text-sm text-primary animate-pulse mb-2">🎤 Listening... Speak now</p>
+        )}
+        {!isListening && transcript.trim() && transcript.trim() === inputMessage && (
+          <p className="text-sm text-green-600 mb-2">✓ Voice input captured! Click Send or press Enter</p>
         )}
         <div className="flex gap-2">
           <Input

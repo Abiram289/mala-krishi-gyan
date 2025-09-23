@@ -124,6 +124,8 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
       recognitionInstance.onend = () => {
         console.log('🎤 Speech recognition ended');
         setIsListening(false);
+        // Note: transcript will be available in the component, 
+        // component should handle transferring it to input
       };
 
       recognitionInstance.onerror = (event: SpeechRecognitionError) => {
