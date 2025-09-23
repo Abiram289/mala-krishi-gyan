@@ -607,14 +607,86 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
         current_month = current_date.strftime("%B")
         current_season = get_current_season(current_date.month)
         
+        # Get current weather data for contextual advice
+        weather_data = None
+        try:
+            # Use the same weather logic as the weather endpoint
+            lat = None
+            lon = None
+            if profile_response.data:
+                profile = profile_response.data[0]
+                user_location = profile.get("location")
+                if user_location and '(' in user_location and ')' in user_location:
+                    coord_part = user_location.split('(')[1].split(')')[0]
+                    coords = coord_part.split(',')
+                    if len(coords) == 2:
+                        lat = float(coords[0].strip())
+                        lon = float(coords[1].strip())
+            
+            if lat is None or lon is None:
+                lat, lon = 9.9312, 76.2673  # Default to Kochi
+                
+            if OPENWEATHER_API_KEY:
+                import requests
+                response = requests.get(
+                    f"https://api.openweathermap.org/data/2.5/weather",
+                    params={"lat": lat, "lon": lon, "appid": OPENWEATHER_API_KEY, "units": "metric"}
+                )
+                if response.status_code == 200:
+                    data = response.json()
+                    weather_main = data["weather"][0]["main"].lower()
+                    condition = "rainy" if "rain" in weather_main else ("sunny" if "clear" in weather_main else "cloudy")
+                    weather_data = {
+                        "temperature": round(data["main"]["temp"]),
+                        "humidity": data["main"]["humidity"],
+                        "condition": condition,
+                        "description": data["weather"][0]["description"]
+                    }
+        except Exception as e:
+            print(f"Weather fetch for AI context failed: {e}")
+            
+        # Get recent activities for context
+        recent_activities = []
+        try:
+            activities_response = supabase.table("activities").select("*").eq("user_id", user.id).order("date", desc=True).limit(5).execute()
+            if activities_response.data:
+                recent_activities = activities_response.data
+        except Exception as e:
+            print(f"Activities fetch for AI context failed: {e}")
+        
         # Initialize Gemini model
         model = genai.GenerativeModel('gemini-1.5-flash')
         
-        # Build personalized context
+        # Build personalized context with weather and activity data
         personal_context = f"\n\nCURRENT CONTEXT:\n"
         personal_context += f"- Current Date: {current_date.strftime('%B %d, %Y')}\n"
         personal_context += f"- Agricultural Season: {current_season}\n"
         personal_context += f"- Month: {current_month} (Consider seasonal planting cycles)\n"
+        
+        # Add weather context for better farming advice
+        if weather_data:
+            personal_context += f"\n\nCURRENT WEATHER:\n"
+            personal_context += f"- Temperature: {weather_data['temperature']}°C\n"
+            personal_context += f"- Humidity: {weather_data['humidity']}%\n"
+            personal_context += f"- Condition: {weather_data['condition']} ({weather_data['description']})\n"
+            
+            # Add weather-based advice context
+            if weather_data['temperature'] > 35:
+                personal_context += f"- Advisory: High temperature - consider irrigation advice\n"
+            if weather_data['humidity'] > 80:
+                personal_context += f"- Advisory: High humidity - pest activity may increase\n"
+            if weather_data['condition'] == 'rainy':
+                personal_context += f"- Advisory: Rainy weather - consider postponing outdoor activities\n"
+        
+        # Add recent activities context
+        if recent_activities:
+            personal_context += f"\n\nRECENT FARM ACTIVITIES:\n"
+            for activity in recent_activities[:3]:  # Last 3 activities
+                activity_date = activity.get('date', 'Unknown date')
+                activity_title = activity.get('title', 'Unknown activity')
+                activity_type = activity.get('type', 'general')
+                activity_status = activity.get('status', 'pending')
+                personal_context += f"- {activity_date}: {activity_title} ({activity_type}) - {activity_status}\n"
         
         personal_context += f"\n\nFARMER PROFILE:\n"
         personal_context += f"- Farmer Name: {username}\n"
@@ -629,7 +701,7 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
         if not any([farm_size, location, soil_type]):
             personal_context += "- Profile: Incomplete (gently encourage completing profile, but provide general seasonal advice)\n"
         
-        # Create a personalized system prompt
+        # Create a personalized system prompt with context awareness
         system_prompt = f"""
         You are Kerala Krishi Sahai AI, a helpful farming friend for {username}. You talk like a knowledgeable neighbor, not a corporate assistant.
         
@@ -641,31 +713,34 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
         - Give ONE main tip per response, not long lists
         - Only give detailed answers when they specifically ask for more info
         
+        CONTEXT-AWARE ADVICE:
+        - Use current weather conditions to give relevant advice
+        - Reference recent farm activities when giving suggestions
+        - Consider seasonal timing for all recommendations
+        - Factor in temperature, humidity, and weather conditions
+        - Connect advice to their actual farming situation
+        
         FARMER-FIRST APPROACH:
         - Remember you're talking to hardworking farmers, not office workers
         - Focus on practical solutions they can actually use
         - Give specific advice ("plant next week" not "consider planting")
         - Mention costs only when asked
         - Use local examples when possible
+        - Reference their actual activities and weather
         
         YOUR EXPERTISE:
-        - Crop timing and planting advice
-        - Simple pest/disease solutions
-        - Weather-based farming tips
+        - Weather-based crop timing and planting advice
+        - Activity-specific pest/disease solutions
+        - Real-time weather farming tips
         - Government schemes (explain simply)
-        - Soil and fertilizer basics
-        
-        CURRENT CONTEXT: {current_month} {current_date.year} - {current_season} season
-        
-        FARMER PROFILE:
-        - Name: {username}
-        - Farm: {farm_size} acres in {location} (Mixed Alluvium soil) " if all([farm_size, location, soil_type]) else "- Profile: Not complete yet"
+        - Soil and fertilizer basics for their conditions
         
         LANGUAGE RULE:
         - English requests → Answer in simple English
         - Malayalam requests → Answer in Malayalam (മലയാളം)
         
-        Remember: Short, helpful, farmer-friendly responses! Only go into detail when they ask for it.
+        IMPORTANT: Use the weather and activity data provided to give specific, actionable advice!
+        Remember: Short, helpful, farmer-friendly responses that use real context!
         {personal_context}
         """
         
