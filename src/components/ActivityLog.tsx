@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle, Clock, Plus, Sprout, Droplets, Bug, Scissors, Mic, MicOff, Volume2, Trash2, Loader2 } from "lucide-react";
+import { CheckCircle, Clock, Plus, Sprout, Droplets, Bug, Scissors, Mic, MicOff, Volume2, Trash2, Loader2, Languages } from "lucide-react";
 import { useLanguage } from "./LanguageToggle";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
@@ -90,6 +90,8 @@ export const ActivityLog = () => {
     date: new Date().toISOString().split('T')[0]
   });
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [voiceLanguage, setVoiceLanguage] = useState<'en' | 'ml'>('en');
+  const [showVoiceSettings, setShowVoiceSettings] = useState(false);
   const { toast } = useToast();
   const { 
     transcript, 
@@ -239,10 +241,10 @@ export const ActivityLog = () => {
       stopListening();
     } else {
       resetTranscript();
-      // Use 'ml' for Malayalam voice recognition, undefined for English (defaults to 'en-US')
-      const voiceLanguage = language === 'ml' ? 'ml' : undefined;
-      console.log('🎤 Activity Log: Starting voice input in', language === 'ml' ? 'Malayalam (ml-IN)' : 'English (en-US)');
-      startListening(voiceLanguage);
+      // Use selected voice language for speech recognition
+      const recognitionLang = voiceLanguage === 'ml' ? 'ml' : undefined;
+      console.log('🎤 Activity Log: Starting voice input in', voiceLanguage === 'ml' ? 'Malayalam (ml-IN)' : 'English (en-US)');
+      startListening(recognitionLang);
     }
   };
 
@@ -273,36 +275,79 @@ export const ActivityLog = () => {
             </DialogTrigger>
             <DialogContent className="w-[90vw] sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>{t('addActivity')}</DialogTitle>
+                <div className="flex items-center justify-between">
+                  <DialogTitle>{t('addActivity')}</DialogTitle>
+                  {browserSupportsSpeechRecognition && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowVoiceSettings(!showVoiceSettings)}
+                      className="h-8 w-8 p-0"
+                      title="Voice input settings"
+                    >
+                      <Languages className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                {browserSupportsSpeechRecognition && showVoiceSettings && (
+                  <div className="mt-3 pt-3 border-t border-border">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium opacity-80">
+                        {language === 'ml' ? 'വോയിസ് ഇൻപുട്ട് ഭാഷ:' : 'Voice Input Language:'}
+                      </label>
+                      <Select value={voiceLanguage} onValueChange={(value: 'en' | 'ml') => setVoiceLanguage(value)}>
+                        <SelectTrigger className="h-8 text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="en">English</SelectItem>
+                          <SelectItem value="ml">മലയാളം (Malayalam)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                )}
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">
                     {language === 'ml' ? 'പ്രവർത്തനത്തിന്റെ പേര്' : 'Activity Title'}
                   </label>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder={language === 'ml' ? 'പ്രവർത്തനത്തിന്റെ പേര് ടൈപ്പ് ചെയ്യുക...' : 'Enter activity title...'}
-                      value={newActivity.title}
-                      onChange={(e) => setNewActivity({...newActivity, title: e.target.value})}
-                      className="flex-1"
-                    />
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder={language === 'ml' ? 'പ്രവർത്തനത്തിന്റെ പേര് ടൈപ്പ് ചെയ്യുക...' : 'Enter activity title...'}
+                        value={newActivity.title}
+                        onChange={(e) => setNewActivity({...newActivity, title: e.target.value})}
+                        className="flex-1"
+                      />
+                      {browserSupportsSpeechRecognition && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleVoiceInput}
+                          className={`px-3 ${isListening ? 'bg-destructive text-destructive-foreground' : ''}`}
+                          title={isListening ? 'Stop recording' : `Start voice input (${voiceLanguage === 'ml' ? 'Malayalam' : 'English'})`}
+                        >
+                          {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                        </Button>
+                      )}
+                    </div>
                     {browserSupportsSpeechRecognition && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={handleVoiceInput}
-                        className={`px-3 ${isListening ? 'bg-destructive text-destructive-foreground' : ''}`}
-                        title={isListening ? 'Stop recording' : 'Start voice input'}
-                      >
-                        {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs">
+                          Voice: {voiceLanguage === 'en' ? 'EN' : 'ML'}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">
+                          Click <Languages className="h-3 w-3 inline" /> above to change voice language
+                        </span>
+                      </div>
                     )}
                   </div>
                   {isListening && (
                     <p className="text-sm text-primary animate-pulse">
-                      🎙️ {language === 'ml' ? 'കേൾക്കുന്നു... ഇപ്പോൾ സംസാരിക്കുക' : 'Listening... Speak now'}
+                      🎙️ {voiceLanguage === 'ml' ? 'കേൾക്കുന്നു... ഇപ്പോൾ സംസാരിക്കുക (മലയാളത്തിൽ)' : 'Listening... Speak now (English)'}
                     </p>
                   )}
                   {transcript && (
