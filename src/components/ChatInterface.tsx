@@ -6,8 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Send, Bot, User, Mic, MicOff, Image, Languages, Volume2, Trash2 } from "lucide-react";
-// import { VoiceInstallGuide } from "@/components/VoiceInstallGuide";
-import { VoiceDebugger } from "@/components/VoiceDebugger";
+// Removed voice testing components - no longer needed
 import { useLanguage } from "./LanguageToggle";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useGoogleTTS } from "@/hooks/useGoogleTTS";
@@ -72,9 +71,7 @@ export const ChatInterface = () => {
   const [voiceLanguage, setVoiceLanguage] = useState<'en' | 'ml'>('en');
   const [responseLanguage, setResponseLanguage] = useState<'en' | 'ml'>('en');
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
-  const [showVoiceSelector, setShowVoiceSelector] = useState(false);
   const [showInstallGuide, setShowInstallGuide] = useState(false);
-  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -85,33 +82,7 @@ export const ChatInterface = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Load available voices
-  useEffect(() => {
-    const loadVoices = () => {
-      const voices = window.speechSynthesis.getVoices();
-      setAvailableVoices(voices);
-      console.log('Loaded voices:', voices.length);
-    };
-
-    // Load voices immediately if available
-    loadVoices();
-
-    // Also listen for voice changes (some browsers load them asynchronously)
-    window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
-
-    return () => {
-      window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
-    };
-  }, []);
-
-  const testVoice = (voice: SpeechSynthesisVoice, testText: string) => {
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(testText);
-    utterance.voice = voice;
-    utterance.rate = responseLanguage === 'ml' ? 0.7 : 0.9;
-    utterance.pitch = responseLanguage === 'ml' ? 0.8 : 1;
-    window.speechSynthesis.speak(utterance);
-  };
+  // Removed voice testing functionality - using Edge TTS now
 
   const clearChat = () => {
     const initialMessage = {
@@ -273,8 +244,8 @@ export const ChatInterface = () => {
               
               <div className="bg-green-900/20 border border-green-600/30 rounded p-2">
                 <p className="text-green-200 text-[10px]">
-                  <strong>💡 After installation:</strong> Refresh this page, then use the voice debugger 
-                  below to test the new Hindi voices with Malayalam text.
+                  <strong>💡 After installation:</strong> Refresh this page and try the Malayalam voice 
+                  - it should sound much better with Indian pronunciation!
                 </p>
               </div>
             </div>
@@ -309,91 +280,6 @@ export const ChatInterface = () => {
                 </Select>
               </div>
             </div>
-            <div className="mt-4 pt-2 border-t border-primary-foreground/20">
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowVoiceSelector(!showVoiceSelector)}
-                  className="text-primary-foreground hover:bg-primary/80 text-xs"
-                >
-                  <Volume2 className="h-3 w-3 mr-2" />
-                  Test Voices ({availableVoices.length} available)
-                </Button>
-                <div className="text-xs">
-                  <VoiceDebugger />
-                </div>
-              </div>
-              {showVoiceSelector && (
-                <div className="mt-2 max-h-32 overflow-y-auto bg-primary-foreground/10 rounded p-2">
-                  <div className="mb-3">
-                    <p className="text-xs mb-2 opacity-80">
-                      Test different voices to find the best one for {responseLanguage === 'ml' ? 'Malayalam' : 'English'}:
-                    </p>
-                    {responseLanguage === 'ml' && availableVoices.filter(voice => {
-                      const name = voice.name.toLowerCase();
-                      const lang = voice.lang.toLowerCase();
-                      return (
-                        lang.includes('hi') || lang.includes('ml') || lang.includes('ta') ||
-                        name.includes('indian') || name.includes('hindi') || name.includes('malayalam') ||
-                        name.includes('tamil') || name.includes('bengali')
-                      );
-                    }).length === 0 && (
-                      <div className="mb-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded text-xs">
-                        <p className="text-yellow-300 mb-1">⚠️ No Indian voices found on your system</p>
-                        <p className="text-yellow-200 text-[10px]">
-                          For better Malayalam audio, install Indian voices from Windows Settings → Time & Language → Speech
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    {(() => {
-                      let voicesToShow = [];
-                      
-                      if (responseLanguage === 'ml') {
-                        // First try to get Indian voices
-                        const indianVoices = availableVoices.filter(voice => {
-                          const name = voice.name.toLowerCase();
-                          const lang = voice.lang.toLowerCase();
-                          return (
-                            lang.includes('hi') || lang.includes('ml') || lang.includes('ta') ||
-                            name.includes('indian') || name.includes('hindi') || name.includes('malayalam') ||
-                            name.includes('tamil') || name.includes('bengali')
-                          );
-                        });
-                        
-                        if (indianVoices.length > 0) {
-                          voicesToShow = indianVoices.slice(0, 8);
-                        } else {
-                          // If no Indian voices, show all available voices for testing
-                          voicesToShow = availableVoices.slice(0, 10);
-                        }
-                      } else {
-                        // Show English voices
-                        voicesToShow = availableVoices.filter(voice => voice.lang.startsWith('en')).slice(0, 8);
-                      }
-                      
-                      return voicesToShow.map((voice, index) => (
-                        <Button
-                          key={index}
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => testVoice(voice, 
-                            responseLanguage === 'ml' 
-                              ? 'നമസ്കാരം! കൃഷിയെക്കുറിച്ച് സംസാരിക്കാം.' 
-                              : 'Hello! Let\'s talk about farming.'
-                          )}
-                          className="w-full justify-start text-xs h-8 px-2 text-primary-foreground/80 hover:text-primary-foreground"
-                        >
-                          <Volume2 className="h-2 w-2 mr-2" />
-                          {voice.name} ({voice.lang})
-                        </Button>
-                      ));
-                    })()}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         )}
