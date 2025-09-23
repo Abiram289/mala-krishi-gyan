@@ -87,6 +87,7 @@ class ChatMessage(BaseModel):
     message: str
     preferred_language: str = "en"  # "en" for English, "ml" for Malayalam
     voice_input_language: str = "en"
+    conversation_history: list = []  # Previous messages for context
 
 class ProfileUpdate(BaseModel):
     username: str | None = None
@@ -451,22 +452,36 @@ def get_weather(lat: float = None, lon: float = None, user=Depends(get_current_u
     try:
         # Get user profile for location if coordinates not provided
         if lat is None or lon is None:
-            user_meta = user.user_metadata or {}
-            user_location = user_meta.get("location")
+            # Get user profile from database
+            profile_response = supabase.table("user_profiles").select("*").eq("user_id", user.id).execute()
             
-            if user_location:
-                # Try to parse coordinates from "lat, lon" format
-                try:
-                    coords = user_location.split(',')
-                    if len(coords) == 2:
-                        lat = float(coords[0].strip())
-                        lon = float(coords[1].strip())
-                except:
-                    pass
+            if profile_response.data:
+                profile = profile_response.data[0]
+                user_location = profile.get("location")
+                
+                if user_location:
+                    # Parse coordinates from formats like:
+                    # "Chengalpattu, Tamil Nadu, India (12.9394, 80.1729)"
+                    # or "12.9394, 80.1729"
+                    try:
+                        # Look for coordinates in parentheses first
+                        if '(' in user_location and ')' in user_location:
+                            coord_part = user_location.split('(')[1].split(')')[0]
+                        else:
+                            coord_part = user_location
+                        
+                        coords = coord_part.split(',')
+                        if len(coords) == 2:
+                            lat = float(coords[0].strip())
+                            lon = float(coords[1].strip())
+                            print(f"Weather: Using coordinates from profile: {lat}, {lon}")
+                    except Exception as e:
+                        print(f"Weather: Failed to parse coordinates from '{user_location}': {e}")
             
             # Default to Kochi, Kerala if no coordinates available
             if lat is None or lon is None:
                 lat, lon = 9.9312, 76.2673
+                print(f"Weather: Using default coordinates: {lat}, {lon}")
         
         if not OPENWEATHER_API_KEY:
             # Return mock data if no API key
@@ -522,12 +537,26 @@ def get_weather(lat: float = None, lon: float = None, user=Depends(get_current_u
         if datetime.now().month == 9:
             alerts.append("Ideal time for Rabi crop planning")
         
+        # Use user's actual location name if available, otherwise use API location
+        display_location = f"{data['name']}, {data['sys']['country']}"
+        if lat != 9.9312 or lon != 76.2673:  # Not default coordinates
+            # Try to get user's location name from profile
+            try:
+                profile_response = supabase.table("user_profiles").select("location").eq("user_id", user.id).execute()
+                if profile_response.data:
+                    user_location = profile_response.data[0].get("location")
+                    if user_location and '(' in user_location:
+                        # Extract city name from "Chengalpattu, Tamil Nadu, India (12.9394, 80.1729)"
+                        display_location = user_location.split('(')[0].strip()
+            except:
+                pass  # Use API location as fallback
+        
         return {
             "temperature": temp,
             "humidity": humidity,
             "condition": condition,
             "windSpeed": round(data["wind"]["speed"] * 3.6),  # Convert m/s to km/h
-            "location": f"{data['name']}, {data['sys']['country']}",
+            "location": display_location,
             "description": data["weather"][0]["description"],
             "alerts": alerts
         }
@@ -640,12 +669,21 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
         {personal_context}
         """
         
+        # Build conversation context if available
+        conversation_context = ""
+        if message.conversation_history:
+            conversation_context = "\n\nPREVIOUS CONVERSATION (for context):";
+            for msg in message.conversation_history[-3:]:  # Last 3 messages for context
+                role = "Farmer" if msg.get('role') == 'user' else "You"
+                conversation_context += f"\n{role}: {msg.get('content', '')}"
+            conversation_context += "\n\n[Remember this conversation when responding to the new question]\n"
+        
         # Create context-aware prompt with user message
         language_instruction = ""
         if message.preferred_language == "ml":
             language_instruction = "\n\n[IMPORTANT: Respond in Malayalam language using Malayalam script (മലയാളം). Use proper Malayalam agricultural terms and maintain a helpful, friendly tone in Malayalam.]"
         
-        full_prompt = f"{system_prompt}{language_instruction}\n\nFarmer's Question: {message.message}\nPreferred Response Language: {message.preferred_language}\nVoice Input Language: {message.voice_input_language}\n\nPersonalized Response:"
+        full_prompt = f"{system_prompt}{conversation_context}{language_instruction}\n\nFarmer's New Question: {message.message}\nPreferred Response Language: {message.preferred_language}\nVoice Input Language: {message.voice_input_language}\n\nPersonalized Response:"
         
         # Generate response using Gemini
         response = model.generate_content(full_prompt)

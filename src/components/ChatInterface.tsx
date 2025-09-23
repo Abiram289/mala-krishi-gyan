@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Send, Bot, User, Mic, MicOff, Image, Languages, Volume2 } from "lucide-react";
+import { Send, Bot, User, Mic, MicOff, Image, Languages, Volume2, Trash2 } from "lucide-react";
 // import { VoiceInstallGuide } from "@/components/VoiceInstallGuide";
 import { VoiceDebugger } from "@/components/VoiceDebugger";
 import { useLanguage } from "./LanguageToggle";
@@ -24,14 +24,40 @@ interface Message {
 export const ChatInterface = () => {
   const { t, language } = useLanguage();
   const { toast } = useToast();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      content: t('chatTitle'),
-      sender: 'bot',
-      timestamp: new Date()
+  // Load chat history from localStorage on component mount
+  const loadChatHistory = () => {
+    try {
+      const saved = localStorage.getItem('kerala-krishi-sahai-chat');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+      }
+    } catch (error) {
+      console.error('Error loading chat history:', error);
     }
-  ]);
+    return [
+      {
+        id: '1',
+        content: t('chatTitle'),
+        sender: 'bot' as const,
+        timestamp: new Date()
+      }
+    ];
+  };
+
+  const [messages, setMessages] = useState<Message[]>(loadChatHistory);
+
+  // Save chat history to localStorage whenever messages change
+  useEffect(() => {
+    try {
+      localStorage.setItem('kerala-krishi-sahai-chat', JSON.stringify(messages));
+    } catch (error) {
+      console.error('Error saving chat history:', error);
+    }
+  }, [messages]);
   const {
     transcript,
     isListening,
@@ -87,6 +113,17 @@ export const ChatInterface = () => {
     window.speechSynthesis.speak(utterance);
   };
 
+  const clearChat = () => {
+    const initialMessage = {
+      id: '1',
+      content: t('chatTitle'),
+      sender: 'bot' as const,
+      timestamp: new Date()
+    };
+    setMessages([initialMessage]);
+    localStorage.removeItem('kerala-krishi-sahai-chat');
+  };
+
   const handleSendMessage = async () => {
     const messageToSend = (isListening ? transcript : inputMessage).trim();
     if (!messageToSend) return;
@@ -108,6 +145,12 @@ export const ChatInterface = () => {
     setIsTyping(true);
 
     try {
+      // Get recent conversation context (last 5 messages)
+      const recentMessages = messages.slice(-5).map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.content
+      }));
+
       const response = await fetchWithAuth("/chat", {
         method: 'POST',
         headers: {
@@ -116,7 +159,8 @@ export const ChatInterface = () => {
         body: JSON.stringify({ 
           message: messageToSend,
           preferred_language: responseLanguage,
-          voice_input_language: voiceLanguage
+          voice_input_language: voiceLanguage,
+          conversation_history: recentMessages
         }),
       });
 
@@ -180,6 +224,15 @@ export const ChatInterface = () => {
               className="text-primary-foreground hover:bg-primary/80"
             >
               <Languages className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearChat}
+              className="text-primary-foreground hover:bg-primary/80"
+              title="Clear chat history"
+            >
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         </div>
