@@ -6,6 +6,7 @@ CREATE TABLE user_profiles (
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   full_name TEXT,
   location TEXT,
+  district TEXT, -- Kerala district for region-specific farming advice
   farm_size DECIMAL(10,2),
   soil_type TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -17,6 +18,7 @@ CREATE TABLE user_profiles (
 
 -- Create indexes for better performance
 CREATE INDEX idx_user_profiles_user_id ON user_profiles(user_id);
+CREATE INDEX idx_user_profiles_district ON user_profiles(district);
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;

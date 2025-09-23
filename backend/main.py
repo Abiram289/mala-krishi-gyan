@@ -103,6 +103,7 @@ class ProfileUpdate(BaseModel):
     avatar_url: str | None = None
     farm_size: float | None = None
     location: str | None = None
+    district: str | None = None
     soil_type: str | None = None
 
 class ActivityCreate(BaseModel):
@@ -226,6 +227,7 @@ def get_profile(user=Depends(get_current_user)):
                 "avatar_url": None,  # We'll add this later if needed
                 "farm_size": float(profile.get("farm_size")) if profile.get("farm_size") else None,
                 "location": profile.get("location"),
+                "district": profile.get("district"),
                 "soil_type": profile.get("soil_type")
             }
         else:
@@ -252,6 +254,7 @@ def get_profile(user=Depends(get_current_user)):
             "avatar_url": None,
             "farm_size": None,
             "location": None,
+            "district": None,
             "soil_type": None
         }
 
@@ -272,6 +275,8 @@ def update_profile(profile_data: ProfileUpdate, user=Depends(get_current_user)):
             update_data["farm_size"] = profile_data.farm_size
         if profile_data.location is not None:
             update_data["location"] = profile_data.location
+        if profile_data.district is not None:
+            update_data["district"] = profile_data.district
         if profile_data.soil_type is not None:
             update_data["soil_type"] = profile_data.soil_type
         
@@ -438,19 +443,15 @@ def delete_activity(activity_id: int, user=Depends(get_current_user)):
 
 
 def get_current_season(month):
-    """Determine Indian agricultural season and planning phase based on month"""
-    if month in [6, 7, 8]:  # June-August
-        return "Kharif (Monsoon) season - Active growing"
-    elif month == 9:  # September
-        return "Late Kharif/Pre-Rabi planning - Time to plan Rabi crops"
-    elif month == 10:  # October
-        return "Rabi planting season - Optimal time for winter crops"
-    elif month in [11, 12, 1, 2]:  # November-February
-        return "Rabi (Winter) season - Active growing"
-    elif month == 3:  # March
-        return "Late Rabi/Pre-Zaid planning - Time to plan summer crops"
+    """Determine Kerala agricultural season based on dual monsoon pattern"""
+    if month in [6, 7, 8, 9]:  # June-September
+        return "Southwest Monsoon season - Main rice planting, coconut care"
+    elif month in [10, 11, 12]:  # October-December
+        return "Northeast Monsoon season - Second crops, spice planting"
+    elif month in [1, 2, 3]:  # January-March
+        return "Post-monsoon dry season - Harvest time, coconut peak harvest"
     elif month in [4, 5]:  # April-May
-        return "Zaid (Summer) season - Hot weather crops"
+        return "Pre-monsoon hot season - Land preparation, water conservation"
     else:
         return "Transitional period"
 
@@ -528,22 +529,62 @@ def get_weather(lat: float = None, lon: float = None, user=Depends(get_current_u
         else:
             condition = "cloudy"
         
-        # Generate farming alerts
+        # Generate Kerala-specific farming alerts
         alerts = []
         temp = round(data["main"]["temp"])
         humidity = data["main"]["humidity"]
+        wind_speed = round(data["wind"]["speed"] * 3.6)  # Convert m/s to km/h
         
+        # Temperature-based alerts for Kerala crops
         if temp > 35:
-            alerts.append("High temperature - Increase crop irrigation")
-        if humidity > 80:
-            alerts.append("High humidity - Monitor for pest activity")
-        if condition == "rainy":
-            alerts.append("Rain expected - Postpone harvesting activities")
+            alerts.append("🌡️ High temperature - Increase irrigation for coconut & banana")
+            alerts.append("☀️ Provide shade nets for cardamom & pepper")
+        elif temp < 20:
+            alerts.append("🌡️ Cool weather - Good for tea & cardamom growth")
         
-        # September-specific advice
+        # Humidity-based Kerala crop alerts
+        if humidity > 85:
+            alerts.append("💧 Very high humidity - Check coconut for rhinoceros beetle")
+            alerts.append("🐛 Monitor pepper plants for foot rot disease")
+            alerts.append("🌿 Apply copper fungicide to rubber trees")
+        elif humidity > 75:
+            alerts.append("💧 High humidity - Good for rice, monitor spice crops")
+        
+        # Rain-based alerts for Kerala agriculture
+        if condition == "rainy":
+            alerts.append("🌧️ Rainy weather - Pause coconut harvesting")
+            alerts.append("🌱 Good time for rice transplanting if flooded fields ready")
+            alerts.append("☔ Avoid rubber tapping during heavy rains")
+        elif condition == "sunny" and humidity < 60:
+            alerts.append("☀️ Dry weather - Ideal for rubber tapping (morning)")
+            alerts.append("🌾 Good for drying harvested spices")
+        
+        # Wind-based alerts
+        if wind_speed > 25:
+            alerts.append("💨 Strong winds - Secure banana plants & coconut palms")
+        
+        # Month-specific Kerala agricultural advice
         from datetime import datetime
-        if datetime.now().month == 9:
-            alerts.append("Ideal time for Rabi crop planning")
+        current_month = datetime.now().month
+        
+        if current_month in [6, 7, 8]:  # Southwest monsoon
+            alerts.append("🌊 SW Monsoon - Peak rice planting season")
+            if condition == "rainy":
+                alerts.append("🌾 Excellent for Kharif rice in Kuttanad region")
+        elif current_month in [9, 10]:
+            alerts.append("🌾 Post-monsoon - Rice harvest time in many areas")
+            alerts.append("🌶️ Start pepper planting preparations")
+        elif current_month in [10, 11, 12]:  # Northeast monsoon
+            alerts.append("🌊 NE Monsoon - Second growing season for vegetables")
+            if temp < 28:
+                alerts.append("🌿 Cool weather perfect for cardamom flowering")
+        elif current_month in [1, 2, 3]:  # Dry season
+            alerts.append("☀️ Dry season - Focus on irrigation management")
+            alerts.append("🥥 Peak coconut harvesting season")
+        elif current_month in [4, 5]:  # Pre-monsoon
+            alerts.append("🔥 Hot season - Prepare land for monsoon crops")
+            if temp > 32:
+                alerts.append("🌡️ Apply mulching to retain soil moisture")
         
         # Use user's actual location name if available, otherwise use API location
         display_location = f"{data['name']}, {data['sys']['country']}"
@@ -599,6 +640,7 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
             profile = profile_response.data[0]
             farm_size = profile.get("farm_size")
             location = profile.get("location")
+            district = profile.get("district")
             soil_type = profile.get("soil_type")
             full_name = profile.get("full_name")
             if full_name:
@@ -607,6 +649,7 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
             # No profile exists yet
             farm_size = None
             location = None
+            district = None
             soil_type = None
         
         # Get current date for seasonal awareness
@@ -703,11 +746,77 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
             personal_context += f"- Farm Size: {farm_size} acres\n"
         if location:
             personal_context += f"- Location: {location}\n"
+        if district:
+            personal_context += f"- Kerala District: {district}\n"
         if soil_type:
             personal_context += f"- Soil Type: {soil_type}\n"
             
-        if not any([farm_size, location, soil_type]):
+        if not any([farm_size, location, district, soil_type]):
             personal_context += "- Profile: Incomplete (gently encourage completing profile, but provide general seasonal advice)\n"
+        
+        # Add Kerala-specific agricultural knowledge base
+        personal_context += f"\n\nKERALA AGRICULTURAL KNOWLEDGE:\n"
+        personal_context += f"\n🌴 MAJOR KERALA CROPS & SEASONS:\n"
+        personal_context += f"- Coconut: Year-round, peak harvest Jan-Mar, spacing 25-30ft\n"
+        personal_context += f"- Rice: Kharif (Jun-Oct), Rabi (Nov-Mar), Mundakan (Apr-Aug)\n"
+        personal_context += f"- Pepper: Plant Jun-Jul, harvest Nov-Feb, needs support trees\n"
+        personal_context += f"- Rubber: Tap Oct-Mar, rest Apr-Sep, latex collection morning\n"
+        personal_context += f"- Cardamom: Plant Jun-Jul, harvest Oct-Feb, shade-loving\n"
+        personal_context += f"- Banana: Year-round planting, harvest after 12-15 months\n"
+        personal_context += f"- Tea: Year-round in highlands, best growth monsoon period\n"
+        personal_context += f"- Cashew: Plant Jun-Jul, harvest Feb-Apr, drought tolerant\n"
+        
+        personal_context += f"\n🌧️ KERALA MONSOON PATTERNS:\n"
+        personal_context += f"- SW Monsoon: Jun-Sep (75% of rainfall), main growing season\n"
+        personal_context += f"- NE Monsoon: Oct-Dec (20% of rainfall), second crops possible\n"
+        personal_context += f"- Dry Season: Jan-May, irrigation critical, coconut harvesting\n"
+        
+        personal_context += f"\n🐛 COMMON KERALA PEST & DISEASES:\n"
+        personal_context += f"- Coconut: Rhinoceros beetle (high humidity), Red palm weevil\n"
+        personal_context += f"- Pepper: Foot rot (monsoon), Pepper yellows disease\n"
+        personal_context += f"- Rubber: Powdery mildew, Corynespora leaf fall (rainy season)\n"
+        personal_context += f"- Rice: Blast disease, Brown planthopper (high humidity)\n"
+        personal_context += f"- Cardamom: Thrips, Cardamom mosaic virus\n"
+        
+        personal_context += f"\n🏛️ KERALA GOVERNMENT SCHEMES (2024-25):\n"
+        personal_context += f"- PM-KISAN: ₹6000/year for all farmers, direct bank transfer\n"
+        personal_context += f"- Kerala Coconut Mission: Subsidy for planting, processing units\n"
+        personal_context += f"- Pepper Development: ₹25,000/hectare for new plantations\n"
+        personal_context += f"- Cardamom Development: 50% subsidy for plantation renovation\n"
+        personal_context += f"- Kerala Rubber Board: Support for tapping, processing\n"
+        personal_context += f"- Organic Certification: Financial support for organic farming\n"
+        personal_context += f"- Krishi Vigyan Kendra: Free training & demonstrations\n"
+        
+        personal_context += f"\n🌱 KERALA SOIL & FARMING TIPS:\n"
+        personal_context += f"- Laterite soil: Add organic matter, suitable for coconut/cashew\n"
+        personal_context += f"- Red soil: Good drainage, ideal for spices & tea in hills\n"
+        personal_context += f"- Alluvial soil: Fertile, perfect for rice in low-lying areas\n"
+        personal_context += f"- Kari soil: Acidic peat, needs lime, good for rice with drainage\n"
+        personal_context += f"- Coastal soil: Saline issues, coconut thrives, improve drainage\n"
+        
+        # Add district-specific advice if district is known
+        if district:
+            personal_context += f"\n🗺️ DISTRICT-SPECIFIC ADVICE ({district.upper()}):\n"
+            
+            district_advice = {
+                "Thiruvananthapuram": "Coastal area - Focus on coconut, cashew, rubber. Watch for saltwater intrusion.",
+                "Kollam": "Cashew processing hub - Ideal for cashew, coconut, pepper cultivation.",
+                "Pathanamthitta": "Hilly terrain - Perfect for spices (pepper, cardamom), rubber plantations.",
+                "Alappuzha": "Backwater region - Rice cultivation in Kuttanad, coconut, banana farming.",
+                "Kottayam": "Rubber belt - Major rubber production, suitable for spices, rice.",
+                "Idukki": "High altitude - Tea, cardamom, coffee cultivation. Cool climate crops.",
+                "Ernakulam": "Commercial hub - Mixed farming, coconut, vegetable cultivation near city.",
+                "Thrissur": "Rice bowl - Paddy cultivation, coconut, banana, vegetable farming.",
+                "Palakkad": "Rice granary - Major rice production, coconut, sugarcane, vegetables.",
+                "Malappuram": "Coconut, arecanut, pepper cultivation. Good for mixed farming.",
+                "Kozhikode": "Spice coast - Pepper, coconut, banana, vegetable cultivation.",
+                "Wayanad": "Coffee & spice hills - Coffee, pepper, cardamom, banana cultivation.",
+                "Kannur": "Coconut & cashew region - Major coconut production, cashew, pepper.",
+                "Kasaragod": "Northernmost - Coconut, cashew, pepper, arecanut cultivation."
+            }
+            
+            if district in district_advice:
+                personal_context += f"- {district_advice[district]}\n"
         
         # Create a personalized system prompt with context awareness
         system_prompt = f"""
@@ -778,10 +887,25 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
             return {"reply": response.text}
         except Exception as gemini_error:
             print(f"🤖 GEMINI ERROR: {type(gemini_error).__name__} - {gemini_error}")
-            # Return a fallback response instead of crashing
-            return {
-                "reply": f"Hello {username}! I'm having trouble connecting to my AI brain right now. Please try again in a moment, or check if your farming question is urgent and I'll do my best to help!"
-            }
+            error_str = str(gemini_error)
+            
+            # Handle specific error types with better messages
+            if "RESOURCE_EXHAUSTED" in error_str or "429" in error_str:
+                return {
+                    "reply": f"Hello {username}! 😅 I've been chatting a lot today and hit my daily quota limit. Please try again in a few minutes, or ask me about urgent farming questions and I'll help as best I can!"
+                }
+            elif "PERMISSION_DENIED" in error_str:
+                return {
+                    "reply": f"Hello {username}! 🔑 I'm having authentication issues with my AI service. The developers need to check my API access. Meanwhile, feel free to ask basic farming questions!"
+                }
+            elif "DEADLINE_EXCEEDED" in error_str or "timeout" in error_str.lower():
+                return {
+                    "reply": f"Hello {username}! ⏱️ My response took too long to generate. Can you try asking a shorter question? I'll respond faster!"
+                }
+            else:
+                return {
+                    "reply": f"Hello {username}! 🤖 I'm having trouble connecting to my AI brain right now. Please try again in a moment, or check if your farming question is urgent and I'll do my best to help!"
+                }
         
     except Exception as e:
         print(f"Chat error: {type(e).__name__} - {e}")

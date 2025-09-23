@@ -25,6 +25,24 @@ const keralaSoilTypes = [
   "Mixed Alluvium",
 ];
 
+// Kerala districts for location-specific farming advice
+const keralaDistricts = [
+  "Thiruvananthapuram",
+  "Kollam",
+  "Pathanamthitta",
+  "Alappuzha",
+  "Kottayam",
+  "Idukki",
+  "Ernakulam",
+  "Thrissur",
+  "Palakkad",
+  "Malappuram",
+  "Kozhikode",
+  "Wayanad",
+  "Kannur",
+  "Kasaragod",
+];
+
 const FarmProfileForm = () => {
   // Get global profile state and functions from the Auth context
   const { profile, profileLoading, refetchProfile, user } = useAuth();
@@ -55,6 +73,7 @@ const FarmProfileForm = () => {
   const [formData, setFormData] = useState({
     full_name: "",
     location: "",
+    district: "",
     farm_size: "",
     soil_type: "", // Re-add soil_type
   });
@@ -72,6 +91,7 @@ const FarmProfileForm = () => {
       setFormData({
         full_name: profile.full_name || "",
         location: profile.location || "",
+        district: profile.district || "",
         farm_size: profile.farm_size?.toString() || "",
         soil_type: profile.soil_type || "", // Re-add soil_type
       });
@@ -85,6 +105,10 @@ const FarmProfileForm = () => {
 
   const handleSoilTypeChange = (value: string) => {
     setFormData((prev) => ({ ...prev, soil_type: value }));
+  };
+
+  const handleDistrictChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, district: value }));
   };
 
   const reverseGeocode = async (lat: number, lon: number): Promise<string> => {
@@ -268,6 +292,15 @@ const FarmProfileForm = () => {
                   </p>
                 )}
               </div>
+              
+              <div>
+                <Label className="text-sm font-medium text-muted-foreground">
+                  Kerala District
+                </Label>
+                <p className="text-lg font-medium">
+                  {profile.district || "Not provided"}
+                </p>
+              </div>
             </div>
             
             <div className="space-y-4">
@@ -299,7 +332,7 @@ const FarmProfileForm = () => {
             </div>
           </div>
           
-          {(!profile.full_name || !profile.location || !profile.farm_size || !profile.soil_type) && (
+          {(!profile.full_name || !profile.location || !profile.district || !profile.farm_size || !profile.soil_type) && (
             <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
               <p className="text-sm text-amber-800">
                 💡 Complete your profile to get personalized farming advice and weather alerts!
@@ -346,6 +379,24 @@ const FarmProfileForm = () => {
             </div>
             <p className="text-xs text-muted-foreground">
               Click "Get Location" to automatically fill your coordinates.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="district">Kerala District</Label>
+            <Select value={formData.district} onValueChange={handleDistrictChange} disabled={isSubmitting}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select your district" />
+              </SelectTrigger>
+              <SelectContent>
+                {keralaDistricts.map((district) => (
+                  <SelectItem key={district} value={district}>
+                    {district}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Select your Kerala district for region-specific farming advice.
             </p>
           </div>
           <div className="space-y-2">
