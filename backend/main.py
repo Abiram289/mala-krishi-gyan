@@ -455,6 +455,506 @@ def get_current_season(month):
     else:
         return "Transitional period"
 
+def get_kerala_crop_calendar(month, district=None):
+    """Get Kerala-specific crop calendar based on dual monsoon system"""
+    from datetime import datetime
+    
+    # Kerala monsoon seasons
+    if month in [6, 7, 8, 9]:  # June-September
+        season = "Southwest Monsoon"
+        rainfall_period = "Main rainy season (75% annual rainfall)"
+    elif month in [10, 11, 12]:  # October-December  
+        season = "Northeast Monsoon"
+        rainfall_period = "Secondary rainy season (20% annual rainfall)"
+    elif month in [1, 2, 3]:  # January-March
+        season = "Post-monsoon Dry"
+        rainfall_period = "Dry harvest season"
+    else:  # April-May
+        season = "Pre-monsoon Hot"
+        rainfall_period = "Hot dry season - land preparation"
+    
+    # Base crop predictions for Kerala
+    predictions = []
+    weather_guidance = []
+    monthly_schedule = {"weeks": []}
+    
+    month_names = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ]
+    
+    current_month_name = month_names[month - 1]
+    
+    # Season-specific crop activities
+    if month in [6, 7, 8, 9]:  # SW Monsoon - Main growing season
+        predictions = [
+            {
+                "id": "rice_sw",
+                "crop": "Rice",
+                "stage": "Kharif Season",
+                "action": "Transplant Seedlings",
+                "timing": f"{current_month_name} 15-25",
+                "priority": "high",
+                "description": "Southwest monsoon ideal for Kharif rice transplanting in flooded paddies",
+                "icon": "sprout"
+            },
+            {
+                "id": "coconut_sw",
+                "crop": "Coconut",
+                "stage": "Growth Period", 
+                "action": "Drainage & Pest Control",
+                "timing": f"{current_month_name} 10-20",
+                "priority": "high",
+                "description": "High humidity increases rhinoceros beetle risk - check and treat",
+                "icon": "bug"
+            },
+            {
+                "id": "pepper_sw",
+                "crop": "Pepper",
+                "stage": "Planting Season",
+                "action": "Plant New Vines",
+                "timing": f"{current_month_name} 5-15",
+                "priority": "medium",
+                "description": "Monsoon moisture perfect for pepper vine establishment",
+                "icon": "sprout"
+            },
+            {
+                "id": "cardamom_sw",
+                "crop": "Cardamom",
+                "stage": "Planting",
+                "action": "Transplant Seedlings",
+                "timing": f"{current_month_name} 1-15",
+                "priority": "medium",
+                "description": "Monsoon season ideal for cardamom in shaded hill areas",
+                "icon": "sprout"
+            }
+        ]
+        
+        # Generate current-aware weather guidance with realistic periods
+        from datetime import datetime, timedelta
+        import calendar
+        
+        current_date = datetime.now()
+        current_day = current_date.day
+        days_in_month = calendar.monthrange(current_date.year, month)[1]
+        
+        # Create 3 dynamic periods based on current date and month length
+        period1_end = min(days_in_month, max(10, current_day + 3))  # At least next 3 days or day 10
+        period2_start = period1_end + 1
+        period2_end = min(days_in_month, period1_end + 10)
+        period3_start = period2_end + 1
+        
+        weather_guidance = [
+            {
+                "date": f"{current_month_name} {max(1, current_day)}-{period1_end}",
+                "condition": "Heavy Monsoon Rains" if current_day <= period1_end else "Recent Heavy Rains",
+                "impact": "Perfect for rice planting, ensure proper field drainage for coconut groves",
+                "icon": "cloud-rain"
+            },
+            {
+                "date": f"{current_month_name} {period2_start}-{period2_end}",
+                "condition": "Consistent Southwest Monsoon",
+                "impact": "Ideal for spice planting, monitor for increased pest activity due to humidity",
+                "icon": "droplets"
+            },
+            {
+                "date": f"{current_month_name} {period3_start}-{days_in_month}",
+                "condition": "Moderate Monsoon Showers",
+                "impact": "Good for transplanting operations, avoid over-watering established crops",
+                "icon": "cloud-rain"
+            }
+        ]
+    
+    elif month in [10, 11, 12]:  # NE Monsoon - Second crop season
+        predictions = [
+            {
+                "id": "rice_ne",
+                "crop": "Rice",
+                "stage": "Rabi Season",
+                "action": "Second Crop Planting",
+                "timing": f"{current_month_name} 1-15",
+                "priority": "medium",
+                "description": "Northeast monsoon supports Rabi rice in suitable areas",
+                "icon": "sprout"
+            },
+            {
+                "id": "vegetables_ne",
+                "crop": "Vegetables",
+                "stage": "Winter Growing",
+                "action": "Plant Leafy Greens",
+                "timing": f"{current_month_name} 5-20",
+                "priority": "high",
+                "description": "Cool weather perfect for amaranth, spinach, radish",
+                "icon": "sprout"
+            },
+            {
+                "id": "spices_ne",
+                "crop": "Spices",
+                "stage": "Planting",
+                "action": "Plant Turmeric & Ginger",
+                "timing": f"{current_month_name} 10-25",
+                "priority": "medium",
+                "description": "NE monsoon moisture good for rhizome planting",
+                "icon": "sprout"
+            },
+            {
+                "id": "coconut_ne",
+                "crop": "Coconut",
+                "stage": "Maintenance",
+                "action": "Apply Organic Manure",
+                "timing": f"{current_month_name} 15-30",
+                "priority": "medium",
+                "description": "Post-monsoon nutrition boost for next season yield",
+                "icon": "droplets"
+            }
+        ]
+        
+        # NE Monsoon - dynamic weather guidance
+        current_date = datetime.now()
+        current_day = current_date.day
+        days_in_month = calendar.monthrange(current_date.year, month)[1]
+        
+        period1_end = min(days_in_month, max(12, current_day + 5))
+        period2_start = period1_end + 1
+        period2_end = min(days_in_month, period1_end + 8)
+        period3_start = period2_end + 1
+        
+        weather_guidance = [
+            {
+                "date": f"{current_month_name} {max(1, current_day)}-{period1_end}",
+                "condition": "Northeast Monsoon Active", 
+                "impact": "Good for second crops, less intense rainfall than SW monsoon",
+                "icon": "droplets"
+            },
+            {
+                "date": f"{current_month_name} {period2_start}-{period2_end}",
+                "condition": "Scattered NE Showers",
+                "impact": "Perfect for vegetable planting, moderate watering needed",
+                "icon": "cloud-rain"
+            },
+            {
+                "date": f"{current_month_name} {period3_start}-{days_in_month}",
+                "condition": "Clearing Weather Periods",
+                "impact": "Good for land preparation and harvesting late Kharif crops",
+                "icon": "sun"
+            }
+        ]
+    
+    elif month in [1, 2, 3]:  # Post-monsoon dry season - Harvest time
+        predictions = [
+            {
+                "id": "coconut_harvest",
+                "crop": "Coconut",
+                "stage": "Peak Harvest",
+                "action": "Harvest Mature Nuts",
+                "timing": f"{current_month_name} 1-30",
+                "priority": "high",
+                "description": "Dry season - peak coconut harvest period with good quality",
+                "icon": "scissors"
+            },
+            {
+                "id": "pepper_harvest",
+                "crop": "Pepper",
+                "stage": "Harvest",
+                "action": "Harvest Peppercorns",
+                "timing": f"{current_month_name} 10-25",
+                "priority": "high",
+                "description": "Dry weather perfect for pepper harvest and drying",
+                "icon": "scissors"
+            },
+            {
+                "id": "cardamom_harvest",
+                "crop": "Cardamom", 
+                "stage": "Harvest",
+                "action": "Harvest Pods",
+                "timing": f"{current_month_name} 5-20",
+                "priority": "medium",
+                "description": "Hand-pick mature cardamom pods when 3/4 mature",
+                "icon": "scissors"
+            },
+            {
+                "id": "rubber_tapping",
+                "crop": "Rubber",
+                "stage": "Peak Tapping",
+                "action": "Daily Latex Collection",
+                "timing": f"{current_month_name} 1-30",
+                "priority": "high",
+                "description": "Dry season ideal for rubber tapping - best latex flow",
+                "icon": "droplets"
+            }
+        ]
+        
+        # Dry season - dynamic weather guidance
+        current_date = datetime.now()
+        current_day = current_date.day
+        days_in_month = calendar.monthrange(current_date.year, month)[1]
+        
+        period1_end = min(days_in_month, max(10, current_day + 4))
+        period2_start = period1_end + 1
+        period2_end = min(days_in_month, period1_end + 12)
+        period3_start = period2_end + 1
+        
+        weather_guidance = [
+            {
+                "date": f"{current_month_name} {max(1, current_day)}-{period1_end}",
+                "condition": "Clear Dry Weather",
+                "impact": "Perfect for harvesting and sun-drying spices and coconut",
+                "icon": "sun"
+            },
+            {
+                "date": f"{current_month_name} {period2_start}-{period2_end}", 
+                "condition": "Hot Sunny Days",
+                "impact": "Peak rubber tapping season - ensure adequate irrigation for all crops",
+                "icon": "sun"
+            },
+            {
+                "date": f"{current_month_name} {period3_start}-{days_in_month}",
+                "condition": "Dry Season Peak",
+                "impact": "Focus on water conservation, complete major harvesting activities",
+                "icon": "sun"
+            }
+        ]
+    
+    else:  # April-May - Pre-monsoon hot season
+        predictions = [
+            {
+                "id": "land_prep",
+                "crop": "General",
+                "stage": "Preparation",
+                "action": "Land Preparation",
+                "timing": f"{current_month_name} 1-20",
+                "priority": "high",
+                "description": "Prepare fields for monsoon planting - plowing, organic matter",
+                "icon": "sprout"
+            },
+            {
+                "id": "coconut_summer",
+                "crop": "Coconut",
+                "stage": "Summer Care",
+                "action": "Deep Irrigation",
+                "timing": f"{current_month_name} 5-25",
+                "priority": "high",
+                "description": "Hot season - increase watering frequency for coconut",
+                "icon": "droplets"
+            },
+            {
+                "id": "rubber_rest",
+                "crop": "Rubber",
+                "stage": "Rest Period",
+                "action": "Reduce Tapping",
+                "timing": f"{current_month_name} 15-30",
+                "priority": "medium",
+                "description": "Hot season - reduce tapping frequency, tree maintenance",
+                "icon": "scissors"
+            },
+            {
+                "id": "water_conservation",
+                "crop": "General",
+                "stage": "Conservation",
+                "action": "Water Management",
+                "timing": f"{current_month_name} 1-30",
+                "priority": "high",
+                "description": "Install drip irrigation, mulching, rainwater harvesting",
+                "icon": "droplets"
+            }
+        ]
+        
+        # Pre-monsoon hot season - dynamic weather guidance
+        current_date = datetime.now()
+        current_day = current_date.day
+        days_in_month = calendar.monthrange(current_date.year, month)[1]
+        
+        period1_end = min(days_in_month, max(8, current_day + 3))
+        period2_start = period1_end + 1
+        period2_end = min(days_in_month, period1_end + 12)
+        period3_start = period2_end + 1
+        
+        weather_guidance = [
+            {
+                "date": f"{current_month_name} {max(1, current_day)}-{period1_end}",
+                "condition": "Hot & Dry Conditions",
+                "impact": "Increase irrigation frequency, prepare fields for upcoming monsoon",
+                "icon": "sun"
+            },
+            {
+                "date": f"{current_month_name} {period2_start}-{period2_end}",
+                "condition": "Peak Summer Heat",
+                "impact": "Critical irrigation period - provide shade nets for sensitive crops",
+                "icon": "sun"
+            },
+            {
+                "date": f"{current_month_name} {period3_start}-{days_in_month}",
+                "condition": "Pre-monsoon Preparation",
+                "impact": "Complete final land preparation, install drainage before monsoon onset",
+                "icon": "sun"
+            }
+        ]
+    
+    # Generate weekly schedule based on season
+    weeks = []
+    for week_num in range(1, 5):
+        week_start = (week_num - 1) * 7 + 1
+        week_end = min(week_num * 7, 30)
+        week_name = f"Week {week_num} ({current_month_name} {week_start}-{week_end})"
+        
+        activities = []
+        if month in [6, 7, 8, 9]:  # SW Monsoon
+            if week_num == 1:
+                activities = [
+                    {"text": "Prepare rice nursery beds", "icon": "sprout"},
+                    {"text": "Check drainage in coconut groves", "icon": "droplets"}
+                ]
+            elif week_num == 2:
+                activities = [
+                    {"text": "Transplant rice seedlings", "icon": "sprout"},
+                    {"text": "Apply preventive pest control", "icon": "bug"}
+                ]
+            elif week_num == 3:
+                activities = [
+                    {"text": "Plant pepper vines", "icon": "sprout"},
+                    {"text": "Monitor high-humidity pests", "icon": "bug"}
+                ]
+            else:
+                activities = [
+                    {"text": "Weed management in rice fields", "icon": "scissors"},
+                    {"text": "Cardamom plantation care", "icon": "droplets"}
+                ]
+        elif month in [10, 11, 12]:  # NE Monsoon
+            if week_num == 1:
+                activities = [
+                    {"text": "Plant winter vegetables", "icon": "sprout"},
+                    {"text": "Second crop rice preparation", "icon": "sprout"}
+                ]
+            elif week_num == 2:
+                activities = [
+                    {"text": "Harvest late Kharif rice", "icon": "scissors"},
+                    {"text": "Plant turmeric rhizomes", "icon": "sprout"}
+                ]
+            elif week_num == 3:
+                activities = [
+                    {"text": "Apply organic manure to coconut", "icon": "droplets"},
+                    {"text": "Ginger planting", "icon": "sprout"}
+                ]
+            else:
+                activities = [
+                    {"text": "Leafy vegetable harvesting", "icon": "scissors"},
+                    {"text": "Land preparation for next season", "icon": "sprout"}
+                ]
+        elif month in [1, 2, 3]:  # Dry season
+            if week_num == 1:
+                activities = [
+                    {"text": "Peak coconut harvesting", "icon": "scissors"},
+                    {"text": "Daily rubber tapping", "icon": "droplets"}
+                ]
+            elif week_num == 2:
+                activities = [
+                    {"text": "Harvest and dry pepper", "icon": "scissors"},
+                    {"text": "Cardamom pod collection", "icon": "scissors"}
+                ]
+            elif week_num == 3:
+                activities = [
+                    {"text": "Spice processing and storage", "icon": "scissors"},
+                    {"text": "Post-harvest field cleaning", "icon": "sprout"}
+                ]
+            else:
+                activities = [
+                    {"text": "Tree pruning and maintenance", "icon": "scissors"},
+                    {"text": "Irrigation system check", "icon": "droplets"}
+                ]
+        else:  # Pre-monsoon hot season
+            if week_num == 1:
+                activities = [
+                    {"text": "Deep plowing of fields", "icon": "sprout"},
+                    {"text": "Install irrigation systems", "icon": "droplets"}
+                ]
+            elif week_num == 2:
+                activities = [
+                    {"text": "Apply organic compost", "icon": "droplets"},
+                    {"text": "Repair farm infrastructure", "icon": "sprout"}
+                ]
+            elif week_num == 3:
+                activities = [
+                    {"text": "Water conservation measures", "icon": "droplets"},
+                    {"text": "Summer pruning of trees", "icon": "scissors"}
+                ]
+            else:
+                activities = [
+                    {"text": "Final monsoon preparations", "icon": "sprout"},
+                    {"text": "Seedling nursery setup", "icon": "sprout"}
+                ]
+        
+        weeks.append({
+            "title": week_name,
+            "activities": activities
+        })
+    
+    monthly_schedule["weeks"] = weeks
+    
+    # Add district-specific recommendations if available
+    district_note = ""
+    if district:
+        district_advice = {
+            "Thiruvananthapuram": "Coastal climate - focus on coconut, cashew. Watch for saltwater effects.",
+            "Kollam": "Cashew belt - ideal for cashew processing, coconut cultivation.",
+            "Pathanamthitta": "Spice hills - perfect for pepper, cardamom in elevated areas.",
+            "Alappuzha": "Rice bowl - Kuttanad paddy cultivation, backwater farming.",
+            "Kottayam": "Rubber hub - major rubber tapping, spice cultivation.",
+            "Idukki": "High altitude - tea, coffee, cardamom in cool climate.",
+            "Ernakulam": "Commercial zone - mixed farming, urban agriculture.",
+            "Thrissur": "Agricultural center - rice, coconut, banana cultivation.",
+            "Palakkad": "Rice granary - paddy fields, coconut, vegetables.",
+            "Malappuram": "Diverse farming - coconut, arecanut, spices.",
+            "Kozhikode": "Spice coast - pepper, coconut, banana cultivation.",
+            "Wayanad": "Coffee hills - coffee, pepper, banana in highlands.",
+            "Kannur": "Coconut region - major coconut production zone.",
+            "Kasaragod": "Northern border - coconut, cashew, arecanut."
+        }
+        district_note = district_advice.get(district, f"District-specific advice for {district}")
+    
+    return {
+        "season": season,
+        "rainfall_period": rainfall_period,
+        "month": current_month_name,
+        "predictions": predictions,
+        "weather_guidance": weather_guidance,
+        "monthly_schedule": monthly_schedule,
+        "district_note": district_note
+    }
+
+@app.get("/crop-calendar")
+def get_crop_calendar(month: int = None, user=Depends(get_current_user)):
+    """Get Kerala-specific crop calendar based on monsoon patterns and user's district"""
+    try:
+        from datetime import datetime
+        
+        # Use current month if not specified
+        if month is None:
+            month = datetime.now().month
+        
+        # Validate month parameter
+        if not (1 <= month <= 12):
+            raise HTTPException(status_code=400, detail="Month must be between 1 and 12")
+        
+        # Get user profile for district-specific advice
+        district = None
+        try:
+            profile_response = supabase.table("user_profiles").select("district").eq("user_id", user.id).execute()
+            if profile_response.data:
+                district = profile_response.data[0].get("district")
+        except Exception as e:
+            print(f"Could not fetch user district: {e}")
+        
+        # Get Kerala-specific crop calendar
+        calendar_data = get_kerala_crop_calendar(month, district)
+        
+        return calendar_data
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Crop calendar error: {type(e).__name__} - {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get crop calendar: {str(e)}")
+
 @app.get("/weather")
 def get_weather(lat: float = None, lon: float = None, user=Depends(get_current_user)):
     """Get weather data for user's location or coordinates."""
