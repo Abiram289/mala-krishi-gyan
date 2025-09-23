@@ -43,8 +43,20 @@ export const useGoogleTTS = (): GoogleTTSHook => {
       return;
     }
 
+    // Clean markdown formatting for better TTS speech
+    const cleanText = text
+      .replace(/\*\*(.*?)\*\*/g, '$1')  // Remove bold **text**
+      .replace(/\*(.*?)\*/g, '$1')     // Remove italic *text*
+      .replace(/#{1,6}\s*/g, '')       // Remove headers #
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Replace links [text](url) with text
+      .replace(/`(.*?)`/g, '$1')       // Remove code backticks
+      .replace(/\n\s*[-*+]\s*/g, '. ') // Replace bullet points with periods
+      .replace(/\n{2,}/g, '. ')        // Replace multiple newlines with period
+      .replace(/\n/g, ' ')             // Replace single newlines with space
+      .trim();
+
     try {
-      console.log(`🔊 Google TTS: Synthesizing "${text.substring(0, 50)}..." in ${language}`);
+      console.log(`🔊 Google TTS: Synthesizing "${cleanText.substring(0, 50)}..." in ${language}`);
       
       // Allow stop during request (only in browser)
       if (typeof window !== 'undefined' && 'AbortController' in window) {
@@ -57,7 +69,7 @@ export const useGoogleTTS = (): GoogleTTSHook => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          text: text.trim(),
+          text: cleanText,
           language: language 
         }),
         ...(abortControllerRef.current && { signal: abortControllerRef.current.signal }),
@@ -117,7 +129,7 @@ export const useGoogleTTS = (): GoogleTTSHook => {
           window.speechSynthesis.cancel();
           setIsSpeaking(true);
           
-          const utterance = new SpeechSynthesisUtterance(text);
+          const utterance = new SpeechSynthesisUtterance(cleanText);
           utterance.lang = language === 'ml' ? 'ml-IN' : 'en-IN';
           utterance.rate = language === 'ml' ? 0.7 : 0.9;
           utterance.pitch = language === 'ml' ? 0.8 : 1;

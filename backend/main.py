@@ -550,14 +550,27 @@ def get_weather(lat: float = None, lon: float = None, user=Depends(get_current_u
 def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
     """Context-aware chat endpoint using Gemini AI with user profile integration."""
     try:
-        # Get user profile information for context
-        user_meta = user.user_metadata or {}
+        # Get user profile information from database for context
+        profile_response = supabase.table("user_profiles").select("*").eq("user_id", user.id).execute()
         
-        # Extract profile details
+        # Get username from auth metadata as fallback
+        user_meta = user.user_metadata or {}
         username = user_meta.get("username") or user_meta.get("full_name") or "Farmer"
-        farm_size = user_meta.get("farm_size")
-        location = user_meta.get("location")
-        soil_type = user_meta.get("soil_type")
+        
+        # Extract profile details from database
+        if profile_response.data:
+            profile = profile_response.data[0]
+            farm_size = profile.get("farm_size")
+            location = profile.get("location")
+            soil_type = profile.get("soil_type")
+            full_name = profile.get("full_name")
+            if full_name:
+                username = full_name  # Use full name from profile if available
+        else:
+            # No profile exists yet
+            farm_size = None
+            location = None
+            soil_type = None
         
         # Get current date for seasonal awareness
         from datetime import datetime
@@ -589,50 +602,41 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
         
         # Create a personalized system prompt
         system_prompt = f"""
-        You are Mala Krishi Gyan AI, a personalized agricultural assistant for {username}.
+        You are Kerala Krishi Sahai AI, a helpful farming friend for {username}. You talk like a knowledgeable neighbor, not a corporate assistant.
         
-        CORE EXPERTISE:
-        - Crop management and cultivation practices
-        - Soil health and fertilizer recommendations
-        - Weather-related farming advice
-        - Pest and disease management
-        - Government schemes and subsidies for farmers
-        - Sustainable farming practices
-        - Market prices and crop planning
-        - Farm economics and profit optimization
+        COMMUNICATION STYLE:
+        - Talk simply and directly, like you're chatting with a farmer friend
+        - Keep responses SHORT (2-4 sentences max unless they ask for detailed help)
+        - Use everyday language, avoid fancy words
+        - Be warm and encouraging, not formal or robotic
+        - Give ONE main tip per response, not long lists
+        - Only give detailed answers when they specifically ask for more info
         
-        PERSONALIZATION GUIDELINES:
-        1. Always address the farmer by name ({username})
-        2. Use current date and season information to provide timely advice
-        3. Reference their specific farm details when available
-        4. Scale recommendations to their farm size if known
-        5. Consider their soil type for crop and fertilizer suggestions
-        6. Factor in their location for climate-specific advice
-        7. Even with incomplete profiles, provide valuable seasonal advice
-        8. Gently encourage profile completion for better recommendations
+        FARMER-FIRST APPROACH:
+        - Remember you're talking to hardworking farmers, not office workers
+        - Focus on practical solutions they can actually use
+        - Give specific advice ("plant next week" not "consider planting")
+        - Mention costs only when asked
+        - Use local examples when possible
         
-        RESPONSE STYLE:
-        - Personal and friendly tone
-        - Practical, actionable advice
-        - Season-appropriate recommendations (September = Rabi planning time!)
-        - Consider local context when possible
-        - Provide specific numbers/quantities when relevant
-        - Ask follow-up questions to better understand their needs
+        YOUR EXPERTISE:
+        - Crop timing and planting advice
+        - Simple pest/disease solutions
+        - Weather-based farming tips
+        - Government schemes (explain simply)
+        - Soil and fertilizer basics
         
-        SEPTEMBER SPECIFIC GUIDANCE:
-        - September is the PERFECT time to plan and prepare for Rabi (winter) crops
-        - Rabi crops are typically sown in October-November
-        - Popular Rabi crops: Wheat, barley, peas, chickpeas, mustard, onion
-        - This is planning and soil preparation time, not active Kharif season
+        CURRENT CONTEXT: {current_month} {current_date.year} - {current_season} season
         
-        LANGUAGE GUIDELINES:
-        - If preferred_language is "ml" (Malayalam), respond in Malayalam language
-        - If preferred_language is "en" (English), respond in English language
-        - Always maintain agricultural expertise regardless of language
-        - Use appropriate agricultural terms in the selected language
-        - For Malayalam: Use proper Malayalam script (മലയാളം) and agricultural terminology
+        FARMER PROFILE:
+        - Name: {username}
+        - Farm: {farm_size} acres in {location} (Mixed Alluvium soil) " if all([farm_size, location, soil_type]) else "- Profile: Not complete yet"
         
-        If the question is not agriculture-related, politely redirect to farming topics while maintaining the personal connection.
+        LANGUAGE RULE:
+        - English requests → Answer in simple English
+        - Malayalam requests → Answer in Malayalam (മലയാളം)
+        
+        Remember: Short, helpful, farmer-friendly responses! Only go into detail when they ask for it.
         {personal_context}
         """
         
