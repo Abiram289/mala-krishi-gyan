@@ -46,8 +46,10 @@ export const useGoogleTTS = (): GoogleTTSHook => {
     try {
       console.log(`🔊 Google TTS: Synthesizing "${text.substring(0, 50)}..." in ${language}`);
       
-      // Allow stop during request
-      abortControllerRef.current = new AbortController();
+      // Allow stop during request (only in browser)
+      if (typeof window !== 'undefined' && 'AbortController' in window) {
+        abortControllerRef.current = new AbortController();
+      }
 
       const response = await fetchWithAuth('/tts', {
         method: 'POST',
@@ -58,7 +60,7 @@ export const useGoogleTTS = (): GoogleTTSHook => {
           text: text.trim(),
           language: language 
         }),
-        signal: abortControllerRef.current.signal as any,
+        ...(abortControllerRef.current && { signal: abortControllerRef.current.signal }),
       });
 
       if (!response.ok) {
