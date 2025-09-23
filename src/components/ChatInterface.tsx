@@ -280,7 +280,6 @@ export const ChatInterface = () => {
                 </Select>
               </div>
             </div>
-            </div>
           </div>
         )}
       </div>
