@@ -20,6 +20,12 @@ dist-ssr
 .env.test.local
 .env.production.local
 
+# Google Cloud credentials
+google-credentials.json
+*.json
+!package*.json
+!tsconfig*.json
+
 # Python
 __pycache__/
 *.py[cod]

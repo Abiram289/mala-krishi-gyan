@@ -10,7 +10,7 @@ export const Sidebar = () => {
     <aside className="w-64 bg-sidebar text-sidebar-foreground p-4 flex flex-col border-r">
       <div className="flex items-center justify-between mb-6">
         <Link to="/">
-          <h1 className="text-2xl font-bold text-sidebar-primary">Mala Krishi Gyan</h1>
+          <h1 className="text-2xl font-bold text-sidebar-primary">Kerala Krishi Sahai</h1>
         </Link>
       </div>
       <nav className="flex-1 space-y-2">

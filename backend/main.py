@@ -5,15 +5,50 @@ from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
+from google.cloud import texttospeech
 import requests
+import base64
 
-# Load environment variables
+# Load environment variables from parent directory
+load_dotenv("../.env")
+# Also try loading from current directory as fallback
 load_dotenv()
+
+# Debug environment loading
+print(f"\n🔍 ENVIRONMENT DEBUG:")
+print(f"Current working directory: {os.getcwd()}")
+print(f"GOOGLE_APPLICATION_CREDENTIALS from env: {os.getenv('GOOGLE_APPLICATION_CREDENTIALS')}")
+if os.getenv('GOOGLE_APPLICATION_CREDENTIALS'):
+    cred_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+    abs_path = os.path.abspath(cred_path)
+    print(f"Absolute credentials path: {abs_path}")
+    print(f"Credentials file exists: {os.path.exists(abs_path)}")
+print("\n")
+
+import json
+import tempfile
+
+# For Railway deployment - create credentials file from environment variable
+if os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON"):
+    credentials_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as f:
+        f.write(credentials_json)
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
+
+# Fix relative path for local development
+if os.getenv("GOOGLE_APPLICATION_CREDENTIALS") and os.getenv("GOOGLE_APPLICATION_CREDENTIALS").startswith('./'):
+    # Convert relative path to absolute path from parent directory
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    relative_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")[2:]  # Remove './'
+    absolute_path = os.path.join(parent_dir, relative_path)
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = absolute_path
+    print(f"Fixed relative path to: {absolute_path}")
 
 SUPABASE_URL = os.getenv("VITE_SUPABASE_URL")
 SUPABASE_KEY = os.getenv("VITE_SUPABASE_ANON_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
+GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     raise RuntimeError("Missing SUPABASE_URL or SUPABASE_KEY in environment")
@@ -74,6 +109,10 @@ class ActivityUpdate(BaseModel):
     date: str | None = None
     notes: str | None = None
 
+class TextToSpeechRequest(BaseModel):
+    text: str
+    language: str = "en"  # "en" for English, "ml" for Malayalam
+
 
 # ------------------------
 # Auth Helper
@@ -107,9 +146,53 @@ def get_current_user(authorization: str = Header(..., alias="Authorization")):
 # ------------------------
 # Routes
 # ------------------------
+
+@app.post("/tts")
+async def synthesize_speech(req: TextToSpeechRequest, user=Depends(get_current_user)):
+    """Synthesize speech using Microsoft Edge TTS (free) and return base64 audio."""
+    try:
+        import edge_tts
+        import io
+        
+        # Select voice based on requested language
+        if req.language == "ml":
+            voice = "ml-IN-MidhunNeural"  # Malayalam (India) - Male voice
+            # Alternative: "ml-IN-SobhanaNeural"  # Malayalam (India) - Female voice
+        else:
+            voice = "en-IN-NeerjaNeural"  # English (India) - Female voice
+            # Alternative: "en-IN-PrabhatNeural"  # English (India) - Male voice
+        
+        print(f"\n🎯 Edge TTS: Using voice '{voice}' for language '{req.language}'")
+        print(f"Text to synthesize: {req.text[:50]}...")
+        
+        # Create TTS communication
+        communicate = edge_tts.Communicate(req.text, voice)
+        
+        # Generate speech and collect audio data
+        audio_data = b""
+        async for chunk in communicate.stream():
+            if chunk["type"] == "audio":
+                audio_data += chunk["data"]
+        
+        if not audio_data:
+            raise Exception("No audio data generated")
+        
+        # Convert to base64
+        audio_base64 = base64.b64encode(audio_data).decode("utf-8")
+        
+        print(f"✅ Edge TTS: Successfully generated {len(audio_data)} bytes of audio")
+        return {"audio": audio_base64, "contentType": "audio/mpeg"}
+        
+    except Exception as e:
+        print(f"\n🚨 EDGE TTS ERROR:")
+        print(f"Error Type: {type(e).__name__}")
+        print(f"Error Message: {str(e)}")
+        import traceback
+        print(f"Full traceback: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Edge TTS failed: {str(e)}")
 @app.get("/")
 def root():
-    return {"message": "SafeDip API is running 🚀"}
+    return {"message": "Kerala Krishi Sahai API is running 🚀"}
 
 
 @app.get("/profile")

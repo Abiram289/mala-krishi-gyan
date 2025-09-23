@@ -10,7 +10,7 @@ import { Send, Bot, User, Mic, MicOff, Image, Languages, Volume2 } from "lucide-
 import { VoiceDebugger } from "@/components/VoiceDebugger";
 import { useLanguage } from "./LanguageToggle";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
-import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { useGoogleTTS } from "@/hooks/useGoogleTTS";
 import { useToast } from "./ui/use-toast";
 import { fetchWithAuth } from "@/lib/apiClient";
 
@@ -40,7 +40,7 @@ export const ChatInterface = () => {
     resetTranscript,
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
-  const { speak } = useSpeechSynthesis();
+  const { speak, stopSpeaking, isSpeaking } = useGoogleTTS();
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [voiceLanguage, setVoiceLanguage] = useState<'en' | 'ml'>('en');
@@ -133,7 +133,8 @@ export const ChatInterface = () => {
         timestamp: new Date()
       };
       setMessages(prev => [...prev, botMessage]);
-      speak(data.reply, responseLanguage);
+      
+      // Note: TTS will only play when user clicks the read-aloud button
 
     } catch (error) {
       if (error instanceof Error && !error.message.includes("Authentication error")) {
@@ -365,16 +366,30 @@ export const ChatInterface = () => {
                   <div className="flex-1">
                     <p className="text-sm">{message.content}</p>
                     {message.sender === 'bot' && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => speak(message.content, responseLanguage)}
-                        className="mt-1 h-6 px-2 text-xs opacity-60 hover:opacity-100"
-                        title={`Read aloud in ${responseLanguage === 'en' ? 'English' : 'Malayalam'}`}
-                      >
-                        <Volume2 className="h-3 w-3 mr-1" />
-                        🔊 {responseLanguage === 'en' ? 'English' : 'മലയാളം'}
-                      </Button>
+                      <div className="flex gap-1 mt-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => speak(message.content, responseLanguage)}
+                          className="h-6 px-2 text-xs opacity-60 hover:opacity-100"
+                          title={`Read aloud in ${responseLanguage === 'en' ? 'English' : 'Malayalam'}`}
+                          disabled={isSpeaking}
+                        >
+                          <Volume2 className="h-3 w-3 mr-1" />
+                          🔊 {responseLanguage === 'en' ? 'English' : 'മലയാളം'}
+                        </Button>
+                        {isSpeaking && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={stopSpeaking}
+                            className="h-6 px-2 text-xs opacity-60 hover:opacity-100 text-red-600"
+                            title="Stop speaking"
+                          >
+                            🛑 Stop
+                          </Button>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
