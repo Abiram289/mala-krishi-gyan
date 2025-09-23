@@ -29,9 +29,20 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
   const [permissionGranted, setPermissionGranted] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   const browserSupportsSpeechRecognition = typeof window !== 'undefined' && 
     ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
+    
+  const getBrowserInfo = () => {
+    if (typeof window === 'undefined') return 'unknown';
+    const userAgent = window.navigator.userAgent;
+    if (userAgent.includes('Chrome')) return 'Chrome';
+    if (userAgent.includes('Firefox')) return 'Firefox';
+    if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) return 'Safari';
+    if (userAgent.includes('Edge')) return 'Edge';
+    return 'Other';
+  };
 
   // Check microphone permissions
   useEffect(() => {
@@ -65,14 +76,24 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
     try {
       const recognitionInstance = new SpeechRecognition();
       
-      // Configure recognition
+      // Configure recognition for better reliability
       recognitionInstance.continuous = false;
       recognitionInstance.interimResults = true;
       recognitionInstance.maxAlternatives = 1;
       
+      // Add more robust configuration
+      try {
+        // Some browsers support these additional settings
+        (recognitionInstance as any).grammars = null;
+        (recognitionInstance as any).serviceURI = null;
+      } catch (e) {
+        // Ignore if browser doesn't support these settings
+      }
+      
       recognitionInstance.onstart = () => {
-        console.log('🎤 Speech recognition started');
+        console.log('🎤 Speech recognition started successfully');
         setIsListening(true);
+        setRetryCount(0); // Reset retry count on successful start
       };
 
       recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
@@ -110,11 +131,42 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
         
         // Provide user-friendly error messages
         if (event.error === 'not-allowed') {
-          alert('Microphone access denied. Please allow microphone access and try again.');
+          alert('Microphone access denied. Please allow microphone access in your browser settings.');
         } else if (event.error === 'no-speech') {
-          console.log('No speech detected, stopping recognition');
+          console.log('🎤 No speech detected - this is normal if you pause while speaking');
+          // Don't show error for no-speech, it's normal
         } else if (event.error === 'network') {
-          alert('Network error during speech recognition. Please check your internet connection.');
+          console.warn('🎤 Network error - this is often a browser speech recognition issue, not your internet');
+          // Try to restart recognition automatically for network errors
+          if (retryCount < 2) {
+            console.log('🎤 Attempting to restart speech recognition...');
+            setTimeout(() => {
+              setRetryCount(prev => prev + 1);
+              if (recognition) {
+                try {
+                  recognition.start();
+                } catch (e) {
+                  console.warn('🎤 Retry failed:', e);
+                }
+              }
+            }, 1000);
+          } else {
+            console.log('🎤 Max retries reached for network error');
+            setRetryCount(0);
+          }
+        } else if (event.error === 'service-not-allowed') {
+          const browser = getBrowserInfo();
+          if (browser === 'Firefox') {
+            alert('Firefox has limited speech recognition support. For better Malayalam recognition, please use Chrome or Edge.');
+          } else if (browser === 'Safari') {
+            alert('Safari has poor speech recognition support. Please use Chrome or Edge for voice input.');
+          } else {
+            alert('Speech recognition service is not available. Try using Chrome or Edge browser.');
+          }
+        } else if (event.error === 'bad-grammar') {
+          console.log('🎤 Speech not recognized clearly - try speaking more clearly');
+        } else {
+          console.warn('🎤 Speech recognition error:', event.error);
         }
       };
 
@@ -167,7 +219,11 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
       }
 
       setTranscript('');
-      console.log('🎤 Starting speech recognition...');
+      console.log('🎤 Starting speech recognition...', {
+        browser: getBrowserInfo(),
+        language: language === 'ml' ? 'ml-IN' : 'en-US',
+        retryAttempt: retryCount
+      });
       recognition.start();
     } catch (error) {
       console.error('🎤 Error starting speech recognition:', error);
