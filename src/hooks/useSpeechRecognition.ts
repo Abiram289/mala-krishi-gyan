@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface SpeechRecognitionEvent extends Event {
   results: SpeechRecognitionResultList;
@@ -30,6 +30,12 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const transcriptRef = useRef('');
+  
+  // Keep ref in sync with state
+  useEffect(() => {
+    transcriptRef.current = transcript;
+  }, [transcript]);
 
   const browserSupportsSpeechRecognition = typeof window !== 'undefined' && 
     ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
@@ -104,6 +110,14 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
         
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcriptPart = event.results[i][0].transcript;
+          
+          // Log for debugging
+          console.log(`🎤 Result ${i}:`, {
+            text: transcriptPart,
+            isFinal: event.results[i].isFinal,
+            confidence: event.results[i][0].confidence
+          });
+          
           if (event.results[i].isFinal) {
             finalTranscript += transcriptPart;
           } else {
@@ -113,19 +127,25 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
         
         // Update transcript with final result or show interim
         if (finalTranscript) {
-          console.log('🎤 Final transcript:', finalTranscript);
-          setTranscript(finalTranscript.trim());
+          const cleanedTranscript = finalTranscript.trim();
+          console.log('🎤 Final transcript (cleaned):', cleanedTranscript);
+          console.log('🎤 Character count:', cleanedTranscript.length);
+          setTranscript(cleanedTranscript);
         } else if (interimTranscript) {
-          console.log('🎤 Interim transcript:', interimTranscript);
-          setTranscript(interimTranscript.trim());
+          const cleanedInterim = interimTranscript.trim();
+          console.log('🎤 Interim transcript (cleaned):', cleanedInterim);
+          setTranscript(cleanedInterim);
         }
       };
 
       recognitionInstance.onend = () => {
         console.log('🎤 Speech recognition ended');
+        console.log('🎤 Final transcript on end:', transcriptRef.current);
+        console.log('🎤 Transcript length:', transcriptRef.current.length);
         setIsListening(false);
-        // Note: transcript will be available in the component, 
-        // component should handle transferring it to input
+        
+        // Don't clear transcript here - let component handle it
+        // This ensures transcript persists until manually cleared
       };
 
       recognitionInstance.onerror = (event: SpeechRecognitionError) => {
@@ -208,10 +228,27 @@ export const useSpeechRecognition = (): SpeechRecognitionHook => {
         }
       }
 
-      // Set language for recognition
+      // Set language for recognition with fallbacks
       if (language === 'ml') {
-        recognition.lang = 'ml-IN'; // Malayalam (India)
-        console.log('🎤 Set language to Malayalam (ml-IN)');
+        // Try multiple Malayalam/Indian language codes for better compatibility
+        const malayalamLangCodes = ['ml-IN', 'hi-IN', 'en-IN'];
+        let langSet = false;
+        
+        for (const langCode of malayalamLangCodes) {
+          try {
+            recognition.lang = langCode;
+            console.log(`🎤 Set language to ${langCode} for Malayalam input`);
+            langSet = true;
+            break;
+          } catch (e) {
+            console.log(`🎤 ${langCode} not supported, trying next...`);
+          }
+        }
+        
+        if (!langSet) {
+          recognition.lang = 'en-IN'; // Fallback to Indian English
+          console.log('🎤 Using fallback: en-IN for Malayalam input');
+        }
       } else {
         recognition.lang = 'en-US'; // English (US)
         console.log('🎤 Set language to English (en-US)');

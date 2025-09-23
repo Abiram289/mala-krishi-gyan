@@ -239,9 +239,9 @@ export const ActivityLog = () => {
       stopListening();
     } else {
       resetTranscript();
-      // Use 'ml' for Malayalam UI, 'en' for English UI
-      const voiceLanguage = language === 'ml' ? 'ml' : 'en';
-      console.log('🎤 Activity Log: Starting voice input in', language === 'ml' ? 'Malayalam' : 'English');
+      // Use 'ml' for Malayalam voice recognition, undefined for English (defaults to 'en-US')
+      const voiceLanguage = language === 'ml' ? 'ml' : undefined;
+      console.log('🎤 Activity Log: Starting voice input in', language === 'ml' ? 'Malayalam (ml-IN)' : 'English (en-US)');
       startListening(voiceLanguage);
     }
   };

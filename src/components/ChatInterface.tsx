@@ -61,11 +61,22 @@ export const ChatInterface = () => {
   // Handle automatic transcript transfer when speech recognition ends
   useEffect(() => {
     // If we were listening and now we're not, and we have a transcript
-    if (!isListening && transcript.trim() && inputMessage !== transcript.trim()) {
+    if (!isListening && transcript.trim()) {
       console.log('🎤 Auto-transferring transcript to input:', transcript.trim());
+      console.log('🎤 Voice language:', voiceLanguage);
+      console.log('🎤 Transcript length:', transcript.trim().length);
+      
+      // Always update input message when speech recognition ends with content
       setInputMessage(transcript.trim());
+      
+      // Show success message to user
+      toast({ 
+        title: "Voice Input Captured!", 
+        description: `${voiceLanguage === 'ml' ? 'മലയാളം' : 'English'} voice input ready to send`,
+        duration: 2000
+      });
     }
-  }, [isListening, transcript, inputMessage]);
+  }, [isListening, transcript, voiceLanguage, toast]);
   const {
     transcript,
     isListening,
@@ -368,11 +379,35 @@ export const ChatInterface = () => {
       </ScrollArea>
       
       <div className="p-4 border-t">
+        {/* Debug Panel - Only show in development or when there are issues */}
+        {(transcript.trim() || isListening) && (
+          <div className="mb-2 p-2 bg-gray-50 border border-gray-200 rounded text-xs">
+            <p><strong>Debug:</strong></p>
+            <p>Listening: {isListening ? '✓' : '✗'} | Voice Lang: {voiceLanguage} | Transcript Length: {transcript.length}</p>
+            <p>Transcript: "{transcript}"</p>
+            <p>Input: "{inputMessage}"</p>
+            <p>Match: {transcript.trim() === inputMessage ? '✓' : '✗'}</p>
+          </div>
+        )}
+        
         {isListening && (
-          <p className="text-sm text-primary animate-pulse mb-2">🎤 Listening... Speak now</p>
+          <div className="mb-2 p-2 bg-primary/10 rounded border-l-4 border-primary">
+            <p className="text-sm text-primary animate-pulse">
+              🎤 Listening for {voiceLanguage === 'ml' ? 'മലയാളം (Malayalam)' : 'English'}... Speak now
+            </p>
+            {transcript.trim() && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Detected: "{transcript.trim()}"
+              </p>
+            )}
+          </div>
         )}
         {!isListening && transcript.trim() && transcript.trim() === inputMessage && (
-          <p className="text-sm text-green-600 mb-2">✓ Voice input captured! Click Send or press Enter</p>
+          <div className="mb-2 p-2 bg-green-50 border border-green-200 rounded">
+            <p className="text-sm text-green-600">
+              ✓ {voiceLanguage === 'ml' ? 'മലയാളം' : 'English'} voice input captured! Click Send or press Enter
+            </p>
+          </div>
         )}
         <div className="flex gap-2">
           <Input
@@ -389,18 +424,29 @@ export const ChatInterface = () => {
               variant="outline"
               size="icon"
               onClick={() => {
+                console.log('🎤 Voice button clicked:', { isListening, voiceLanguage, transcript });
+                
                 if (isListening) {
+                  console.log('🎤 Stopping speech recognition...');
                   stopListening();
+                  
                   // Transfer transcript to input message
                   if (transcript.trim()) {
+                    console.log('🎤 Transferring transcript to input:', transcript.trim());
                     setInputMessage(transcript.trim());
-                    // Give user a moment to review before they can manually send
-                    // No auto-send - let user click send button or press Enter
+                    toast({ 
+                      title: "Voice Input Captured!", 
+                      description: `Ready to send: "${transcript.trim().substring(0, 30)}${transcript.trim().length > 30 ? '...' : ''}"`,
+                      duration: 3000
+                    });
                   }
                 } else {
+                  console.log('🎤 Starting speech recognition for:', voiceLanguage);
                   resetTranscript();
                   setInputMessage(''); // Clear input when starting new voice input
-                  startListening(voiceLanguage);
+                  // Pass 'ml' for Malayalam, undefined for English (defaults to 'en-US')
+                  const recognitionLang = voiceLanguage === 'ml' ? 'ml' : undefined;
+                  startListening(recognitionLang);
                 }
               }}
               className={isListening ? 'bg-destructive text-destructive-foreground' : ''}
@@ -412,8 +458,25 @@ export const ChatInterface = () => {
           <Button onClick={handleSendMessage} size="icon" disabled={isListening || !(isListening ? transcript : inputMessage).trim()}>
             <Send className="h-4 w-4" />
           </Button>
+          {/* Debug: Manual transcript transfer button (only show when there's a transcript but it's not in input) */}
+          {transcript.trim() && transcript.trim() !== inputMessage && (
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={() => {
+                console.log('📝 Manual transfer:', transcript.trim());
+                setInputMessage(transcript.trim());
+                toast({ title: "Manual Transfer", description: "Transcript moved to input", duration: 1000 });
+              }}
+              title="Transfer voice input to chat"
+              className="bg-orange-100 border-orange-300"
+            >
+              📝
+            </Button>
+          )}
+          
           {/* Placeholder for image upload */}
-          <Button variant="outline" size="icon" title="Upload Image (Coming Soon)">
+          <Button variant="outline" size="icon" title="Upload Image (Coming Soon)" className="opacity-50">
             <Image className="h-4 w-4" />
           </Button>
         </div>
