@@ -11,6 +11,7 @@ import google.generativeai as genai
 import requests
 from google.cloud import texttospeech
 from agriculture_data_service import KeralaAgricultureDataService
+from db_query import log_query
 
 # --- Environment and Client Setup ---
 load_dotenv("../.env")
@@ -121,12 +122,16 @@ def root():
 @app.get("/dashboard-stats")
 def get_dashboard_stats(user=Depends(get_current_user)):
     """Returns a variety of statistics for the user's farm using a single, complex SQL function."""
+    query_desc = f"RPC: get_user_dashboard_stats for user {user.id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc)
     response = supabase.rpc("get_user_dashboard_stats", {"p_user_id": user.id}).execute()
     return response.data
 
 @app.get("/crop-calendar")
 def get_crop_calendar(month: int, user=Depends(get_current_user)):
     """Returns the crop calendar data for a given month using a single, complex SQL function."""
+    query_desc = f"RPC: get_crop_calendar for month {month}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc)
     response = supabase.rpc("get_crop_calendar", {"p_month": month}).execute()
     return response.data
 
@@ -206,27 +211,40 @@ async def text_to_speech(request: Request, user=Depends(get_current_user)):
 # --- Master Data Endpoints ---
 @app.get("/master-data/districts")
 def get_districts(user=Depends(get_current_user)):
+    query_desc = "SELECT district_id, district_name FROM districts"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc)
     response = supabase.table("districts").select("district_id, district_name").execute()
     return response.data
 
 @app.get("/master-data/soil-types")
 def get_soil_types(user=Depends(get_current_user)):
+    query_desc = "SELECT soil_type_id, soil_name, description FROM soil_types"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc)
     response = supabase.table("soil_types").select("soil_type_id, soil_name, description").execute()
     return response.data
 
 @app.get("/master-data/crops")
 def get_crops(user=Depends(get_current_user)):
+    query_desc = "SELECT crop_id, crop_name FROM crops"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc)
     response = supabase.table("crops").select("crop_id, crop_name").execute()
     return response.data
 
 # --- User Profile Endpoint ---
 @app.get("/profile")
 def get_profile(user=Depends(get_current_user)):
+    query_desc = f"SELECT * FROM user_app_profiles WHERE id = {user.id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc)
     profile_res = supabase.table("user_app_profiles").select("*").eq("id", user.id).execute()
+    
     if not profile_res.data:
         user_meta = user.user_metadata or {}
         full_name = user_meta.get("full_name") or user_meta.get("user_name")
+        
+        insert_query_desc = f"INSERT INTO user_app_profiles (id, full_name) VALUES ({user.id}, {full_name})"
+        log_query(supabase, user.id, full_name, insert_query_desc)
         insert_res = supabase.table("user_app_profiles").insert({"id": user.id, "full_name": full_name}).execute()
+        
         if not insert_res.data:
             raise HTTPException(status_code=500, detail="Failed to create user profile.")
         return insert_res.data[0]
@@ -244,7 +262,10 @@ def update_profile(profile_data: UserProfileUpdate, user=Depends(get_current_use
     if not update_fields:
         raise HTTPException(status_code=400, detail="No fields provided for update.")
 
+    query_desc = f"UPDATE user_app_profiles SET {update_fields} WHERE id = {user.id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc)
     response = supabase.table("user_app_profiles").update(update_fields).eq("id", user.id).execute()
+
     if response.data:
         return response.data[0]
     raise HTTPException(status_code=500, detail="Failed to update user profile.")
@@ -252,6 +273,8 @@ def update_profile(profile_data: UserProfileUpdate, user=Depends(get_current_use
 # --- Farm, Plot, Planting, Activity Endpoints (CRUD) ---
 @app.get("/farms")
 def get_user_farms(user=Depends(get_current_user)):
+    query_desc = f"SELECT *, district:districts(district_name), farm_plots(count) FROM farms WHERE owner_id = {user.id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc)
     response = supabase.table("farms").select("*, district:districts(district_name), farm_plots(count)").eq("owner_id", user.id).execute()
     return response.data
 
@@ -259,10 +282,10 @@ def get_user_farms(user=Depends(get_current_user)):
 def create_farm(farm_data: FarmCreate, user=Depends(get_current_user)):
     """Creates a new farm and a default plot for it."""
     # 1. Create the farm
-    farm_response = supabase.table("farms").insert({
-        "owner_id": user.id,
-        **farm_data.dict()
-    }).execute()
+    farm_insert_data = {"owner_id": user.id, **farm_data.dict()}
+    query_desc_1 = f"INSERT INTO farms {farm_insert_data}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_1)
+    farm_response = supabase.table("farms").insert(farm_insert_data).execute()
 
     if not farm_response.data:
         raise HTTPException(status_code=500, detail="Failed to create farm.")
@@ -271,6 +294,8 @@ def create_farm(farm_data: FarmCreate, user=Depends(get_current_user)):
     new_farm_id = new_farm['farm_id']
 
     # 2. Get a default soil type for the plot
+    query_desc_2 = "SELECT soil_type_id FROM soil_types LIMIT 1"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_2)
     soil_types_response = supabase.table("soil_types").select("soil_type_id").limit(1).execute()
     if not soil_types_response.data:
         # This indicates a configuration problem (no master data for soil types)
@@ -288,6 +313,8 @@ def create_farm(farm_data: FarmCreate, user=Depends(get_current_user)):
         "soil_type_id": default_soil_id
     }
     
+    query_desc_3 = f"INSERT INTO farm_plots {default_plot_data}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_3)
     plot_response = supabase.table("farm_plots").insert(default_plot_data).execute()
 
     if not plot_response.data:
@@ -299,6 +326,8 @@ def create_farm(farm_data: FarmCreate, user=Depends(get_current_user)):
 
 @app.get("/farms/{farm_id}/plots")
 def get_farm_plots(farm_id: int, user=Depends(get_current_user)):
+    query_desc = f"SELECT *, soil_type:soil_types(soil_name) FROM farm_plots WHERE farm_id = {farm_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc)
     response = supabase.table("farm_plots").select("*, soil_type:soil_types(soil_name)").eq("farm_id", farm_id).execute()
     return response.data
 
@@ -306,15 +335,22 @@ def get_farm_plots(farm_id: int, user=Depends(get_current_user)):
 def create_plot(plot_data: FarmPlotCreate, user=Depends(get_current_user)):
     """Creates a new plot for the user."""
     # Security check: Ensure the farm_id belongs to the user.
+    query_desc_1 = f"SELECT farm_id FROM farms WHERE owner_id = {user.id} AND farm_id = {plot_data.farm_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_1)
     farm_check = supabase.table("farms").select("farm_id").eq("owner_id", user.id).eq("farm_id", plot_data.farm_id).execute()
     if not farm_check.data:
         raise HTTPException(status_code=403, detail="You do not have permission to add a plot to this farm.")
 
-    response = supabase.table("farm_plots").insert(plot_data.dict()).execute()
+    plot_dict = plot_data.dict()
+    query_desc_2 = f"INSERT INTO farm_plots {plot_dict}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_2)
+    response = supabase.table("farm_plots").insert(plot_dict).execute()
     if not response.data:
         raise HTTPException(status_code=500, detail="Failed to create plot.")
     
     new_plot_id = response.data[0]['plot_id']
+    query_desc_3 = f"SELECT *, soil_types(soil_name) FROM farm_plots WHERE plot_id = {new_plot_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_3)
     plot_response = supabase.table("farm_plots").select("*, soil_types(soil_name)").eq("plot_id", new_plot_id).single().execute()
 
     return plot_response.data
@@ -325,16 +361,22 @@ def get_user_plantings(user=Depends(get_current_user)):
     # We need to join through farms and farm_plots to filter by owner_id
     # This is a simplified query; a database view or function could optimize this.
     # For now, we get all farms, then all plots, then all plantings.
+    query_desc_1 = f"SELECT farm_id FROM farms WHERE owner_id = {user.id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_1)
     farms_response = supabase.table("farms").select("farm_id").eq("owner_id", user.id).execute()
     if not farms_response.data:
         return []
     farm_ids = [f['farm_id'] for f in farms_response.data]
 
+    query_desc_2 = f"SELECT plot_id FROM farm_plots WHERE farm_id IN {farm_ids}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_2)
     plots_response = supabase.table("farm_plots").select("plot_id").in_("farm_id", farm_ids).execute()
     if not plots_response.data:
         return []
     plot_ids = [p['plot_id'] for p in plots_response.data]
 
+    query_desc_3 = f"SELECT *, crop:crops(*) FROM plantings WHERE plot_id IN {plot_ids}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_3)
     plantings_response = supabase.table("plantings").select("*, crop:crops(*)").in_("plot_id", plot_ids).execute()
     return plantings_response.data
 
@@ -342,6 +384,8 @@ def get_user_plantings(user=Depends(get_current_user)):
 def get_user_plots(user=Depends(get_current_user)):
     """Fetches all plots for a user, creating default plots for farms that are missing them."""
     # 1. Get all of the user's farms
+    query_desc_1 = f"SELECT farm_id, farm_name FROM farms WHERE owner_id = {user.id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_1)
     farms_response = supabase.table("farms").select("farm_id, farm_name").eq("owner_id", user.id).execute()
     if not farms_response.data:
         return []
@@ -350,6 +394,8 @@ def get_user_plots(user=Depends(get_current_user)):
     farm_ids = [f['farm_id'] for f in user_farms]
 
     # 2. Get all existing plots for those farms
+    query_desc_2 = f"SELECT farm_id FROM farm_plots WHERE farm_id IN {farm_ids}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_2)
     plots_response = supabase.table("farm_plots").select("farm_id").in_("farm_id", farm_ids).execute()
     existing_plot_farm_ids = {p['farm_id'] for p in plots_response.data} if plots_response.data else set()
 
@@ -357,6 +403,8 @@ def get_user_plots(user=Depends(get_current_user)):
     missing_plot_farms = [farm for farm in user_farms if farm['farm_id'] not in existing_plot_farm_ids]
 
     if missing_plot_farms:
+        query_desc_3 = "SELECT soil_type_id FROM soil_types LIMIT 1"
+        log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_3)
         soil_types_response = supabase.table("soil_types").select("soil_type_id").limit(1).execute()
         if not soil_types_response.data:
             raise HTTPException(status_code=500, detail="Cannot create default plot: No soil types defined in database.")
@@ -370,9 +418,13 @@ def get_user_plots(user=Depends(get_current_user)):
                 "soil_type_id": default_soil_id,
             }
             # Insert each plot individually to avoid potential batch-insert issues
+            query_desc_4 = f"INSERT INTO farm_plots {plot_to_create}"
+            log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_4)
             supabase.table("farm_plots").insert(plot_to_create).execute()
 
     # 4. Return the complete list of plots for the user
+    query_desc_5 = f"SELECT *, farms(farm_name) FROM farm_plots WHERE farm_id IN {farm_ids}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_5)
     final_plots_response = supabase.table("farm_plots").select("*, farms(farm_name)").in_("farm_id", farm_ids).execute()
     return final_plots_response.data
 
@@ -380,11 +432,15 @@ def get_user_plots(user=Depends(get_current_user)):
 def create_planting(planting_data: PlantingCreate, user=Depends(get_current_user)):
     """Creates a new planting for the user."""
     # Security check: Ensure the plot_id belongs to the user.
+    query_desc_1 = f"SELECT plot_id, farm_id FROM farm_plots WHERE plot_id = {planting_data.plot_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_1)
     plots_response = supabase.table("farm_plots").select("plot_id, farm_id").eq("plot_id", planting_data.plot_id).execute()
     if not plots_response.data:
         raise HTTPException(status_code=404, detail="Plot not found.")
     
     farm_id = plots_response.data[0]['farm_id']
+    query_desc_2 = f"SELECT farm_id FROM farms WHERE owner_id = {user.id} AND farm_id = {farm_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_2)
     farm_check = supabase.table("farms").select("farm_id").eq("owner_id", user.id).eq("farm_id", farm_id).execute()
     if not farm_check.data:
         raise HTTPException(status_code=403, detail="You do not have permission to add a planting to this plot.")
@@ -395,12 +451,17 @@ def create_planting(planting_data: PlantingCreate, user=Depends(get_current_user
     planting_dict['planting_date'] = planting_dict['planting_date'].isoformat()
     print(f"--- SERIALIZED PAYLOAD: {planting_dict} ---")
 
+    query_desc_3 = f"INSERT INTO plantings {planting_dict}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_3)
     response = supabase.table("plantings").insert(planting_dict).execute()
     if not response.data:
         raise HTTPException(status_code=500, detail="Failed to create planting.")
     
+    new_planting_id = response.data[0]['planting_id']
     # The insert response doesn't include the nested crop, so we fetch it again
-    new_planting = supabase.table("plantings").select("*, crop:crops(*)").eq("planting_id", response.data[0]['planting_id']).single().execute()
+    query_desc_4 = f"SELECT *, crop:crops(*) FROM plantings WHERE planting_id = {new_planting_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_4)
+    new_planting = supabase.table("plantings").select("*, crop:crops(*)").eq("planting_id", new_planting_id).single().execute()
     return new_planting.data
 
 # --- Activity Scheduling Endpoints ---
@@ -408,6 +469,11 @@ def create_planting(planting_data: PlantingCreate, user=Depends(get_current_user
 @app.get("/activities", response_model=List[Activity])
 def get_activities(status: Optional[str] = None, user=Depends(get_current_user)):
     """Fetches all activities for the current user, with optional status filtering."""
+    query_desc = f"SELECT * FROM user_activities WHERE owner_id = {user.id}"
+    if status:
+        query_desc += f" AND status = '{status}'"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc)
+    
     query = supabase.table("user_activities").select("*").eq("owner_id", user.id)
     if status:
         query = query.eq("status", status)
@@ -420,33 +486,49 @@ def create_activity(activity_data: ActivityCreate, user=Depends(get_current_user
     """Creates a new scheduled activity for the user."""
     # Corrected Security Check:
     # 1. Get the plot_id from the planting_id to start the ownership check.
+    query_desc_1 = f"SELECT plot_id FROM plantings WHERE planting_id = {activity_data.planting_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_1)
     planting_res = supabase.table("plantings").select("plot_id").eq("planting_id", activity_data.planting_id).execute()
     if not planting_res.data:
         raise HTTPException(status_code=404, detail="Planting not found.")
 
     # 2. Get the farm_id from the plot_id.
-    plot_res = supabase.table("farm_plots").select("farm_id").eq("plot_id", planting_res.data[0]['plot_id']).execute()
+    plot_id = planting_res.data[0]['plot_id']
+    query_desc_2 = f"SELECT farm_id FROM farm_plots WHERE plot_id = {plot_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_2)
+    plot_res = supabase.table("farm_plots").select("farm_id").eq("plot_id", plot_id).execute()
     if not plot_res.data:
         raise HTTPException(status_code=404, detail="Associated plot not found.")
 
     # 3. Verify the user owns the farm associated with the plot.
-    farm_res = supabase.table("farms").select("farm_id").eq("owner_id", user.id).eq("farm_id", plot_res.data[0]['farm_id']).execute()
+    farm_id = plot_res.data[0]['farm_id']
+    query_desc_3 = f"SELECT farm_id FROM farms WHERE owner_id = {user.id} AND farm_id = {farm_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_3)
+    farm_res = supabase.table("farms").select("farm_id").eq("owner_id", user.id).eq("farm_id", farm_id).execute()
     if not farm_res.data:
         raise HTTPException(status_code=403, detail="You do not have permission to add an activity to this planting.")
 
     # If all checks pass, create the activity.
-    response = supabase.table("activities_log").insert(activity_data.model_dump(mode='json')).execute()
+    activity_dict = activity_data.model_dump(mode='json')
+    query_desc_4 = f"INSERT INTO activities_log {activity_dict}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_4)
+    response = supabase.table("activities_log").insert(activity_dict).execute()
     if not response.data:
         raise HTTPException(status_code=500, detail="Failed to create activity.")
     
+    new_activity_id = response.data[0]['activity_id']
     # The insert doesn't return all columns, so we fetch the new activity to match the response model.
-    new_activity = supabase.table("user_activities").select("*").eq("activity_id", response.data[0]['activity_id']).single().execute()
+    query_desc_5 = f"SELECT * FROM user_activities WHERE activity_id = {new_activity_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_5)
+    new_activity = supabase.table("user_activities").select("*").eq("activity_id", new_activity_id).single().execute()
     return new_activity.data
 
 @app.put("/activities/{activity_id}/complete", response_model=Activity)
 def complete_activity(activity_id: int, user=Depends(get_current_user)):
     """Marks an activity as complete."""
     # Security check: Ensure the activity belongs to the user.
+    query_desc_1 = f"SELECT activity_id FROM user_activities WHERE owner_id = {user.id} AND activity_id = {activity_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_1)
     activity_check = supabase.table("user_activities").select("activity_id").eq("owner_id", user.id).eq("activity_id", activity_id).execute()
     if not activity_check.data:
         raise HTTPException(status_code=404, detail="Activity not found or you do not have permission.")
@@ -455,6 +537,8 @@ def complete_activity(activity_id: int, user=Depends(get_current_user)):
         "status": "done",
         "completed_at": datetime.now().isoformat()
     }
+    query_desc_2 = f"UPDATE activities_log SET {update_data} WHERE activity_id = {activity_id}"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_2)
     response = supabase.table("activities_log").update(update_data).eq("activity_id", activity_id).execute()
     if not response.data:
         raise HTTPException(status_code=500, detail="Failed to update activity.")
@@ -468,6 +552,8 @@ def complete_activity(activity_id: int, user=Depends(get_current_user)):
 @app.get("/chat/history")
 def get_chat_history(user=Depends(get_current_user)):
     """Fetches the chat history for the authenticated user."""
+    query_desc = f"SELECT sender, content, created_at FROM chat_messages WHERE user_id = {user.id} ORDER BY created_at"
+    log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc)
     response = supabase.table("chat_messages").select("sender, content, created_at").eq("user_id", user.id).order("created_at", desc=False).execute()
     return response.data
 
@@ -476,14 +562,16 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
     """Receives a user message, gets an AI reply, and saves both to the database."""
     try:
         # 1. Save user's message
-        supabase.table("chat_messages").insert({
-            "user_id": user.id,
-            "sender": "user",
-            "content": message.message
-        }).execute()
+        user_message_data = {"user_id": user.id, "sender": "user", "content": message.message}
+        query_desc_1 = f"INSERT INTO chat_messages {user_message_data}"
+        log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_1)
+        supabase.table("chat_messages").insert(user_message_data).execute()
 
         # 2. Get AI context from the database
-        context_response = supabase.rpc("get_ai_context", {"p_user_id": user.id, "p_user_query": message.message}).execute()
+        rpc_params = {"p_user_id": user.id, "p_user_query": message.message}
+        query_desc_2 = f"RPC: get_ai_context with params {rpc_params}"
+        log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_2)
+        context_response = supabase.rpc("get_ai_context", rpc_params).execute()
         db_context = context_response.data if context_response.data else ""
 
         system_prompt = f"You are a helpful farming assistant. Use the following context to answer the user's question:\n{db_context}"
@@ -495,11 +583,10 @@ def chat_with_ai(message: ChatMessage, user=Depends(get_current_user)):
         bot_reply = response.text
 
         # 4. Save bot's reply
-        supabase.table("chat_messages").insert({
-            "user_id": user.id,
-            "sender": "bot",
-            "content": bot_reply
-        }).execute()
+        bot_message_data = {"user_id": user.id, "sender": "bot", "content": bot_reply}
+        query_desc_3 = f"INSERT INTO chat_messages {bot_message_data}"
+        log_query(supabase, user.id, user.user_metadata.get('full_name'), query_desc_3)
+        supabase.table("chat_messages").insert(bot_message_data).execute()
 
         return {"reply": bot_reply}
 

@@ -203,7 +203,7 @@ export default function CropCalendar() {
                 AI Farming Predictions for {calendarData.month}
               </h2>
               <div className="space-y-4">
-                {calendarData.predictions.map(prediction => (
+                {calendarData.predictions && calendarData.predictions.map(prediction => (
                   <Card key={prediction.id} className="p-4 border-l-4 border-l-primary">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">

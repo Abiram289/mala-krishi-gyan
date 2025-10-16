@@ -7,7 +7,7 @@ BEGIN
         'season', 'Current Season', -- Placeholder
         'rainfall_period', 'Expected rainfall period', -- Placeholder
         'month', to_char(to_date(p_month::text, 'MM'), 'Month'),
-        'predictions', (
+        'predictions', COALESCE((
             SELECT jsonb_agg(t)
             FROM (
                 SELECT
@@ -23,7 +23,7 @@ BEGIN
                 WHERE lower(planting_period) LIKE '%' || lower(to_char(to_date(p_month::text, 'MM'), 'Month')) || '%'
                 LIMIT 3
             ) t
-        ),
+        ), '[]'::jsonb),
         'weather_guidance', (
             SELECT jsonb_agg(t)
             FROM (
