@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { fetchWithAuth } from '@/lib/apiClient';
+import { apiClient } from '@/lib/apiClient';
 
 interface GoogleTTSHook {
   speak: (text: string, language?: string) => Promise<void>;
@@ -63,24 +63,7 @@ export const useGoogleTTS = (): GoogleTTSHook => {
         abortControllerRef.current = new AbortController();
       }
 
-      const response = await fetchWithAuth('/tts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          text: cleanText,
-          language: language 
-        }),
-        ...(abortControllerRef.current && { signal: abortControllerRef.current.signal }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'TTS request failed');
-      }
-
-      const data = await response.json();
+      const data = await apiClient.textToSpeech(cleanText, language);
       
       // Convert base64 to blob and play
       const audioBytes = Uint8Array.from(atob(data.audio), c => c.charCodeAt(0));

@@ -5,6 +5,7 @@ import { Cloud, CloudRain, Sun, Thermometer, Droplets, Wind, AlertTriangle, MapP
 import { useLanguage } from "./LanguageToggle";
 import { fetchWeatherData, parseLocationCoordinates } from "@/lib/weatherService";
 import { useAuth } from "@/App";
+import { apiClient } from "@/lib/apiClient";
 
 interface WeatherData {
   temperature: number;
@@ -41,23 +42,13 @@ export const WeatherCard = () => {
           }
         }
         
-        // Use backend weather endpoint for better reliability
         try {
-          const { fetchWithAuth } = await import('@/lib/apiClient');
-          const weatherUrl = `/weather?language=${language}${lat && lon ? `&lat=${lat}&lon=${lon}` : ''}`;
-          const response = await fetchWithAuth(weatherUrl);
-          if (response.ok) {
-            const weatherData = await response.json();
-            setWeather(weatherData);
-            return;
-          }
-        } catch (backendError) {
-          console.log('Backend weather failed, trying direct API:', backendError);
+          const weatherData = await apiClient.getWeather(lat, lon, language);
+          setWeather(weatherData);
+        } catch (err) {
+          console.error('Error loading weather data:', err);
+          setError('Failed to load weather data');
         }
-        
-        // Fallback to direct API call if backend fails
-        const weatherData = await fetchWeatherData(lat, lon, language);
-        setWeather(weatherData);
       } catch (err) {
         console.error('Error loading weather data:', err);
         setError('Failed to load weather data');

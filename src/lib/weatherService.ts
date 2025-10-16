@@ -131,19 +131,12 @@ export const fetchWeatherData = async (lat?: number, lon?: number, language: str
   }
 };
 
+import { apiClient } from './apiClient';
+
 // Alternative: Use backend weather endpoint (recommended for production)
 export const fetchWeatherFromBackend = async (): Promise<WeatherData> => {
-  // Use the existing fetchWithAuth function for proper authentication
-  const { fetchWithAuth } = await import('./apiClient');
-  
   try {
-    const response = await fetchWithAuth('/weather');
-    
-    if (!response.ok) {
-      throw new Error(`Backend weather API error: ${response.status}`);
-    }
-    
-    return await response.json();
+    return await apiClient.getWeather();
   } catch (error) {
     console.error('Failed to fetch weather from backend:', error);
     

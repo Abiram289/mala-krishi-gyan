@@ -18,7 +18,19 @@ import { LanguageProvider } from "@/components/LanguageToggle";
 import { supabase } from "./lib/supabase";
 import React, { useState, useEffect, useContext, createContext } from "react";
 import AuthForm from "./components/auth/AuthForm";
-import { fetchWithAuth } from "./lib/apiClient";
+import { apiClient } from "./lib/apiClient";
+import ErrorBoundary, { APIErrorBoundary } from "./components/ErrorBoundary";
+import { sessionManager } from "./lib/sessionManager";
+import SessionDebugger from "./components/SessionDebugger";
+
+// Debounce utility
+function debounce<T extends (...args: any[]) => any>(func: T, wait: number): T {
+  let timeout: NodeJS.Timeout;
+  return ((...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  }) as T;
+}
 
 const queryClient = new QueryClient();
 
@@ -51,34 +63,80 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileLoading, setProfileLoading] = useState(true);
+  const [profileFetchInProgress, setProfileFetchInProgress] = useState(false);
 
   const fetchProfile = async () => {
+    // Prevent multiple concurrent profile fetches
+    if (profileFetchInProgress) {
+      console.log('Profile fetch already in progress, skipping');
+      return;
+    }
+    
+    setProfileFetchInProgress(true);
     setProfileLoading(true);
     try {
-      // Add timeout for profile fetching (reduced to 3 seconds)
+      // Increase timeout to 10 seconds for better reliability
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Profile fetch timeout')), 3000)
+        setTimeout(() => reject(new Error('Profile fetch timeout')), 10000)
       );
       
-      const profilePromise = fetchWithAuth('/profile');
+      const profilePromise = apiClient.getProfile();
       
-      const response = await Promise.race([profilePromise, timeoutPromise]) as any;
-      
-      if (!response.ok) {
-        if (response.status === 404) {
-          setProfile(null); // User exists but has no profile yet
-        } else {
-          throw new Error('Failed to fetch profile');
-        }
-      } else {
-        const data = await response.json();
-        setProfile(data);
-      }
+      const data = await Promise.race([profilePromise, timeoutPromise]) as any;
+
+      setProfile(data);
+      console.log('Profile loaded successfully');
     } catch (error) {
-      console.error("Error fetching profile:", error);
-      setProfile(null); // Clear profile on error
+      if (error instanceof Error) {
+        if (error.message.includes('Authentication') || error.message.includes('auth')) {
+          // Don't log auth errors as profile errors
+          console.log('Skipping profile fetch due to auth issues');
+          return;
+        }
+        console.warn("Profile fetch error (non-critical):", error.message);
+      }
+      setProfile(null); // Clear profile on error but don't crash
     } finally {
       setProfileLoading(false);
+      setProfileFetchInProgress(false);
+    }
+  };
+
+  // Function to check if session is about to expire and refresh if needed
+  const checkAndRefreshSession = async () => {
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        console.error('Session check error:', error);
+        return;
+      }
+      
+      if (session) {
+        const now = Math.floor(Date.now() / 1000);
+        const expiresAt = session.expires_at || 0;
+        const timeUntilExpiry = expiresAt - now;
+        
+        // If token expires in less than 5 minutes, try to refresh
+        if (timeUntilExpiry < 300) {
+          console.log('Token expires soon, attempting refresh...');
+          const { data: { session: refreshedSession }, error: refreshError } = await supabase.auth.refreshSession();
+          
+          if (refreshError) {
+            console.error('Session refresh failed:', refreshError);
+            // If refresh fails, user will be logged out by auth state change
+            return;
+          }
+          
+          if (refreshedSession) {
+            console.log('Session refreshed successfully');
+            setSession(refreshedSession);
+            setUser(refreshedSession.user);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Session check error:', error);
     }
   };
 
@@ -87,17 +145,39 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       setLoading(true);
       try {
         // Try to get session quickly without timeout first
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
         
-        // Set session and user immediately to show UI faster
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false); // Set loading to false immediately after getting session
-        
-        if (session?.user) {
-          // Make profile fetching non-blocking
-          fetchProfile().catch(err => console.error("Background profile fetch error:", err));
+        if (error) {
+          console.error('Initial session fetch error:', error);
+          setSession(null);
+          setUser(null);
+        } else {
+          // Set session and user immediately to show UI faster
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            // Make profile fetching non-blocking
+            fetchProfile().catch(err => console.error("Background profile fetch error:", err));
+            
+            // Set up session manager monitoring (replaces manual intervals)
+            sessionManager.onSessionExpired(() => {
+              console.log('Session expired, clearing local state');
+              setSession(null);
+              setUser(null);
+              setProfile(null);
+            });
+            
+            sessionManager.startSessionMonitoring();
+            
+            // Log initial session info for debugging
+            if (process.env.NODE_ENV === 'development') {
+              sessionManager.logSessionInfo();
+            }
+          }
         }
+        
+        setLoading(false);
       } catch (error) {
         console.error("AuthProvider: Error during session initialization:", error);
         setSession(null);
@@ -108,21 +188,37 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
     initializeSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    // Debounced auth state handler to prevent rapid changes
+    const debouncedAuthHandler = debounce(async (event: string, session: any) => {
+      console.log('Auth state changed (debounced):', event, session?.user?.id);
+      
       setSession(session);
       setUser(session?.user ?? null);
+      
       if (session?.user) {
-        // Make profile fetching non-blocking
-        fetchProfile().catch(err => console.error("Background profile fetch error:", err));
+        // Make profile fetching non-blocking with additional delay to avoid conflicts
+        setTimeout(() => {
+          fetchProfile().catch(err => console.error("Background profile fetch error:", err));
+        }, 500);
+        
+        // Session monitoring is handled by sessionManager
       } else {
         setProfile(null); // Clear profile on logout
+        
+        // Clear session monitoring on logout
+        sessionManager.stopSessionMonitoring();
       }
-    });
+    }, 300); // 300ms debounce
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(debouncedAuthHandler);
 
     return () => {
       subscription.unsubscribe();
+      
+      // Clean up session monitoring on component unmount
+      sessionManager.stopSessionMonitoring();
     };
-  }, []);
+  }, []); // Remove sessionCheckInterval dependency to prevent infinite re-renders
 
   return (
     <AuthContext.Provider value={{ session, user, profile, loading, profileLoading, refetchProfile: fetchProfile }}>
@@ -141,10 +237,31 @@ export const useAuth = () => {
 };
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { session, loading } = useAuth();
+  const { session, loading, profileLoading } = useAuth();
+  const [isStable, setIsStable] = React.useState(false);
 
-  if (loading) {
-    return <div className="flex items-center justify-center h-screen"><div>Loading authentication...</div></div>;
+  // Add stability delay to prevent flickering during auth state changes
+  React.useEffect(() => {
+    if (!loading) {
+      const timeout = setTimeout(() => {
+        setIsStable(true);
+      }, 500); // Wait 500ms after loading ends to ensure stability
+      
+      return () => clearTimeout(timeout);
+    } else {
+      setIsStable(false);
+    }
+  }, [loading]);
+
+  if (loading || !isStable) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+          <div>Loading authentication...</div>
+        </div>
+      </div>
+    );
   }
 
   if (!session) {
@@ -156,40 +273,43 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 // --- Main App Component ---
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <AuthProvider>
-            <Routes>
-              <Route path="/auth" element={<AuthForm />} />
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <MainLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<Index />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="chat" element={<Chat />} />
-                <Route path="activities" element={<Activities />} />
-                <Route path="weather" element={<Weather />} />
-                <Route path="crop-calendar" element={<CropCalendar />} />
-                <Route path="government-schemes" element={<GovernmentSchemes />} />
-                <Route path="community" element={<Community />} />
-                <Route path="notifications" element={<Notifications />} />
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </LanguageProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <LanguageProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <AuthProvider>
+              <Routes>
+                <Route path="/auth" element={<AuthForm />} />
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<APIErrorBoundary><Index /></APIErrorBoundary>} />
+                  <Route path="profile" element={<APIErrorBoundary><Profile /></APIErrorBoundary>} />
+                  <Route path="chat" element={<APIErrorBoundary><Chat /></APIErrorBoundary>} />
+                  <Route path="activities" element={<APIErrorBoundary><Activities /></APIErrorBoundary>} />
+                  <Route path="weather" element={<APIErrorBoundary><Weather /></APIErrorBoundary>} />
+                  <Route path="crop-calendar" element={<APIErrorBoundary><CropCalendar /></APIErrorBoundary>} />
+                  <Route path="government-schemes" element={<APIErrorBoundary><GovernmentSchemes /></APIErrorBoundary>} />
+                  <Route path="community" element={<APIErrorBoundary><Community /></APIErrorBoundary>} />
+                  <Route path="notifications" element={<APIErrorBoundary><Notifications /></APIErrorBoundary>} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AuthProvider>
+          </BrowserRouter>
+          <SessionDebugger />
+        </TooltipProvider>
+      </LanguageProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;

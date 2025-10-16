@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Calendar, Droplets, Sprout, Sun, CloudRain, Bug, Scissors, Loader, AlertTriangle } from "lucide-react";
 import { useLanguage } from "@/components/LanguageToggle";
 import { Link } from "react-router-dom";
-import { fetchWithAuth } from "@/lib/apiClient";
+import { apiClient } from "@/lib/apiClient";
 
 interface CropPrediction {
   id: string;
@@ -66,14 +66,7 @@ export default function CropCalendar() {
         setLoading(true);
         setError(null);
         
-        // Fetch data for current month (API expects 1-based month)
-        const response = await fetchWithAuth(`/crop-calendar?month=${currentMonth + 1}`);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to fetch calendar data: ${response.status}`);
-        }
-        
-        const data = await response.json();
+        const data = await apiClient.getCropCalendar(currentMonth + 1);
         setCalendarData(data);
         
       } catch (err) {
